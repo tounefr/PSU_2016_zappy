@@ -1,29 +1,31 @@
-from enum import Enum
-from ZappyClient import *
-
-class MovementEnum(Enum):
-    FORWARD = 0,
-    RIGHT = 1,
-    LEFT = 2
 
 class PlayerAction:
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if PlayerAction.g_instance is None:
+            PlayerAction.g_instance = PlayerAction()
+        return PlayerAction.g_instance
 
     def __init__(self):
+        from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
 
-    def moveAction(self, movementAction):
-        if movementAction == MovementEnum.FORWARD:
-            self.zappy.network.send_packet("Forward")
-        elif movementAction == MovementEnum.RIGHT:
-            self.zappy.network.send_packet("Right")
-        elif movementAction == MovementEnum.LEFT:
-            self.zappy.network.send_packet("Left")
+    def moveAction(self, movement):
+        if movement not in ["forward", "left", "right"]:
+            raise RuntimeError("Unknown movement")
+        movement = movement[0].upper()
+        packet = self.zappy.network.packet_router.getPacket(movement)
+        self.zappy.network.send_packet(packet)
 
     def lookAroundAction(self):
-        self.zappy.network.send_packet("Look")
+        packet = self.zappy.network.packet_router.getPacket("Look")
+        self.zappy.network.send_packet(packet)
 
     def inventoryAction(self):
-        self.zappy.network.send_packet("Inventory")
+        packet = self.zappy.network.packet_router.getPacket("Inventory")
+        self.zappy.network.send_packet(packet)
 
     def broadcastAction(self):
         pass

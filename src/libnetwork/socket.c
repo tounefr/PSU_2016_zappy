@@ -71,7 +71,7 @@ char
 socket_send(int fd,
             char *buffer)
 {
-    if (-1 == write(fd, buffer, strlen(buffer) + 1))
+    if (-1 == write(fd, buffer, strlen(buffer)))
         return exit_error(0, "write error : %s\n", strerror(errno));
     return 1;
 }

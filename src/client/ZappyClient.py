@@ -1,27 +1,32 @@
 from Network import *
 from PacketRouter import *
+from ai.AI import *
+from Inventory import *
 
 class ZappyClient:
     g_instance = None
 
+    def isGraphical(self):
+        return False
+
     @staticmethod
     def instance():
-        if ZappyClient.g_instance == None:
-            ZappyClient.g_instance = ZappyClient()
         return ZappyClient.g_instance
 
-    def isGraphical(self):
-        return True
-
     def __init__(self):
+        if not ZappyClient.g_instance is None:
+            return
+        ZappyClient.g_instance = self
+        self.map_size = ()
+        self.player_pos = ()
+        self.team_name = "test1"
         self.network = Network()
-        self.packet_router = PacketRouter()
+        self.ai = AI()
+        self.inventory = Inventory()
         self.running = True
 
     def entry_point(self):
         self.network.connect_server()
-        if self.isGraphical():
-            self.network.send_packet("GRAPHIC")
         while self.running:
             raw = self.network.recv_packet()
-            self.packet_router.route(raw)
+            self.network.packet_router.route(raw)
