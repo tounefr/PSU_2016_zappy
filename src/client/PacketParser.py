@@ -1,27 +1,33 @@
 
 class PacketParser:
 
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if PacketParser.g_instance is None:
+            PacketParser.g_instance = PacketParser()
+        return PacketParser.g_instance
+
+    def __init__(self):
+        from ZappyClient import ZappyClient
+        self.zappy = ZappyClient.instance()
+
     @staticmethod
     def parseClientNumPacket(raw):
         pass
 
     @staticmethod
     def parseMapSizePacket(raw):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         data_splitted = raw.split(" ")
         if len(data_splitted) != 2:
             raise RuntimeError("Failed to parse map size")
-        zappy.map_size = (int(data_splitted[0]), int(data_splitted[1]))
-        zappy.network.packet_router.onMapSizePacket()
+        PacketParser.instance().zappy.map_size = (int(data_splitted[0]), int(data_splitted[1]))
+        PacketParser.instance().zappy.network.packet_router.onMapSizePacket()
 
     @staticmethod
-    def parseOkKoPacket(packet):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
-        if not packet.raw in ["ok", "ko"]:
+    def parseOkKoPacket(packet, raw):
+        if not raw in ["ok", "ko"]:
             raise RuntimeError("Failed to parse ok/ko response packet")
         if packet.cmd in ["Left", "Right"]:
             return packet.callListeners(direction=packet.cmd.lower())
@@ -30,12 +36,8 @@ class PacketParser:
         return packet.callListeners(res=packet.raw)
 
     @staticmethod
-    def parseLookPacket(packet):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
+    def parseLookPacket(packet, raw):
         error = "Failed to parse look packet"
-        raw = packet.raw
         raw = raw.replace("[ ", "")
         raw = raw.replace(" ]", "")
         data_splitted = raw.split(", ")
@@ -48,12 +50,9 @@ class PacketParser:
         packet.callListeners(items=items)
 
     @staticmethod
-    def parseInventoryPacket(packet):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
+    def parseInventoryPacket(packet, raw):
         error = "Failed to parse inventory packet"
-        data_splitted = packet.raw.split(", ")
+        data_splitted = raw.split(", ")
         if len(data_splitted) < 2:
             raise RuntimeError(error)
         data_splitted[0] = data_splitted[0].replace("[ ", "")
@@ -67,16 +66,23 @@ class PacketParser:
         packet.callListeners(inventory=inventory)
 
     @staticmethod
-    def parseBroadcastPacket(packet):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+    def parseMessagePacket(packet, raw):
+        message_splitted = raw.split(", ")
+        i = message_splitted[0].split(' ')[1]
+        message = message_splitted[1][0:]
+        return packet.callListeners(i=i, msg=message)
 
     @staticmethod
-    def parseIncantationPacket(packet):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+    def parseIncantationPacket(packet, raw):
+        if raw == "ko":
+            pass
+        elif raw == "Elevation underway":
+            pass
+        elif raw.startswith("Current level"):
+            pass
+        else:
+            raise RuntimeError("Failed to parse incantation packet")
 
     @staticmethod
-    def parseConnectNbrPacket(packet):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+    def parseConnectNbrPacket(raw):
+        pass

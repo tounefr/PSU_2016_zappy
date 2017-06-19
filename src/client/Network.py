@@ -37,6 +37,7 @@ class Network:
 
     def send(self, raw):
         print("Send>> {}".format(raw))
+        self.packet_router.pending_packets.put(raw)
         raw = "{}\n".format(raw)
         if not self.libnetwork.socket_send(self.fd, c_char_p(raw.encode())):
             raise RuntimeError("Failed to send packet : {}".format(raw))

@@ -1,4 +1,5 @@
 from AIInterface import *
+import queue
 
 class AI:
 
@@ -16,17 +17,16 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
-        AIInterface.instance().turnRight()
-        AIInterface.instance().turnLeft()
+        AIInterface.instance().turnLeftAction()
 
     @staticmethod
     def onMovement():
         print("onMovement")
-#        AIInterface.instance().lookAroundAction()
 
     @staticmethod
     def onTurn(direction):
         print("onTurn dir={}".format(direction))
+        AIInterface.instance().inventoryAction()
 
     @staticmethod
     def onLookAroundResult(items):
@@ -37,6 +37,7 @@ class AI:
     def onInventoryContent(inventory):
         print("onInventoryContent")
         print(inventory)
+        AIInterface.instance().broadcastAction("Hello")
 
     @staticmethod
     def onPlayerForked():
@@ -59,6 +60,13 @@ class AI:
         print("onObjectDown res={}".format(res))
 
     @staticmethod
-    def onIncantationFinished():
+    def onIncantation():
         pass
 
+    @staticmethod
+    def onBroadcast():
+        pass
+
+    @staticmethod
+    def onMessage(i, msg):
+        print(msg)

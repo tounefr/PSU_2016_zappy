@@ -14,48 +14,43 @@ class AIInterface:
         self.zappy = ZappyClient.instance()
 
     def getMapSize(self):
-        pass
+        return 0
 
     def getTeamName(self):
-        pass
+        return 0
 
-    def turnRight(self):
-        packet = self.zappy.network.packet_router.getPacket("Right")
-        self.zappy.network.send_packet(packet)
+    def turnRightAction(self):
+        self.zappy.network.send("Right")
 
-    def turnLeft(self):
-        packet = self.zappy.network.packet_router.getPacket("Left")
-        self.zappy.network.send_packet(packet)
+    def turnLeftAction(self):
+        self.zappy.network.send("Left")
 
-    def moveForward(self):
-        packet = self.zappy.network.packet_router.getPacket("Forward")
-        self.zappy.network.send_packet(packet)
+    def moveForwardAction(self):
+        self.zappy.network.send("Forward")
 
     def lookAroundAction(self):
-        packet = self.zappy.network.packet_router.getPacket("Look")
-        self.zappy.network.send_packet(packet)
+        self.zappy.network.send("Look")
 
     def inventoryAction(self):
-        packet = self.zappy.network.packet_router.getPacket("Inventory")
-        self.zappy.network.send_packet(packet)
+        self.zappy.network.send("Inventory")
 
-    def broadcastAction(self):
-        pass
+    def broadcastAction(self, text):
+        self.zappy.network.send("Broadcast {}".format(text))
 
-    def getNumberOfTeamSlotsUnused(self):
-        self.zappy.network.send_packet("Connect_nbr")
+    def numberOfTeamSlotsUnusedAction(self):
+        self.zappy.network.send("Connect_nbr")
 
     def forkAction(self):
-        self.zappy.network.send_packet("Fork")
+        self.zappy.network.send("Fork")
 
     def ejectPlayerTileAction(self):
-        self.zappy.network.send_packet("Eject")
+        self.zappy.network.send("Eject")
 
     def takeObjectAction(self):
-        self.zappy.network.send_packet("Take object")
+        self.zappy.network.send("Take object")
 
     def setObjectDownAction(self):
-        self.zappy.network.send_packet("Set object")
+        self.zappy.network.send("Set object")
 
     def startIncantationAction(self):
-        self.zappy.network.send_packet("Incantation")
+        self.zappy.network.send("Incantation")
