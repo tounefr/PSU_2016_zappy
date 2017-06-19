@@ -28,5 +28,9 @@ class ZappyClient:
     def entry_point(self):
         self.network.connect_server()
         while self.running:
-            raw = self.network.recv_packet()
+            try:
+                raw = self.network.recv_packet()
+            except:
+                break
             self.network.packet_router.route(raw)
+        print("Disconnected")

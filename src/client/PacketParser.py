@@ -1,4 +1,3 @@
-from PlayerAction import *
 
 class PacketParser:
 
@@ -24,7 +23,9 @@ class PacketParser:
 
         if not packet.raw in ["ok", "ko"]:
             raise RuntimeError("Failed to parse ok/ko response packet")
-        packet.callListeners(direction=movement, res=packet.raw)
+        if packet.cmd in ["Forward", "Left", "Right"]:
+            return packet.callListeners(direction=packet.cmd.lower(), res=packet.raw)
+        return packet.callListeners(res=packet.raw)
 
     @staticmethod
     def parseLookPacket(packet):

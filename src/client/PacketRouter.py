@@ -2,6 +2,7 @@ from Packet import *
 from Stack import *
 from PacketParser import *
 from ai.AI import *
+import queue
 
 class PacketRouter:
 
@@ -9,7 +10,7 @@ class PacketRouter:
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
         self.packet_i = 0
-        self.pending_packets = Stack(max_size=10)
+        self.pending_packets = queue.Queue()
         self.packets = [
             Packet(cmd="Forward",
                    parser=PacketParser.parseOkKoPacket,
@@ -106,7 +107,7 @@ class PacketRouter:
         print("Client-num")
 
     def onMapSizePacket(self):
-        AI.on_start()
+        AI.on_game_start()
 
     def route(self, raw):
         raw = raw[:-1]
@@ -117,8 +118,8 @@ class PacketRouter:
             return PacketParser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
             return PacketParser.parseMapSizePacket(raw)
-        elif self.pending_packets.size() > 0:
-            packet = self.pending_packets.pop()
+        elif not self.pending_packets.empty():
+            packet = self.pending_packets.get()
             packet.raw = raw
             if not packet.parser is None:
                 return packet.parser(packet)

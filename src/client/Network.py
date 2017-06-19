@@ -32,7 +32,7 @@ class Network:
             raise RuntimeError("Failed to decode packet")
 
     def send_packet(self, packet):
-        self.packet_router.pending_packets.push(packet)
+        self.packet_router.pending_packets.put(packet)
         self.send(packet.cmd)
 
     def send(self, raw):

@@ -1,72 +1,60 @@
-from PlayerAction import *
+from AIInterface import *
 
 class AI:
 
+    g_instance = None
+
     @staticmethod
-    def on_start():
+    def instance():
+        if AI.g_instance is None:
+            AI.g_instance = AI()
+        return AI.g_instance
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def on_game_start():
         print("Game start")
-        PlayerAction.instance().lookAroundAction()
+        AIInterface.instance().moveAction("forward")
+        AIInterface.instance().moveAction("left")
 
     @staticmethod
     def onMovement(direction, res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onMovement dir={} res={}".format(direction, res))
-        PlayerAction.instance().lookAroundAction()
+        AIInterface.instance().lookAroundAction()
 
     @staticmethod
     def onLookAroundResult(items):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onLookAroundResult")
         print(items)
-        PlayerAction.instance().inventoryAction()
 
     @staticmethod
     def onInventoryContent(inventory):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onInventoryContent")
         print(inventory)
 
     @staticmethod
     def onPlayerForked():
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+        print("Forked")
 
     @staticmethod
     def onPlayerEject(res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onPlayerEject res={}".format(res))
 
     @staticmethod
     def onPlayerDead():
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onPlayerDead")
 
     @staticmethod
     def onTakeObject(res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onTakeObject res={}".format(res))
 
     @staticmethod
     def onObjectDown(res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance
-
         print("onObjectDown res={}".format(res))
 
     @staticmethod
     def onIncantationFinished():
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+        pass
 

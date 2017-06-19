@@ -1,21 +1,28 @@
 
-class PlayerAction:
+class AIInterface:
+
     g_instance = None
 
     @staticmethod
     def instance():
-        if PlayerAction.g_instance is None:
-            PlayerAction.g_instance = PlayerAction()
-        return PlayerAction.g_instance
+        if AIInterface.g_instance is None:
+            AIInterface.g_instance = AIInterface()
+        return AIInterface.g_instance
 
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
 
+    def getMapSize(self):
+        pass
+
+    def getTeamName(self):
+        pass
+
     def moveAction(self, movement):
         if movement not in ["forward", "left", "right"]:
             raise RuntimeError("Unknown movement")
-        movement = movement[0].upper()
+        movement = movement[0].upper() + movement[1:]
         packet = self.zappy.network.packet_router.getPacket(movement)
         self.zappy.network.send_packet(packet)
 
