@@ -44,9 +44,15 @@ class PacketRouter:
                    listeners=[]),
             Packet(cmd="Incantation",
                    parser=PacketParser.parseIncantationPacket,
-                   listeners=[AI.onIncantationFinished]),
+                   listeners=[AI.onIncantation]),
             Packet(cmd="dead",
                    listeners=[AI.onPlayerDead]),
+            Packet(cmd="Broadcast",
+                   parser=PacketParser.parseOkKoPacket,
+                   listeners=[]),
+            Packet(cmd="message",
+                   parser=PacketParser.parseMessagePacket,
+                   listeners=[AI.onMessage]),
             Packet(cmd="msz",
                    gui=True),
             Packet(cmd="bct",
@@ -115,21 +121,24 @@ class PacketRouter:
         if self.packet_i == 1:
             return self.onWelcomePacket()
         elif self.packet_i == 2:
+            self.pending_packets.get()
             return PacketParser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
             return PacketParser.parseMapSizePacket(raw)
         elif not self.pending_packets.empty():
-            packet = self.pending_packets.get()
-            packet.raw = raw
+            cmd = self.pending_packets.get()
+            packet = self.getPacket(cmd)
             if not packet.parser is None:
-                return packet.parser(packet)
+                return packet.parser(packet, raw)
         for p in self.packets:
             if raw[0:len(p.cmd)] == p.cmd:
+                if p.parser:
+                    return p.parser(p, raw)
                 return p.callListeners()
         raise RuntimeError("Unknown packet : {}".format(raw))
 
     def getPacket(self, cmd):
         for packet in self.packets:
-            if packet.cmd == cmd:
+            if cmd.startswith(packet.cmd):
                 return packet
         raise RuntimeError("Packet '{}' not found".format(cmd))
