@@ -19,11 +19,16 @@ class AIInterface:
     def getTeamName(self):
         pass
 
-    def moveAction(self, movement):
-        if movement not in ["forward", "left", "right"]:
-            raise RuntimeError("Unknown movement")
-        movement = movement[0].upper() + movement[1:]
-        packet = self.zappy.network.packet_router.getPacket(movement)
+    def turnRight(self):
+        packet = self.zappy.network.packet_router.getPacket("Right")
+        self.zappy.network.send_packet(packet)
+
+    def turnLeft(self):
+        packet = self.zappy.network.packet_router.getPacket("Left")
+        self.zappy.network.send_packet(packet)
+
+    def moveForward(self):
+        packet = self.zappy.network.packet_router.getPacket("Forward")
         self.zappy.network.send_packet(packet)
 
     def lookAroundAction(self):

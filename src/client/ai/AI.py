@@ -16,13 +16,17 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
-        AIInterface.instance().moveAction("forward")
-        AIInterface.instance().moveAction("left")
+        AIInterface.instance().turnRight()
+        AIInterface.instance().turnLeft()
 
     @staticmethod
-    def onMovement(direction, res):
-        print("onMovement dir={} res={}".format(direction, res))
-        AIInterface.instance().lookAroundAction()
+    def onMovement():
+        print("onMovement")
+#        AIInterface.instance().lookAroundAction()
+
+    @staticmethod
+    def onTurn(direction):
+        print("onTurn dir={}".format(direction))
 
     @staticmethod
     def onLookAroundResult(items):
