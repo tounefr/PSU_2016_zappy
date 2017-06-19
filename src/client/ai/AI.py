@@ -26,7 +26,8 @@ class AI:
     @staticmethod
     def onTurn(direction):
         print("onTurn dir={}".format(direction))
-        AIInterface.instance().inventoryAction()
+#        AIInterface.instance().inventoryAction()
+        AIInterface.instance().startIncantationAction()
 
     @staticmethod
     def onLookAroundResult(items):
@@ -60,8 +61,14 @@ class AI:
         print("onObjectDown res={}".format(res))
 
     @staticmethod
-    def onIncantation():
-        pass
+    # status peut être égale à ko ou "underway" ou le level sur un int
+    def onIncantation(status):
+        if type(status) is int:
+            print("Level up : {}".format(status))
+        elif status == "underway":
+            print("Underway")
+        elif status == "ko":
+            print("Incantation failed")
 
     @staticmethod
     def onBroadcast():
