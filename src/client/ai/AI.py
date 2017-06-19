@@ -18,9 +18,9 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
-#        AIInterface.instance().turnRight()
-#        AIInterface.instance().turnLeft()
-        AIInterface.instance().lookAroundAction()
+        AIInterface.instance().turnRightAction()
+#        AIInterface.instance().turnLeftAction()
+#        AIInterface.instance().lookAroundAction()
 
     @staticmethod
     def onMovement():
@@ -31,8 +31,9 @@ class AI:
         print("onTurn dir={}".format(direction))
         AIInterface.instance().inventoryAction()
         AIInterface.instance().lookAroundAction()
-        AIInterface.instance().takeObjectAction()
-        AIInterface.instance().setObjectDownAction()
+        AIInterface.instance().takeObjectAction("food")
+        AIInterface.instance().setObjectDownAction("food")
+#        AIInterface.instance().setObjectDownAction()
 #        AIInterface.instance().setObjectDownAction()
 #        AIInterface.instance().startIncantationAction()
 
@@ -40,9 +41,11 @@ class AI:
     def onLookAroundResult(items):
         print("onLookAroundResult")
         print(items)
+        """
         nb = len(items[0]) - 1
         for i in range(0, nb):
-            AIInterface.instance().takeObjectAction()
+            AIInterface.instance().takeObjectAction("food")
+        """
 
     @staticmethod
     def onInventoryContent(inventory):

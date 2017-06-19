@@ -46,11 +46,11 @@ class AIInterface:
     def ejectPlayerTileAction(self):
         self.zappy.network.send("Eject")
 
-    def takeObjectAction(self):
-        self.zappy.network.send("Take object")
+    def takeObjectAction(self, object):
+        self.zappy.network.send("Take {}".format(object))
 
-    def setObjectDownAction(self):
-        self.zappy.network.send("Set object")
+    def setObjectDownAction(self, object):
+        self.zappy.network.send("Set {}".format(object))
 
     def startIncantationAction(self):
         self.zappy.network.send("Incantation")

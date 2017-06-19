@@ -2,6 +2,7 @@ from Network import *
 from PacketRouter import *
 from ai.AI import *
 from Inventory import *
+from optparse import OptionParser
 
 class ZappyClient:
     g_instance = None
@@ -12,6 +13,13 @@ class ZappyClient:
     @staticmethod
     def instance():
         return ZappyClient.g_instance
+
+    def optparser(self):
+        parser = OptionParser()
+        parser.add_option("-p")
+        (options, args) = parser.parse_args()
+        print(options)
+        print(args)
 
     def __init__(self):
         if not ZappyClient.g_instance is None:
