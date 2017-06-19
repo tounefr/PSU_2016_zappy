@@ -41,7 +41,7 @@ class PacketRouter:
                    listeners=[AI.onTakeObject]),
             Packet(cmd="Set object",
                    parser=PacketParser.parseOkKoPacket,
-                   listeners=[]),
+                   listeners=[AI.onObjectDown]),
             Packet(cmd="Incantation",
                    parser=PacketParser.parseIncantationPacket,
                    listeners=[AI.onIncantation]),

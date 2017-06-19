@@ -26,8 +26,12 @@ class AI:
     @staticmethod
     def onTurn(direction):
         print("onTurn dir={}".format(direction))
-#        AIInterface.instance().inventoryAction()
-        AIInterface.instance().startIncantationAction()
+        AIInterface.instance().inventoryAction()
+        AIInterface.instance().lookAroundAction()
+        AIInterface.instance().takeObjectAction()
+        AIInterface.instance().setObjectDownAction()
+#        AIInterface.instance().setObjectDownAction()
+#        AIInterface.instance().startIncantationAction()
 
     @staticmethod
     def onLookAroundResult(items):
@@ -38,7 +42,7 @@ class AI:
     def onInventoryContent(inventory):
         print("onInventoryContent")
         print(inventory)
-        AIInterface.instance().broadcastAction("Hello")
+#        AIInterface.instance().broadcastAction("Hello")
 
     @staticmethod
     def onPlayerForked():

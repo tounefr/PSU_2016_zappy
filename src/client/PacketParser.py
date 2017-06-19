@@ -33,7 +33,7 @@ class PacketParser:
             return packet.callListeners(direction=packet.cmd.lower())
         if packet.cmd == "Forward":
             return packet.callListeners()
-        return packet.callListeners(res=packet.raw)
+        return packet.callListeners(res=raw)
 
     @staticmethod
     def parseLookPacket(packet, raw):
