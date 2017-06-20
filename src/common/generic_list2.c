@@ -51,7 +51,7 @@ generic_list_count(t_generic_list *list)
 }
 
 void
-generic_list_destory(t_generic_list **list,
+generic_list_destroy(t_generic_list **list,
                      char (*rm_func)(void *))
 {
     void *elem;

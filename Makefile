@@ -5,7 +5,7 @@
 ## Login   <thomas.henon@epitech.eu>
 ## 
 ## Started on  Thu May 18 10:29:51 2017 Thomas HENON
-## Last update Thu May 18 10:29:53 2017 Thomas HENON
+## Last update Tue Jun 20 11:12:06 2017 arsene
 ##
 
 CC = gcc
@@ -15,12 +15,12 @@ RM = rm -f
 LDFLAGS+= -W -Wall
 CFLAGS+= -I./includes -W -Wall -fPIC
 
-CLIENT_NAME = client
+CLIENT_NAME = zappy_ai
 CLIENT_SRCS = $(wildcard src/client/*.c) \
               $(wildcard src/common/*.c)
 CLIENT_OBJS = $(CLIENT_SRCS:.c=.o)
 
-SERVER_NAME = server
+SERVER_NAME = zappy_server
 SERVER_SRCS = $(wildcard src/server/*.c) \
               $(wildcard src/common/*.c)
 SERVER_OBJS = $(SERVER_SRCS:.c=.o)

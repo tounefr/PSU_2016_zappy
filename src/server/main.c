@@ -20,7 +20,18 @@ t_network_commands network_commands[N_NETWORK_COMMANDS] =
         { "GRAPHIC", NULL, FLAG_GUI_CMD },
 };
 
-int main(int ac, char **av)
+int     check_args(char **args)
 {
+	if (strcmp(args[1], "-help") == 0)
+	{
+		display_help();
+		exit (4);
+	}
+}
+
+int     main(int ac, char **av)
+{
+	if (check_args(av) == 4)
+		return 0;
 
 }
