@@ -47,7 +47,7 @@ class PacketParser:
         for resource_count in data_splitted:
             resource_count_splitted = resource_count.split(" ")
             items.append(resource_count_splitted)
-        packet.callListeners(items=items)
+        packet.callListeners(tiles=items)
 
     @staticmethod
     def parseInventoryPacket(packet, raw):
@@ -84,5 +84,5 @@ class PacketParser:
             raise RuntimeError("Failed to parse incantation packet")
 
     @staticmethod
-    def parseConnectNbrPacket(raw):
-        pass
+    def parseConnectNbrPacket(packet, raw):
+        return packet.callListeners(count=int(raw))

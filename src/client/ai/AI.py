@@ -18,29 +18,41 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
-        AIInterface.instance().turnRightAction()
+        AIInterface.instance().moveForwardAction()
 #        AIInterface.instance().turnLeftAction()
 #        AIInterface.instance().lookAroundAction()
 
     @staticmethod
     def onMovement():
         print("onMovement")
+        AIInterface.instance().lookAroundAction()
 
     @staticmethod
     def onTurn(direction):
         print("onTurn dir={}".format(direction))
-        AIInterface.instance().inventoryAction()
+        """
+#        AIInterface.instance().inventoryAction()
+        AIInterface.instance().numberOfTeamSlotsUnusedAction()
         AIInterface.instance().lookAroundAction()
         AIInterface.instance().takeObjectAction("food")
         AIInterface.instance().setObjectDownAction("food")
 #        AIInterface.instance().setObjectDownAction()
 #        AIInterface.instance().setObjectDownAction()
 #        AIInterface.instance().startIncantationAction()
+        """
 
     @staticmethod
-    def onLookAroundResult(items):
+    def onLookAroundResult(tiles):
         print("onLookAroundResult")
-        print(items)
+        """
+                for tile in tiles:
+            for item in tile:
+                if item == "player":
+                    continue
+        """
+        print(AIInterface.instance().takeObjectAction("food"))
+#        AIInterface.instance().takeObjectAction(items[0][1])
+#        AIInterface.instance().inventoryAction()
         """
         nb = len(items[0]) - 1
         for i in range(0, nb):
@@ -90,3 +102,7 @@ class AI:
     @staticmethod
     def onMessage(i, msg):
         print(msg)
+
+    @staticmethod
+    def onNbrOfTeamSlotsUnused(count):
+        print(count)

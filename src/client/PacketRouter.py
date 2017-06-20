@@ -29,7 +29,7 @@ class PacketRouter:
                    listeners=[AI.onInventoryContent]),
             Packet(cmd="Connect_nbr",
                    parser=PacketParser.parseConnectNbrPacket,
-                   listeners=[]),
+                   listeners=[AI.onNbrOfTeamSlotsUnused]),
             Packet(cmd="Fork",
                    parser=PacketParser.parseOkKoPacket,
                    listeners=[AI.onPlayerForked]),
