@@ -7,14 +7,6 @@ from gui.GUI import *
 
 class PacketRouter:
 
-    g_instance = None
-
-    @staticmethod
-    def instance():
-        if PacketRouter.g_instance is None:
-            PacketRouter.g_instance = PacketRouter()
-        return PacketRouter.g_instance
-
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
@@ -47,6 +39,7 @@ class PacketRouter:
                    parser=self.zappy.packet_parser.parseMessagePacket,
                    listeners=[AI.onMessage]),
             Packet(cmd="msz",
+                   listeners=[],
                    gui=True),
             Packet(cmd="bct",
                    gui=True),
@@ -119,10 +112,10 @@ class PacketRouter:
         if self.packet_i == 1:
             return self.onWelcomePacket()
         elif self.packet_i == 2:
-            print("test: {}".format(raw))
             return self.zappy.packet_parser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
-            self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
+            if not self.zappy.isGraphical():
+                self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
             return self.onGameStart()
 
         for p in self.packets:
@@ -130,7 +123,6 @@ class PacketRouter:
                 raw_parsed = None
                 if p.parser:
                     raw_parsed = p.parser(p, raw)
-                    print("parsed: {}".format(raw_parsed))
                 return p.callListeners(p, raw_parsed)
 
         if not self.pending_packets.empty():
