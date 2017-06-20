@@ -135,6 +135,7 @@ class PacketRouter:
             with self.cond:
                 self.cond.notify()
             return
+
         raise RuntimeError("Unknown packet : {}".format(raw))
 
     def getPacket(self, cmd):

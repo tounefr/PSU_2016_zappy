@@ -66,12 +66,13 @@ class PacketParser:
 
     @staticmethod
     def parseIncantationPacket(packet, raw):
+        print("incantation: {}".format(raw))
         if raw == "ko":
-            return packet.callListeners(status="ko")
+            return raw
         elif raw == "Elevation underway":
-            return packet.callListeners(status="underway")
+            return "underway"
         elif raw.startswith("Current level"):
-            return packet.callListeners(status=1)
+            return 1 #TODO
         else:
             raise RuntimeError("Failed to parse incantation packet")
 
