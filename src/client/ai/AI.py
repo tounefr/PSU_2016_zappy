@@ -27,7 +27,9 @@ class AI:
         print("Broadcast result : {}".format(AIInterface.instance().broadcastAction("salut tout le monde")))
         print("numberOfTeamSlotsUnusedAction result : {}".format(AIInterface.instance().numberOfTeamSlotsUnusedAction()))
         print("fork result : {}".format(AIInterface.instance().forkAction()))
-        print("ejectPlayerTileAction result : {}".format(AIInterface.instance().ejectPlayerTileAction()))
+
+#       bugged
+#        print("ejectPlayerTileAction result : {}".format(AIInterface.instance().ejectPlayerTileAction()))
         print("takeObjectAction result : {}".format(AIInterface.instance().takeObjectAction("food")))
         print("setObjectDownAction result : {}".format(AIInterface.instance().setObjectDownAction("food")))
 

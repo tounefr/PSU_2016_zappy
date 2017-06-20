@@ -28,28 +28,35 @@ class ZappyClient:
         for i, arg in enumerate(sys.argv):
             try:
                 if arg == "-p":
-                    self.server_port = sys.argv[i + 1]
+                    self.server_port = int(sys.argv[i + 1])
                 elif arg == "-n":
                     self.team_name = sys.argv[i + 1]
+                elif arg == "-h":
+                    self.server_hostname = sys.argv[i + 1]
                 elif arg == "-help":
                     sys.exit(ZappyClient.print_usage())
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
+
+        if self.server_port is None or self.team_name is None:
+            sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
         if not ZappyClient.g_instance is None:
             return
         ZappyClient.g_instance = self
 
-        self.optparser()
         self.map_size = ()
         self.player_pos = ()
-        self.team_name = "test1"
+        self.server_hostname = "localhost"
+        self.server_port = None
+        self.team_name = None
         self.network = Network()
         self.ai = AI()
         self.inventory = Inventory()
         self.running = True
 
+        self.optparser()
         self.start()
 
     def start(self):

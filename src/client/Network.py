@@ -5,8 +5,10 @@ import threading
 
 class Network:
     def __init__(self):
+        from ZappyClient import ZappyClient
         self.libnetwork = cdll.LoadLibrary("./libnetwork.so")
         self.fd = self.libnetwork.socket_init()
+        self.zappy = ZappyClient.instance()
 
     def connect(self, hostname, port):
         hostname = hostname.encode()
@@ -15,8 +17,8 @@ class Network:
         return self.libnetwork.socket_connect(self.fd, c_char_p(ip), byref(port))
 
     def connect_server(self):
-        hostname = "localhost"
-        port = 4242
+        hostname = self.zappy.server_hostname
+        port = self.zappy.server_port
         if not self.connect(hostname, port):
             raise RuntimeError("Failed to connect to {}:{}".format(hostname, port))
 
