@@ -18,10 +18,16 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
-        AIInterface.instance().inventoryAction()
-        AIInterface.instance().moveForwardAction()
-        AIInterface.instance().turnLeftAction()
-        AIInterface.instance().lookAroundAction()
+        tiles = AIInterface.instance().lookAroundAction()
+        # prendre toutes les resources sur la case
+        for item in tiles[0]:
+            if item == "player":
+                continue
+            AIInterface.instance().takeObjectAction(item)
+        print(AIInterface.instance().lookAroundAction()[0])
+        print(AIInterface.instance().inventoryAction())
+        print(AIInterface.instance().moveForwardAction())
+#        print(AIInterface.instance().turnLeftAction())
 
     @staticmethod
     def onMovement():
@@ -75,14 +81,6 @@ class AI:
     @staticmethod
     def onPlayerDead():
         print("onPlayerDead")
-
-    @staticmethod
-    def onTakeObject(res):
-        print("onTakeObject res={}".format(res))
-
-    @staticmethod
-    def onObjectDown(res):
-        print("onObjectDown res={}".format(res))
 
     @staticmethod
     # status peut être égale à ko ou "underway" ou le level sur un int

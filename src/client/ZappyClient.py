@@ -60,20 +60,7 @@ class ZappyClient:
         self.network.connect_server()
 
         tp = ThreadPool(10)
-        while True:
-            time.sleep(0.09)
+        while self.running:
             raw = self.network.recv_packet()
             tp.add_task(PacketRouter.route, raw)
-
-#        tp.wait_completion()
-
-        """
-        while self.running:
-            try:
-                raw = self.network.recv_packet()
-            except:
-                break
-#            self.network.send_pending_packet()
-            self.network.packet_router.route(raw)
-        print("Disconnected")
-        """
+        tp.wait_completion()

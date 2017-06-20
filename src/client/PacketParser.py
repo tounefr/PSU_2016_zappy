@@ -28,16 +28,6 @@ class PacketParser:
         PacketRouter.instance().onMapSizePacket()
 
     @staticmethod
-    def parseOkKoPacket(packet, raw):
-        if not raw in ["ok", "ko"]:
-            raise RuntimeError("Failed to parse ok/ko response packet")
-        if packet.cmd in ["Left", "Right"]:
-            return packet.callListeners(direction=packet.cmd.lower())
-        if packet.cmd == "Forward":
-            return packet.callListeners()
-        return packet.callListeners(res=raw)
-
-    @staticmethod
     def parseLookPacket(packet, raw):
         error = "Failed to parse look packet"
         raw = raw.replace("[ ", "")
@@ -49,7 +39,7 @@ class PacketParser:
         for resource_count in data_splitted:
             resource_count_splitted = resource_count.split(" ")
             items.append(resource_count_splitted)
-        packet.callListeners(tiles=items)
+        return items
 
     @staticmethod
     def parseInventoryPacket(packet, raw):
@@ -65,14 +55,14 @@ class PacketParser:
             if len(resource_count_splitted) != 2:
                 raise RuntimeError(error)
             inventory[resource_count_splitted[0]] = int(resource_count_splitted[1])
-        packet.callListeners(inventory=inventory)
+        return inventory
 
     @staticmethod
     def parseMessagePacket(packet, raw):
         message_splitted = raw.split(", ")
         i = message_splitted[0].split(' ')[1]
         message = message_splitted[1][0:]
-        return packet.callListeners(i=i, msg=message)
+        return message
 
     @staticmethod
     def parseIncantationPacket(packet, raw):
@@ -87,4 +77,4 @@ class PacketParser:
 
     @staticmethod
     def parseConnectNbrPacket(packet, raw):
-        return packet.callListeners(count=int(raw))
+        return int(raw)

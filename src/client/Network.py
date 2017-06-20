@@ -32,14 +32,12 @@ class Network:
             raise RuntimeError("Failed to decode packet")
 
     def send_packet(self, raw):
-        lock = threading.Lock()
-        cond = threading.Condition(lock)
-
-        PacketRouter.instance().pending_recv_packets.put(cond)
-        self.send(raw)
-        with cond:
-            cond.wait()
-        return PacketRouter.instance().raw_res
+        packet_router = PacketRouter.instance()
+        PacketRouter.instance().pending_packets.put(raw)
+        with packet_router.cond:
+            self.send(raw)
+            packet_router.cond.wait()
+        return packet_router.res_packet
 
     def send(self, raw):
         print("Send>> {}".format(raw))

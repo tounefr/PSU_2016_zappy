@@ -21,48 +21,28 @@ class PacketRouter:
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
         self.packet_i = 0
-        self.pending_recv_packets = queue.Queue()
-        self.raw_res = ""
-        self.cond = threading.Condition(threading.RLock())
+        self.cond = threading.Condition(threading.Lock())
+        self.pending_packets = queue.Queue()
+        self.res_packet = None
         self.packets = [
-            Packet(cmd="Forward",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onMovement]),
-            Packet(cmd="Right",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onTurn]),
-            Packet(cmd="Left",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onTurn]),
+            Packet(cmd="Forward"),
+            Packet(cmd="Right"),
+            Packet(cmd="Left"),
             Packet(cmd="Look",
-                   parser=PacketParser.parseLookPacket,
-                   listeners=[AI.onLookAroundResult]),
+                   parser=PacketParser.parseLookPacket),
             Packet(cmd="Inventory",
-                   parser=PacketParser.parseInventoryPacket,
-                   listeners=[AI.onInventoryContent]),
+                   parser=PacketParser.parseInventoryPacket),
             Packet(cmd="Connect_nbr",
-                   parser=PacketParser.parseConnectNbrPacket,
-                   listeners=[AI.onNbrOfTeamSlotsUnused]),
-            Packet(cmd="Fork",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onPlayerForked]),
-            Packet(cmd="Eject",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onPlayerEject]),
-            Packet(cmd="Take",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onTakeObject]),
-            Packet(cmd="Set",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onObjectDown]),
+                   parser=PacketParser.parseConnectNbrPacket),
+            Packet(cmd="Fork"),
+            Packet(cmd="Eject"),
+            Packet(cmd="Take"),
+            Packet(cmd="Set"),
             Packet(cmd="Incantation",
-                   parser=PacketParser.parseIncantationPacket,
-                   listeners=[AI.onIncantation]),
+                   parser=PacketParser.parseIncantationPacket),
             Packet(cmd="dead",
                    listeners=[AI.onPlayerDead]),
-            Packet(cmd="Broadcast",
-                   parser=PacketParser.parseOkKoPacket,
-                   listeners=[]),
+            Packet(cmd="Broadcast"),
             Packet(cmd="message",
                    parser=PacketParser.parseMessagePacket,
                    listeners=[AI.onMessage]),
@@ -140,31 +120,22 @@ class PacketRouter:
             return PacketParser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
             return PacketParser.parseMapSizePacket(raw)
-        elif not self.pending_recv_packets.empty():
-            cond = self.pending_recv_packets.get()
-            self.raw_res = raw
-            with cond:
-                cond.notify()
-            return
-        else:
-            for p in self.packets:
-                if raw[0:len(p.cmd)] == p.cmd:
-                    if p.parser:
-                        return p.parser(p, raw)
-                    return p.callListeners()
 
-        """
-            cmd = self.pending_recv_packets.get()
-            packet = self.getPacket(cmd)
-            if not packet.parser is None:
-                return packet.parser(packet, raw)
         for p in self.packets:
             if raw[0:len(p.cmd)] == p.cmd:
                 if p.parser:
                     return p.parser(p, raw)
                 return p.callListeners()
-        """
-#        raise RuntimeError("Unknown packet : {}".format(raw))
+
+        if not self.pending_packets.empty():
+            packet = self.getPacket(self.pending_packets.get())
+            self.res_packet = raw
+            if packet.parser:
+                self.res_packet = packet.parser(packet, raw)
+            with self.cond:
+                self.cond.notify()
+            return
+        raise RuntimeError("Unknown packet : {}".format(raw))
 
     def getPacket(self, cmd):
         for packet in self.packets:
