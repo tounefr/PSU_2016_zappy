@@ -1,8 +1,10 @@
+from GUIInterface import *
 
 class GUI:
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
+        self.gui_interface = GUIInterface()
 
     def onGameStart(self):
         print("gui")
