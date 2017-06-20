@@ -1,4 +1,3 @@
-
 from threading import Thread
 from queue import Queue
 
@@ -13,15 +12,7 @@ class Worker(Thread):
     def run(self):
         while True:
             func, args, kargs = self.tasks.get()
-#            try:
             func(*args, **kargs)
-#            except Exception as e:
-                # An exception happened in this thread
-#                print(e)
-#            finally:
-                # Mark this task as done, whether an exception happened or not
-#                self.tasks.task_done()
-
 
 class ThreadPool:
     """ Pool of threads consuming tasks from a queue """

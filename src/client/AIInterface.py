@@ -14,10 +14,10 @@ class AIInterface:
         self.zappy = ZappyClient.instance()
 
     def getMapSize(self):
-        return 0
+        return self.zappy.map_size
 
     def getTeamName(self):
-        return 0
+        return self.zappy.team_name
 
     def turnRightAction(self):
         return self.zappy.network.send_packet("Right")

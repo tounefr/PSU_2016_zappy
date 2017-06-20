@@ -17,6 +17,8 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
+        print("Game map size : {}".format(AIInterface.instance().getMapSize()))
+        print("Team name : {}".format(AIInterface.instance().getTeamName()))
         print("Turn right result : {}".format(AIInterface.instance().turnRightAction()))
         print("Turn left result : {}".format(AIInterface.instance().turnLeftAction()))
         print("Move forward result : {}".format(AIInterface.instance().moveForwardAction()))
@@ -28,18 +30,20 @@ class AI:
         print("ejectPlayerTileAction result : {}".format(AIInterface.instance().ejectPlayerTileAction()))
         print("takeObjectAction result : {}".format(AIInterface.instance().takeObjectAction("food")))
         print("setObjectDownAction result : {}".format(AIInterface.instance().setObjectDownAction("food")))
+
+#       bugged
 #        print("startIncantationAction result : {}".format(AIInterface.instance().startIncantationAction()))
 
     @staticmethod
-    def onPlayerEject(res):
+    def onPlayerEject(packet, res):
         print("onPlayerEject res={}".format(res))
 
     @staticmethod
-    def onPlayerDead():
+    def onPlayerDead(packet, status):
         print("onPlayerDead")
 
     @staticmethod
-    def onIncantation(status):
+    def onIncantation(packet, status):
         if type(status) is int:
             print("Level up : {}".format(status))
         elif status == "underway":
@@ -48,9 +52,9 @@ class AI:
             print("Incantation failed")
 
     @staticmethod
-    def onMessage(i, msg):
+    def onMessage(packet, msg):
         print("onMessage: {}".format(msg))
 
     @staticmethod
-    def onNbrOfTeamSlotsUnused(count):
+    def onNbrOfTeamSlotsUnused(packet, count):
         print(count)

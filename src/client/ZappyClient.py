@@ -2,10 +2,8 @@ from Network import *
 from PacketRouter import *
 from ai.AI import *
 from Inventory import *
-from optparse import OptionParser
 import sys
 from Threading import *
-import time
 
 class ZappyClient:
     g_instance = None
@@ -39,12 +37,11 @@ class ZappyClient:
                 sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
-        if ZappyClient.g_instance is None:
-            ZappyClient.g_instance = self
-        else:
-            raise RuntimeError("Singleton")
-        self.optparser()
+        if not ZappyClient.g_instance is None:
+            return
+        ZappyClient.g_instance = self
 
+        self.optparser()
         self.map_size = ()
         self.player_pos = ()
         self.team_name = "test1"

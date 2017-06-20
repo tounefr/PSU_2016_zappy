@@ -8,7 +8,6 @@ import threading
 class PacketRouter:
 
     g_instance = None
-    g_lock = threading.RLock()
 
     @staticmethod
     def instance():
@@ -104,28 +103,29 @@ class PacketRouter:
             self.zappy.network.send(self.zappy.team_name)
 
     def onClientNumPacket(self):
-        print("Client-num")
-
-    def onMapSizePacket(self):
-        AI.on_game_start()
+        pass
 
     @staticmethod
     def route(raw):
         self = PacketRouter.instance()
         raw = raw[:-1]
         self.packet_i += 1
+
         if self.packet_i == 1:
             return self.onWelcomePacket()
         elif self.packet_i == 2:
             return PacketParser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
-            return PacketParser.parseMapSizePacket(raw)
+            self.zappy.map_size = PacketParser.parseMapSizePacket(raw)
+            return AI.on_game_start()
 
         for p in self.packets:
             if raw[0:len(p.cmd)] == p.cmd:
+                raw_parsed = None
                 if p.parser:
-                    return p.parser(p, raw)
-                return p.callListeners()
+                    raw_parsed = p.parser(p, raw)
+                    print("parsed: {}".format(raw_parsed))
+                return p.callListeners(p, raw_parsed)
 
         if not self.pending_packets.empty():
             packet = self.getPacket(self.pending_packets.get())

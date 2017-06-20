@@ -10,10 +10,10 @@ class Packet:
         self.raw = raw
         self.listeners = listeners
 
-    def callListeners(self, **kwargs):
+    def callListeners(self, *args):
         returnv = False
         for listener in self.listeners:
-            returnv = listener(**kwargs)
+            returnv = listener(*args)
         return returnv
 
     def addListener(self, callback):

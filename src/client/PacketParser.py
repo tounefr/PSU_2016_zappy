@@ -19,13 +19,10 @@ class PacketParser:
 
     @staticmethod
     def parseMapSizePacket(raw):
-        from PacketRouter import PacketRouter
-
         data_splitted = raw.split(" ")
         if len(data_splitted) != 2:
             raise RuntimeError("Failed to parse map size")
-        PacketParser.instance().zappy.map_size = (int(data_splitted[0]), int(data_splitted[1]))
-        PacketRouter.instance().onMapSizePacket()
+        return (int(data_splitted[0]), int(data_splitted[1]))
 
     @staticmethod
     def parseLookPacket(packet, raw):
