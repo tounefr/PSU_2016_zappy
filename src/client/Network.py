@@ -1,5 +1,4 @@
 from ctypes import *
-from PacketRouter import *
 import queue
 import threading
 
@@ -34,12 +33,11 @@ class Network:
             raise RuntimeError("Failed to decode packet")
 
     def send_packet(self, raw):
-        packet_router = PacketRouter.instance()
-        PacketRouter.instance().pending_packets.put(raw)
-        with packet_router.cond:
+        self.zappy.packet_router.pending_packets.put(raw)
+        with self.zappy.packet_router.cond:
             self.send(raw)
-            packet_router.cond.wait()
-        return packet_router.res_packet
+            self.zappy.packet_router.cond.wait()
+        return self.zappy.packet_router.res_packet
 
     def send(self, raw):
         print("Send>> {}".format(raw))

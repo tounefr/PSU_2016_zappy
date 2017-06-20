@@ -1,9 +1,10 @@
 from Network import *
-from PacketRouter import *
 from ai.AI import *
-from Inventory import *
+from gui.GUI import *
 import sys
 from Threading import *
+from PacketRouter import *
+from PacketParser import *
 
 class ZappyClient:
     g_instance = None
@@ -52,8 +53,10 @@ class ZappyClient:
         self.server_port = None
         self.team_name = None
         self.network = Network()
+        self.packet_parser = PacketParser()
+        self.packet_router = PacketRouter()
+        self.gui = GUI()
         self.ai = AI()
-        self.inventory = Inventory()
         self.running = True
 
         self.optparser()
@@ -66,5 +69,5 @@ class ZappyClient:
         tp = ThreadPool(10)
         while self.running:
             raw = self.network.recv_packet()
-            tp.add_task(PacketRouter.route, raw)
+            tp.add_task(self.packet_router.route, raw)
         tp.wait_completion()

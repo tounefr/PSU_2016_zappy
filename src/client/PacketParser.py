@@ -1,31 +1,20 @@
 
 class PacketParser:
 
-    g_instance = None
-
-    @staticmethod
-    def instance():
-        if PacketParser.g_instance is None:
-            PacketParser.g_instance = PacketParser()
-        return PacketParser.g_instance
-
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
 
-    @staticmethod
-    def parseClientNumPacket(raw):
+    def parseClientNumPacket(self, raw):
         pass
 
-    @staticmethod
-    def parseMapSizePacket(raw):
+    def parseMapSizePacket(self, raw):
         data_splitted = raw.split(" ")
         if len(data_splitted) != 2:
             raise RuntimeError("Failed to parse map size")
         return (int(data_splitted[0]), int(data_splitted[1]))
 
-    @staticmethod
-    def parseLookPacket(packet, raw):
+    def parseLookPacket(self, packet, raw):
         error = "Failed to parse look packet"
         raw = raw.replace("[ ", "")
         raw = raw.replace(" ]", "")
@@ -38,8 +27,7 @@ class PacketParser:
             items.append(resource_count_splitted)
         return items
 
-    @staticmethod
-    def parseInventoryPacket(packet, raw):
+    def parseInventoryPacket(self, packet, raw):
         error = "Failed to parse inventory packet"
         data_splitted = raw.split(", ")
         if len(data_splitted) < 2:
@@ -54,15 +42,13 @@ class PacketParser:
             inventory[resource_count_splitted[0]] = int(resource_count_splitted[1])
         return inventory
 
-    @staticmethod
-    def parseMessagePacket(packet, raw):
+    def parseMessagePacket(self, packet, raw):
         message_splitted = raw.split(", ")
         i = message_splitted[0].split(' ')[1]
         message = message_splitted[1][0:]
         return message
 
-    @staticmethod
-    def parseIncantationPacket(packet, raw):
+    def parseIncantationPacket(self, packet, raw):
         print("incantation: {}".format(raw))
         if raw == "ko":
             return raw
@@ -73,6 +59,5 @@ class PacketParser:
         else:
             raise RuntimeError("Failed to parse incantation packet")
 
-    @staticmethod
-    def parseConnectNbrPacket(packet, raw):
+    def parseConnectNbrPacket(self, packet, raw):
         return int(raw)

@@ -1,9 +1,9 @@
 from Packet import *
-from Stack import *
 from PacketParser import *
 from ai.AI import *
 import queue
 import threading
+from gui.GUI import *
 
 class PacketRouter:
 
@@ -16,34 +16,35 @@ class PacketRouter:
         return PacketRouter.g_instance
 
     def __init__(self):
-        print("new instance")
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
+        self.network = self.zappy.network
         self.packet_i = 0
         self.cond = threading.Condition(threading.Lock())
         self.pending_packets = queue.Queue()
         self.res_packet = None
+
         self.packets = [
             Packet(cmd="Forward"),
             Packet(cmd="Right"),
             Packet(cmd="Left"),
             Packet(cmd="Look",
-                   parser=PacketParser.parseLookPacket),
+                   parser=self.zappy.packet_parser.parseLookPacket),
             Packet(cmd="Inventory",
-                   parser=PacketParser.parseInventoryPacket),
+                   parser=self.zappy.packet_parser.parseInventoryPacket),
             Packet(cmd="Connect_nbr",
-                   parser=PacketParser.parseConnectNbrPacket),
+                   parser=self.zappy.packet_parser.parseConnectNbrPacket),
             Packet(cmd="Fork"),
             Packet(cmd="Eject"),
             Packet(cmd="Take"),
             Packet(cmd="Set"),
             Packet(cmd="Incantation",
-                   parser=PacketParser.parseIncantationPacket),
+                   parser=self.zappy.packet_parser.parseIncantationPacket),
             Packet(cmd="dead",
                    listeners=[AI.onPlayerDead]),
             Packet(cmd="Broadcast"),
             Packet(cmd="message",
-                   parser=PacketParser.parseMessagePacket,
+                   parser=self.zappy.packet_parser.parseMessagePacket,
                    listeners=[AI.onMessage]),
             Packet(cmd="msz",
                    gui=True),
@@ -105,19 +106,24 @@ class PacketRouter:
     def onClientNumPacket(self):
         pass
 
-    @staticmethod
-    def route(raw):
-        self = PacketRouter.instance()
+    def onGameStart(self):
+        if self.zappy.isGraphical():
+            self.zappy.gui.onGameStart()
+        else:
+            self.zappy.ai.onGameStart()
+
+    def route(self, raw):
         raw = raw[:-1]
         self.packet_i += 1
 
         if self.packet_i == 1:
             return self.onWelcomePacket()
         elif self.packet_i == 2:
-            return PacketParser.parseClientNumPacket(raw)
+            print("test: {}".format(raw))
+            return self.zappy.packet_parser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
-            self.zappy.map_size = PacketParser.parseMapSizePacket(raw)
-            return AI.on_game_start()
+            self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
+            return self.onGameStart()
 
         for p in self.packets:
             if raw[0:len(p.cmd)] == p.cmd:

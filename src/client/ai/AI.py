@@ -1,51 +1,35 @@
 from AIInterface import *
-import queue
 
 class AI:
-
-    g_instance = None
-
-    @staticmethod
-    def instance():
-        if AI.g_instance is None:
-            AI.g_instance = AI()
-        return AI.g_instance
-
     def __init__(self):
-        pass
+        self.ai_interface = AIInterface()
 
-    @staticmethod
-    def on_game_start():
+    def onGameStart(self):
         print("Game start")
-        print("Game map size : {}".format(AIInterface.instance().getMapSize()))
-        print("Team name : {}".format(AIInterface.instance().getTeamName()))
-        print("Turn right result : {}".format(AIInterface.instance().turnRightAction()))
-        print("Turn left result : {}".format(AIInterface.instance().turnLeftAction()))
-        print("Move forward result : {}".format(AIInterface.instance().moveForwardAction()))
-        print("Look Around result : {}".format(AIInterface.instance().lookAroundAction()))
-        print("Inventory result : {}".format(AIInterface.instance().inventoryAction()))
-        print("Broadcast result : {}".format(AIInterface.instance().broadcastAction("salut tout le monde")))
-        print("numberOfTeamSlotsUnusedAction result : {}".format(AIInterface.instance().numberOfTeamSlotsUnusedAction()))
-        print("fork result : {}".format(AIInterface.instance().forkAction()))
-
+        print("Game map size : {}".format(self.ai_interface.getMapSize()))
+        print("Team name : {}".format(self.ai_interface.getTeamName()))
+        print("Turn right result : {}".format(self.ai_interface.turnRightAction()))
+        print("Turn left result : {}".format(self.ai_interface.turnLeftAction()))
+        print("Move forward result : {}".format(self.ai_interface.moveForwardAction()))
+        print("Look Around result : {}".format(self.ai_interface.lookAroundAction()))
+        print("Inventory result : {}".format(self.ai_interface.inventoryAction()))
+        print("Broadcast result : {}".format(self.ai_interface.broadcastAction("salut tout le monde")))
+        print("numberOfTeamSlotsUnusedAction result : {}".format(self.ai_interface.numberOfTeamSlotsUnusedAction()))
+        print("fork result : {}".format(self.ai_interface.forkAction()))
 #       bugged
-#        print("ejectPlayerTileAction result : {}".format(AIInterface.instance().ejectPlayerTileAction()))
-        print("takeObjectAction result : {}".format(AIInterface.instance().takeObjectAction("food")))
-        print("setObjectDownAction result : {}".format(AIInterface.instance().setObjectDownAction("food")))
-
+#        print("ejectPlayerTileAction result : {}".format(self.ai_interface.ejectPlayerTileAction()))
+        print("takeObjectAction result : {}".format(self.ai_interface.takeObjectAction("food")))
+        print("setObjectDownAction result : {}".format(self.ai_interface.setObjectDownAction("food")))
 #       bugged
-#        print("startIncantationAction result : {}".format(AIInterface.instance().startIncantationAction()))
+#        print("startIncantationAction result : {}".format(self.ai_interface.startIncantationAction()))
 
-    @staticmethod
-    def onPlayerEject(packet, res):
+    def onPlayerEject(self, packet, res):
         print("onPlayerEject res={}".format(res))
 
-    @staticmethod
-    def onPlayerDead(packet, status):
+    def onPlayerDead(self, packet, status):
         print("onPlayerDead")
 
-    @staticmethod
-    def onIncantation(packet, status):
+    def onIncantation(self, packet, status):
         if type(status) is int:
             print("Level up : {}".format(status))
         elif status == "underway":
@@ -53,10 +37,8 @@ class AI:
         elif status == "ko":
             print("Incantation failed")
 
-    @staticmethod
-    def onMessage(packet, msg):
+    def onMessage(self, packet, msg):
         print("onMessage: {}".format(msg))
 
-    @staticmethod
-    def onNbrOfTeamSlotsUnused(packet, count):
+    def onNbrOfTeamSlotsUnused(self, packet, count):
         print(count)

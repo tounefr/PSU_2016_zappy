@@ -1,14 +1,6 @@
 
 class AIInterface:
 
-    g_instance = None
-
-    @staticmethod
-    def instance():
-        if AIInterface.g_instance is None:
-            AIInterface.g_instance = AIInterface()
-        return AIInterface.g_instance
-
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
