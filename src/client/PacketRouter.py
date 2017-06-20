@@ -3,14 +3,27 @@ from Stack import *
 from PacketParser import *
 from ai.AI import *
 import queue
+import threading
 
 class PacketRouter:
 
+    g_instance = None
+    g_lock = threading.RLock()
+
+    @staticmethod
+    def instance():
+        if PacketRouter.g_instance is None:
+            PacketRouter.g_instance = PacketRouter()
+        return PacketRouter.g_instance
+
     def __init__(self):
+        print("new instance")
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
         self.packet_i = 0
-        self.pending_packets = queue.Queue()
+        self.pending_recv_packets = queue.Queue()
+        self.raw_res = ""
+        self.cond = threading.Condition(threading.RLock())
         self.packets = [
             Packet(cmd="Forward",
                    parser=PacketParser.parseOkKoPacket,
@@ -103,6 +116,7 @@ class PacketRouter:
                    gui=True),
         ]
 
+
     def onWelcomePacket(self):
         if self.zappy.isGraphical():
             self.zappy.network.send("GRAPHIC")
@@ -115,18 +129,32 @@ class PacketRouter:
     def onMapSizePacket(self):
         AI.on_game_start()
 
-    def route(self, raw):
+    @staticmethod
+    def route(raw):
+        self = PacketRouter.instance()
         raw = raw[:-1]
         self.packet_i += 1
         if self.packet_i == 1:
             return self.onWelcomePacket()
         elif self.packet_i == 2:
-            self.pending_packets.get()
             return PacketParser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
             return PacketParser.parseMapSizePacket(raw)
-        elif not self.pending_packets.empty():
-            cmd = self.pending_packets.get()
+        elif not self.pending_recv_packets.empty():
+            cond = self.pending_recv_packets.get()
+            self.raw_res = raw
+            with cond:
+                cond.notify()
+            return
+        else:
+            for p in self.packets:
+                if raw[0:len(p.cmd)] == p.cmd:
+                    if p.parser:
+                        return p.parser(p, raw)
+                    return p.callListeners()
+
+        """
+            cmd = self.pending_recv_packets.get()
             packet = self.getPacket(cmd)
             if not packet.parser is None:
                 return packet.parser(packet, raw)
@@ -135,7 +163,8 @@ class PacketRouter:
                 if p.parser:
                     return p.parser(p, raw)
                 return p.callListeners()
-        raise RuntimeError("Unknown packet : {}".format(raw))
+        """
+#        raise RuntimeError("Unknown packet : {}".format(raw))
 
     def getPacket(self, cmd):
         for packet in self.packets:

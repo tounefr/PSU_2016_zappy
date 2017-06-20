@@ -18,9 +18,10 @@ class AI:
     @staticmethod
     def on_game_start():
         print("Game start")
+        AIInterface.instance().inventoryAction()
         AIInterface.instance().moveForwardAction()
-#        AIInterface.instance().turnLeftAction()
-#        AIInterface.instance().lookAroundAction()
+        AIInterface.instance().turnLeftAction()
+        AIInterface.instance().lookAroundAction()
 
     @staticmethod
     def onMovement():
@@ -44,15 +45,13 @@ class AI:
     @staticmethod
     def onLookAroundResult(tiles):
         print("onLookAroundResult")
-        """
-                for tile in tiles:
+        for tile in tiles:
             for item in tile:
                 if item == "player":
                     continue
-        """
-        print(AIInterface.instance().takeObjectAction("food"))
+                AIInterface.instance().takeObjectAction(item)
 #        AIInterface.instance().takeObjectAction(items[0][1])
-#        AIInterface.instance().inventoryAction()
+        AIInterface.instance().inventoryAction()
         """
         nb = len(items[0]) - 1
         for i in range(0, nb):

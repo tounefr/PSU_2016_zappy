@@ -1,11 +1,11 @@
 from ctypes import *
 from PacketRouter import *
+import queue
+import threading
 
 class Network:
-
     def __init__(self):
         self.libnetwork = cdll.LoadLibrary("./libnetwork.so")
-        self.packet_router = PacketRouter()
         self.fd = self.libnetwork.socket_init()
 
     def connect(self, hostname, port):
@@ -31,13 +31,18 @@ class Network:
         except:
             raise RuntimeError("Failed to decode packet")
 
-    def send_packet(self, packet):
-        self.packet_router.pending_packets.put(packet)
-        self.send(packet.cmd)
+    def send_packet(self, raw):
+        lock = threading.Lock()
+        cond = threading.Condition(lock)
+
+        PacketRouter.instance().pending_recv_packets.put(cond)
+        self.send(raw)
+        with cond:
+            cond.wait()
+        return PacketRouter.instance().raw_res
 
     def send(self, raw):
         print("Send>> {}".format(raw))
-        self.packet_router.pending_packets.put(raw)
         raw = "{}\n".format(raw)
         if not self.libnetwork.socket_send(self.fd, c_char_p(raw.encode())):
             raise RuntimeError("Failed to send packet : {}".format(raw))

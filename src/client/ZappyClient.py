@@ -4,6 +4,8 @@ from ai.AI import *
 from Inventory import *
 from optparse import OptionParser
 import sys
+from Threading import *
+import time
 
 class ZappyClient:
     g_instance = None
@@ -56,10 +58,22 @@ class ZappyClient:
     def start(self):
         self.optparser()
         self.network.connect_server()
+
+        tp = ThreadPool(10)
+        while True:
+            time.sleep(0.09)
+            raw = self.network.recv_packet()
+            tp.add_task(PacketRouter.route, raw)
+
+#        tp.wait_completion()
+
+        """
         while self.running:
             try:
                 raw = self.network.recv_packet()
             except:
                 break
+#            self.network.send_pending_packet()
             self.network.packet_router.route(raw)
         print("Disconnected")
+        """
