@@ -1,72 +1,92 @@
-from PlayerAction import *
+from AIInterface import *
+import queue
 
 class AI:
 
+    g_instance = None
+
     @staticmethod
-    def on_start():
+    def instance():
+        if AI.g_instance is None:
+            AI.g_instance = AI()
+        return AI.g_instance
+
+    def __init__(self):
+#        self.MsgQueue = queue.Queue()
+        pass
+
+    @staticmethod
+    def on_game_start():
         print("Game start")
-        PlayerAction.instance().lookAroundAction()
+        AIInterface.instance().turnRightAction()
+#        AIInterface.instance().turnLeftAction()
+#        AIInterface.instance().lookAroundAction()
 
     @staticmethod
-    def onMovement(direction, res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+    def onMovement():
+        print("onMovement")
 
-        print("onMovement dir={} res={}".format(direction, res))
-        PlayerAction.instance().lookAroundAction()
+    @staticmethod
+    def onTurn(direction):
+        print("onTurn dir={}".format(direction))
+        AIInterface.instance().inventoryAction()
+        AIInterface.instance().lookAroundAction()
+        AIInterface.instance().takeObjectAction("food")
+        AIInterface.instance().setObjectDownAction("food")
+#        AIInterface.instance().setObjectDownAction()
+#        AIInterface.instance().setObjectDownAction()
+#        AIInterface.instance().startIncantationAction()
 
     @staticmethod
     def onLookAroundResult(items):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onLookAroundResult")
         print(items)
-        PlayerAction.instance().inventoryAction()
+        """
+        nb = len(items[0]) - 1
+        for i in range(0, nb):
+            AIInterface.instance().takeObjectAction("food")
+        """
 
     @staticmethod
     def onInventoryContent(inventory):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onInventoryContent")
         print(inventory)
+#        AIInterface.instance().broadcastAction("Hello")
 
     @staticmethod
     def onPlayerForked():
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+        print("Forked")
 
     @staticmethod
     def onPlayerEject(res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onPlayerEject res={}".format(res))
 
     @staticmethod
     def onPlayerDead():
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onPlayerDead")
 
     @staticmethod
     def onTakeObject(res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
-
         print("onTakeObject res={}".format(res))
 
     @staticmethod
     def onObjectDown(res):
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance
-
         print("onObjectDown res={}".format(res))
 
     @staticmethod
-    def onIncantationFinished():
-        from ZappyClient import ZappyClient
-        zappy = ZappyClient.instance()
+    # status peut être égale à ko ou "underway" ou le level sur un int
+    def onIncantation(status):
+        if type(status) is int:
+            print("Level up : {}".format(status))
+        elif status == "underway":
+            print("Underway")
+        elif status == "ko":
+            print("Incantation failed")
 
+    @staticmethod
+    def onBroadcast():
+        pass
+
+    @staticmethod
+    def onMessage(i, msg):
+        print(msg)

@@ -2,6 +2,7 @@ from Packet import *
 from Stack import *
 from PacketParser import *
 from ai.AI import *
+import queue
 
 class PacketRouter:
 
@@ -9,17 +10,17 @@ class PacketRouter:
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
         self.packet_i = 0
-        self.pending_packets = Stack(max_size=10)
+        self.pending_packets = queue.Queue()
         self.packets = [
             Packet(cmd="Forward",
                    parser=PacketParser.parseOkKoPacket,
                    listeners=[AI.onMovement]),
             Packet(cmd="Right",
                    parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onMovement]),
+                   listeners=[AI.onTurn]),
             Packet(cmd="Left",
                    parser=PacketParser.parseOkKoPacket,
-                   listeners=[AI.onMovement]),
+                   listeners=[AI.onTurn]),
             Packet(cmd="Look",
                    parser=PacketParser.parseLookPacket,
                    listeners=[AI.onLookAroundResult]),
@@ -35,17 +36,23 @@ class PacketRouter:
             Packet(cmd="Eject",
                    parser=PacketParser.parseOkKoPacket,
                    listeners=[AI.onPlayerEject]),
-            Packet(cmd="Take object",
+            Packet(cmd="Take",
                    parser=PacketParser.parseOkKoPacket,
                    listeners=[AI.onTakeObject]),
-            Packet(cmd="Set object",
+            Packet(cmd="Set",
                    parser=PacketParser.parseOkKoPacket,
-                   listeners=[]),
+                   listeners=[AI.onObjectDown]),
             Packet(cmd="Incantation",
                    parser=PacketParser.parseIncantationPacket,
-                   listeners=[AI.onIncantationFinished]),
+                   listeners=[AI.onIncantation]),
             Packet(cmd="dead",
                    listeners=[AI.onPlayerDead]),
+            Packet(cmd="Broadcast",
+                   parser=PacketParser.parseOkKoPacket,
+                   listeners=[]),
+            Packet(cmd="message",
+                   parser=PacketParser.parseMessagePacket,
+                   listeners=[AI.onMessage]),
             Packet(cmd="msz",
                    gui=True),
             Packet(cmd="bct",
@@ -106,7 +113,7 @@ class PacketRouter:
         print("Client-num")
 
     def onMapSizePacket(self):
-        AI.on_start()
+        AI.on_game_start()
 
     def route(self, raw):
         raw = raw[:-1]
@@ -114,21 +121,24 @@ class PacketRouter:
         if self.packet_i == 1:
             return self.onWelcomePacket()
         elif self.packet_i == 2:
+            self.pending_packets.get()
             return PacketParser.parseClientNumPacket(raw)
         elif self.packet_i == 3:
             return PacketParser.parseMapSizePacket(raw)
-        elif self.pending_packets.size() > 0:
-            packet = self.pending_packets.pop()
-            packet.raw = raw
+        elif not self.pending_packets.empty():
+            cmd = self.pending_packets.get()
+            packet = self.getPacket(cmd)
             if not packet.parser is None:
-                return packet.parser(packet)
+                return packet.parser(packet, raw)
         for p in self.packets:
             if raw[0:len(p.cmd)] == p.cmd:
+                if p.parser:
+                    return p.parser(p, raw)
                 return p.callListeners()
         raise RuntimeError("Unknown packet : {}".format(raw))
 
     def getPacket(self, cmd):
         for packet in self.packets:
-            if packet.cmd == cmd:
+            if cmd.startswith(packet.cmd):
                 return packet
         raise RuntimeError("Packet '{}' not found".format(cmd))
