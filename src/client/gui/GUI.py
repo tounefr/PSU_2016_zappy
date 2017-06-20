@@ -60,3 +60,21 @@ class GUI:
 
     def onEggDieOfHunger(self):
         pass
+
+    def onServerTimeUnit(self):
+        pass
+
+    def onServerTimeUnitUpdated(self):
+        pass
+
+    def onEndGame(self):
+        pass
+
+    def onServerMessage(self):
+        pass
+
+    def onWrongCommand(self):
+        pass
+
+    def onWronCommandParameters(self):
+        pass

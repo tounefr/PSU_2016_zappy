@@ -52,11 +52,11 @@ class ZappyClient:
         self.server_hostname = "localhost"
         self.server_port = None
         self.team_name = None
+        self.gui = GUI()
+        self.ai = AI()
         self.network = Network()
         self.packet_parser = PacketParser()
         self.packet_router = PacketRouter()
-        self.gui = GUI()
-        self.ai = AI()
         self.running = True
 
         self.optparser()
@@ -68,6 +68,13 @@ class ZappyClient:
 
         tp = ThreadPool(10)
         while self.running:
-            raw = self.network.recv_packet()
-            tp.add_task(self.packet_router.route, raw)
+            try:
+                try:
+                    raw = self.network.recv_packet()
+                except RuntimeError as msg:
+                    print("Socket error : {}".format(msg))
+                    sys.exit(1)
+                tp.add_task(self.packet_router.route, raw)
+            except KeyboardInterrupt:
+                sys.exit(1)
         tp.wait_completion()

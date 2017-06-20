@@ -1,4 +1,5 @@
 from AIInterface import *
+import time
 
 class AI:
     def __init__(self):
@@ -8,6 +9,11 @@ class AI:
         print("Game start")
         print("Game map size : {}".format(self.ai_interface.getMapSize()))
         print("Team name : {}".format(self.ai_interface.getTeamName()))
+
+        while True:
+            print("Broadcast result : {}".format(self.ai_interface.broadcastAction("salut tout le monde")))
+            time.sleep(1)
+
         print("Turn right result : {}".format(self.ai_interface.turnRightAction()))
         print("Turn left result : {}".format(self.ai_interface.turnLeftAction()))
         print("Move forward result : {}".format(self.ai_interface.moveForwardAction()))
