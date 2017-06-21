@@ -27,7 +27,7 @@ class Network:
             raise RuntimeError("Failed to recv packet")
         try:
             raw = c_char_p(raw).value.decode()
-            print("Recv<< {}".format(raw[:-1]))
+#            print("Recv<< {}".format(raw[:-1]))
             return raw
         except:
             raise RuntimeError("Failed to decode packet")
@@ -40,7 +40,7 @@ class Network:
         return self.zappy.packet_router.res_packet
 
     def send(self, raw):
-        print("Send>> {}".format(raw))
+#        print("Send>> {}".format(raw))
         raw = "{}\n".format(raw)
         if not self.libnetwork.socket_send(self.fd, c_char_p(raw.encode())):
             raise RuntimeError("Failed to send packet : {}".format(raw))

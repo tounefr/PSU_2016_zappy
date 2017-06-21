@@ -196,19 +196,52 @@ class PacketParser:
             raise RuntimeError("Failed to parse player trigger spell packet")
 
     def parseGUIEndSpell(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "pos": (int(splitted[0]), int(splitted[1])),
+                "result": splitted[2]
+            }
+        except:
+            raise RuntimeError("Failed to parse end spell packet")
 
     def parseGUIPlayerNameResourceNum(self, packet, raw):
         pass
 
     def parseGUIlayerLaid(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "egg_num": int(splitted[0]),
+                "player_num": int(splitted[1]),
+                "pos": (int(splitted[2]), int(splitted[3]))
+            }
+        except:
+            raise RuntimeError("Failed to parse layer laid packet")
 
     def parseGUIEggNum(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "egg_num": int(splitted[0])
+            }
+        except:
+            raise RuntimeError("Failed to parse egg num packet")
 
     def parseGUIUnitTime(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "unit_time": int(splitted[0])
+            }
+        except:
+            raise RuntimeError("Failed to parse unit time packet")
 
     def parseGUIMessage(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "message": " ".join(splitted[1:])
+            }
+        except:
+            raise RuntimeError("Failed to parse message packet")
