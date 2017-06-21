@@ -66,20 +66,24 @@ class GUI:
         print("onEndSpell pos={} result={}".format(pos, result))
 
     #pfk
-    def onPlayerLayEgg(self, player_name):
-        pass
+    def onPlayerLayEgg(self, player_num):
+        print("onPlayerLayEgg player_num={}".format(player_num))
 
     #pdr
     def onPlayerThrowResource(self, player_num, resource):
-        pass
+        print("onPlayerThrowResource player_num={} resource={}".format(
+            player_num, resource
+        ))
 
     #pgt
     def onPlayerTakeResource(self, player_num, resource):
-        pass
+        print("onPlayerTakeResource player_num={} resource={}".format(
+            player_num, resource
+        ))
 
     #pdi
-    def onPlayerDieOfHunger(self, player_name):
-        pass
+    def onPlayerDieOfHunger(self, player_num):
+        print("onPlayerDieOfHunger player_num={}".format(player_num))
 
     #enw
     def onPlayerLaid(self, egg_num, player_num, pos):
