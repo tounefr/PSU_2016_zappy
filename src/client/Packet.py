@@ -7,10 +7,10 @@ class Packet:
         self.parser = parser
         self.listeners = listeners
 
-    def callListeners(self, *args):
+    def callListeners(self, args):
         returnv = False
         for listener in self.listeners:
-            returnv = listener(*args)
+            returnv = listener(**args)
         return returnv
 
     def setParser(self, parser):

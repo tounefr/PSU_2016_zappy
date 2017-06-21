@@ -10,45 +10,51 @@ class GUI:
         print("gui")
 
     #msz
-    def onMapSize(self, b):
-        print(b)
-#        print("mapsize: {}".format(sizes))
+    # size=(width, height)
+    def onMapSize(self, size):
+        print("onMapSize size={}".format(size))
 
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
-    def onMapContent(self, pos, resources):
-        pass
+    def onMapCaseContent(self, pos, resources):
+        print("onMapContent pos={} resources={}".format(pos, resources))
 
     #tna
     def onTeamNames(self, team_name):
-        pass
+        print("onTeamNames team_name={}".format(team_name))
 
     #pnw
-    def onPlayerConnect(self, player_name, pos, orientation, level, team_name):
-        pass
+    def onPlayerConnect(self, player_num, pos, orientation, level, team_name):
+        print("onPlayerConnect player_num={} pos={} orien={} level={} team_name={}".format(
+            player_num, pos, orientation, level, team_name
+        ))
 
     #ppo
-    def onPlayerPos(self, player_name, pos, orientation):
-        pass
+    def onPlayerPos(self, player_num, pos, orientation):
+        print("onPlayerPos player_num={} pos={} orien={}".format(
+            player_num, pos, orientation
+        ))
 
     #plv
-    def onPlayerLevel(self, player_name, level):
-        pass
+    def onPlayerLevel(self, player_num, level):
+        print("onPlayerLevel player_num={} level={}".format(player_num, level))
 
     #pin
-    def onPlayerInventory(self, player_name, pos, items):
-        pass
+    def onPlayerInventory(self, player_num, pos, resources):
+        print("onPlayerInventory player_num={} pos={} resources={}".format(
+            player_num, pos, resources
+        ))
 
     #pex
-    def onPlayerSlay(self, player_name):
-        pass
+    def onPlayerSlay(self, player_num):
+        print("onPlayerSlay player_num={}".format(player_num))
 
     #pbc
-    def onPlayerBroadcast(self, player_name, message):
+    def onPlayerBroadcast(self, player_num, message):
         pass
 
     #pic
-    def onFirstPlayerTriggerSpell(self, pos, level, player_names):
+    def onFirstPlayerTriggerSpell(self, pos, level, players_num):
         pass
 
     #pie
@@ -60,11 +66,11 @@ class GUI:
         pass
 
     #pdr
-    def onPlayerThrowResource(self, player_name, resource_num):
+    def onPlayerThrowResource(self, player_num, resource):
         pass
 
     #pgt
-    def onPlayerTakeResource(self, player_name, resource_num):
+    def onPlayerTakeResource(self, player_num, resource):
         pass
 
     #pdi

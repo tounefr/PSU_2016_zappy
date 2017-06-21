@@ -10,7 +10,7 @@ class ZappyClient:
     g_instance = None
 
     def isGraphical(self):
-        return False
+        return self.graphical
 
     @staticmethod
     def instance():
@@ -36,6 +36,8 @@ class ZappyClient:
                     self.server_hostname = sys.argv[i + 1]
                 elif arg == "-help":
                     sys.exit(ZappyClient.print_usage())
+                elif arg == "-graphical":
+                    self.graphical = True
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
 
@@ -54,6 +56,7 @@ class ZappyClient:
         self.team_name = None
         self.gui = GUI()
         self.ai = AI()
+        self.graphical = False
         self.network = Network()
         self.packet_parser = PacketParser()
         self.packet_router = PacketRouter()
