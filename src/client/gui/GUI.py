@@ -10,8 +10,9 @@ class GUI:
         print("gui")
 
     #msz
-    def onMapSize(self, sizes):
-        pass
+    def onMapSize(self, b):
+        print(b)
+#        print("mapsize: {}".format(sizes))
 
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}

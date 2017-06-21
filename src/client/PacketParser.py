@@ -1,3 +1,4 @@
+import sys
 
 class PacketParser:
 
@@ -64,7 +65,10 @@ class PacketParser:
 
     #msz
     def parseGUIMapSizePacket(self, packet, raw):
-        pass
+        splitted = raw[4:].split(' ')
+        if len(splitted) != 2:
+            raise RuntimeError("Failed to parse map size packet")
+        return (int(splitted[0]), int(splitted[1]))
 
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}

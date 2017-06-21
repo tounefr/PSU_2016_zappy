@@ -24,13 +24,13 @@ class AI:
 #       bugged
 #        print("startIncantationAction result : {}".format(self.ai_interface.startIncantationAction()))
 
-    def onPlayerEject(self, packet, res):
+    def onPlayerEject(self, res):
         print("onPlayerEject res={}".format(res))
 
-    def onPlayerDead(self, packet, status):
+    def onPlayerDead(self, status):
         print("onPlayerDead")
 
-    def onIncantation(self, packet, status):
+    def onIncantation(self, status):
         if type(status) is int:
             print("Level up : {}".format(status))
         elif status == "underway":
@@ -38,8 +38,8 @@ class AI:
         elif status == "ko":
             print("Incantation failed")
 
-    def onMessage(self, packet, msg):
+    def onMessage(self, msg):
         print("onMessage: {}".format(msg))
 
-    def onNbrOfTeamSlotsUnused(self, packet, count):
+    def onNbrOfTeamSlotsUnused(self, count):
         print(count)

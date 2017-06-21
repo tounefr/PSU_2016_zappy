@@ -156,19 +156,23 @@ class PacketRouter:
 
         if self.packet_i == 1:
             return self.onWelcomePacket()
-        elif self.packet_i == 2:
+        elif self.packet_i == 2 and not self.zappy.isGraphical():
             return self.zappy.packet_parser.parseClientNumPacket(raw)
-        elif self.packet_i == 3:
-            if not self.zappy.isGraphical():
-                self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
+        elif self.packet_i == 3 and not self.zappy.isGraphical():
+            self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
             return self.onGameStart()
 
         for p in self.packets:
+            if not self.zappy.isGraphical() and p.gui:
+                continue
             if raw[0:len(p.cmd)] == p.cmd:
                 raw_parsed = None
                 if p.parser:
                     raw_parsed = p.parser(p, raw)
-                return p.callListeners(p, raw_parsed)
+                if not raw_parsed is None:
+                    return p.callListeners(raw_parsed)
+                return
+#                return p.callListeners(p, raw_parsed)
 
         if not self.pending_packets.empty():
             packet = self.getPacket(self.pending_packets.get())
