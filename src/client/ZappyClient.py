@@ -10,7 +10,7 @@ class ZappyClient:
     g_instance = None
 
     def isGraphical(self):
-        return False
+        return True
 
     @staticmethod
     def instance():

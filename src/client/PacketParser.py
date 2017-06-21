@@ -61,3 +61,54 @@ class PacketParser:
 
     def parseConnectNbrPacket(self, packet, raw):
         return int(raw)
+
+    #msz
+    def parseGUIMapSizePacket(self, packet, raw):
+        pass
+
+    #bct
+    # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
+    def parseGUIMapContentPacket(self, packet, raw):
+        pass
+
+    def parseGUITeamName(self, packet, raw):
+        pass
+
+    def parseGUIPlayerConnect(self, packet, raw):
+        pass
+
+    def parseGUIPlayerPos(self, packet, raw):
+        pass
+
+    def parseGUIPlayerLevel(self, packet, raw):
+        pass
+
+    def parseGUIPlayerInventory(self, packet, raw):
+        pass
+
+    def parseGUIPlayerName(self, packet, raw):
+        pass
+
+    def parseGUIPlayerBroadcast(self, packet, raw):
+        pass
+
+    def parseGUIFirstPlayerTriggerSpell(self, packet, raw):
+        pass
+
+    def parseGUIEndSpell(self, packet, raw):
+        pass
+
+    def parseGUIPlayerNameResourceNum(self, packet, raw):
+        pass
+
+    def parseGUIlayerLaid(self, packet, raw):
+        pass
+
+    def parseGUIEggNum(self, packet, raw):
+        pass
+
+    def parseGUIUnitTime(self, packet, raw):
+        pass
+
+    def parseGUIMessage(self, packet, raw):
+        pass

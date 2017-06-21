@@ -9,74 +9,102 @@ class GUI:
     def onGameStart(self):
         print("gui")
 
-    def onMapSize(self):
+    #msz
+    def onMapSize(self, sizes):
         pass
 
-    def onMapContent(self):
+    #bct
+    # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
+    def onMapContent(self, pos, resources):
         pass
 
-    def onTeamNames(self):
+    #tna
+    def onTeamNames(self, team_name):
         pass
 
-    def onPlayerConnect(self):
+    #pnw
+    def onPlayerConnect(self, player_name, pos, orientation, level, team_name):
         pass
 
-    def onPlayerPos(self):
+    #ppo
+    def onPlayerPos(self, player_name, pos, orientation):
         pass
 
-    def onPlayerLevel(self):
+    #plv
+    def onPlayerLevel(self, player_name, level):
         pass
 
-    def onPlayerInventory(self):
+    #pin
+    def onPlayerInventory(self, player_name, pos, items):
         pass
 
-    def onPlayerBroadcast(self):
+    #pex
+    def onPlayerSlay(self, player_name):
         pass
 
-    def onFirstPlayerTriggerSpell(self):
+    #pbc
+    def onPlayerBroadcast(self, player_name, message):
         pass
 
-    def onEndSpell(self):
+    #pic
+    def onFirstPlayerTriggerSpell(self, pos, level, player_names):
         pass
 
-    def onPlayerLayEgg(self):
+    #pie
+    def onEndSpell(self, pos, result):
         pass
 
-    def onPlayerThrowResource(self):
+    #pfk
+    def onPlayerLayEgg(self, player_name):
         pass
 
-    def onPlayerTakeResource(self):
+    #pdr
+    def onPlayerThrowResource(self, player_name, resource_num):
         pass
 
-    def onPlayerDieOfHunger(self):
+    #pgt
+    def onPlayerTakeResource(self, player_name, resource_num):
         pass
 
-    def onPlayerLeddByAnotherPlayer(self):
+    #pdi
+    def onPlayerDieOfHunger(self, player_name):
         pass
 
-    def onEggHatch(self):
+    #enw
+    def onPlayerLaid(self, egg_num, player_name, pos):
         pass
 
-    def onPlayerConnectedAfterHatch(self):
+    #eht
+    def onEggHatch(self, egg_num):
         pass
 
-    def onEggDieOfHunger(self):
+    def onPlayerConnectedAfterHatch(self, egg_num):
         pass
 
-    def onServerTimeUnit(self):
+    #ebo
+    def onEggDieOfHunger(self, egg_num):
         pass
 
-    def onServerTimeUnitUpdated(self):
+    #edi
+    def onServerTimeUnit(self, unit_time):
         pass
 
-    def onEndGame(self):
+    #sgt
+    def onServerTimeUnitUpdated(self, unit_time):
         pass
 
-    def onServerMessage(self):
+    #seg
+    def onEndGame(self, team_name):
         pass
 
+    #smg
+    def onServerMessage(self, server_message):
+        pass
+
+    #suc
     def onWrongCommand(self):
         pass
 
-    def onWronCommandParameters(self):
+    #sbp
+    def onWrongCommandParameters(self):
         pass
