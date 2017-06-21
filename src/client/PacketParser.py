@@ -47,20 +47,31 @@ class PacketParser:
         except:
             raise RuntimeError("Failed to parse inventory packet")
 
+    def parseDeadPacket(self, packet, raw):
+        return {
+            "status": raw
+        }
+
     def parseMessagePacket(self, packet, raw):
         message_splitted = raw.split(", ")
         i = message_splitted[0].split(' ')[1]
         message = message_splitted[1][0:]
-        return message
+        return {"message": message}
 
     def parseIncantationPacket(self, packet, raw):
         print("incantation: {}".format(raw))
         if raw == "ko":
-            return raw
+            return {
+                "status": raw
+            }
         elif raw == "Elevation underway":
-            return "underway"
+            return {
+                "status": "underway"
+            }
         elif raw.startswith("Current level"):
-            return 1 #TODO
+            return {
+                "status": 1
+            }
         else:
             raise RuntimeError("Failed to parse incantation packet")
 
@@ -196,19 +207,52 @@ class PacketParser:
             raise RuntimeError("Failed to parse player trigger spell packet")
 
     def parseGUIEndSpell(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "pos": (int(splitted[0]), int(splitted[1])),
+                "result": splitted[2]
+            }
+        except:
+            raise RuntimeError("Failed to parse end spell packet")
 
     def parseGUIPlayerNameResourceNum(self, packet, raw):
         pass
 
     def parseGUIlayerLaid(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "egg_num": int(splitted[0]),
+                "player_num": int(splitted[1]),
+                "pos": (int(splitted[2]), int(splitted[3]))
+            }
+        except:
+            raise RuntimeError("Failed to parse layer laid packet")
 
     def parseGUIEggNum(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "egg_num": int(splitted[0])
+            }
+        except:
+            raise RuntimeError("Failed to parse egg num packet")
 
     def parseGUIUnitTime(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "unit_time": int(splitted[0])
+            }
+        except:
+            raise RuntimeError("Failed to parse unit time packet")
 
     def parseGUIMessage(self, packet, raw):
-        pass
+        try:
+            splitted = raw[4:].split(' ')
+            return {
+                "message": " ".join(splitted[1:])
+            }
+        except:
+            raise RuntimeError("Failed to parse message packet")

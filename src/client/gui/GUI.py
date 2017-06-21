@@ -17,11 +17,11 @@ class GUI:
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
     def onMapCaseContent(self, pos, resources):
-        print("onMapContent pos={} resources={}".format(pos, resources))
+        print("onMapCaseContent pos={} resources={}".format(pos, resources))
 
     #tna
-    def onTeamNames(self, team_name):
-        print("onTeamNames team_name={}".format(team_name))
+    def onTeamName(self, team_name):
+        print("onTeamName team_name={}".format(team_name))
 
     #pnw
     def onPlayerConnect(self, player_num, pos, orientation, level, team_name):
@@ -51,67 +51,77 @@ class GUI:
 
     #pbc
     def onPlayerBroadcast(self, player_num, message):
-        pass
+        print("onPlayerBroadcast player_num={} message={}".format(
+            player_num, message
+        ))
 
     #pic
     def onFirstPlayerTriggerSpell(self, pos, level, players_num):
-        pass
+        print("onFirstPlayerTriggerSpell pos={} level={} players_num={}".format(
+            pos, level, players_num
+        ))
 
     #pie
     def onEndSpell(self, pos, result):
-        pass
+        print("onEndSpell pos={} result={}".format(pos, result))
 
     #pfk
-    def onPlayerLayEgg(self, player_name):
-        pass
+    def onPlayerLayEgg(self, player_num):
+        print("onPlayerLayEgg player_num={}".format(player_num))
 
     #pdr
     def onPlayerThrowResource(self, player_num, resource):
-        pass
+        print("onPlayerThrowResource player_num={} resource={}".format(
+            player_num, resource
+        ))
 
     #pgt
     def onPlayerTakeResource(self, player_num, resource):
-        pass
+        print("onPlayerTakeResource player_num={} resource={}".format(
+            player_num, resource
+        ))
 
     #pdi
-    def onPlayerDieOfHunger(self, player_name):
-        pass
+    def onPlayerDieOfHunger(self, player_num):
+        print("onPlayerDieOfHunger player_num={}".format(player_num))
 
     #enw
-    def onPlayerLaid(self, egg_num, player_name, pos):
-        pass
+    def onPlayerLaid(self, egg_num, player_num, pos):
+        print("onPlayerLaid egg_num={} player_num={} pos={}".format(
+            egg_num, player_num, pos
+        ))
 
     #eht
     def onEggHatch(self, egg_num):
-        pass
+        print("onEggHatch egg_num={}".format(egg_num))
 
     def onPlayerConnectedAfterHatch(self, egg_num):
-        pass
+        print("onPlayerConnectedAfterHatch egg_num={}".format(egg_num))
 
     #ebo
     def onEggDieOfHunger(self, egg_num):
-        pass
+        print("onEggDieOfHunger egg_num={}".format(egg_num))
 
     #edi
     def onServerTimeUnit(self, unit_time):
-        pass
+        print("onServerTimeUnit unit_time={}".format(unit_time))
 
     #sgt
     def onServerTimeUnitUpdated(self, unit_time):
-        pass
+        print("onServerTimeUnitUpdated unit_time={}".format(unit_time))
 
     #seg
     def onEndGame(self, team_name):
-        pass
+        print("onEndGame team_name={}".format(team_name))
 
     #smg
-    def onServerMessage(self, server_message):
-        pass
+    def onServerMessage(self, message):
+        print("onServerMessage message={}".format(message))
 
     #suc
     def onWrongCommand(self):
-        pass
+        print("onWrongCommand")
 
     #sbp
     def onWrongCommandParameters(self):
-        pass
+        print("onWrongCommandParameters")
