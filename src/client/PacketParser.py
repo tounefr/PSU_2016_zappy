@@ -47,20 +47,31 @@ class PacketParser:
         except:
             raise RuntimeError("Failed to parse inventory packet")
 
+    def parseDeadPacket(self, packet, raw):
+        return {
+            "status": raw
+        }
+
     def parseMessagePacket(self, packet, raw):
         message_splitted = raw.split(", ")
         i = message_splitted[0].split(' ')[1]
         message = message_splitted[1][0:]
-        return message
+        return {"message": message}
 
     def parseIncantationPacket(self, packet, raw):
         print("incantation: {}".format(raw))
         if raw == "ko":
-            return raw
+            return {
+                "status": raw
+            }
         elif raw == "Elevation underway":
-            return "underway"
+            return {
+                "status": "underway"
+            }
         elif raw.startswith("Current level"):
-            return 1 #TODO
+            return {
+                "status": 1
+            }
         else:
             raise RuntimeError("Failed to parse incantation packet")
 

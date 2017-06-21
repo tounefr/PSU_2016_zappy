@@ -38,8 +38,8 @@ class AI:
         elif status == "ko":
             print("Incantation failed")
 
-    def onMessage(self, msg):
-        print("onMessage: {}".format(msg))
+    def onMessage(self, message):
+        print("onMessage: {}".format(message))
 
     def onNbrOfTeamSlotsUnused(self, count):
         print(count)

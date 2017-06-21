@@ -20,8 +20,8 @@ class GUI:
         print("onMapCaseContent pos={} resources={}".format(pos, resources))
 
     #tna
-    def onTeamNames(self, team_name):
-        print("onTeamNames team_name={}".format(team_name))
+    def onTeamName(self, team_name):
+        print("onTeamName team_name={}".format(team_name))
 
     #pnw
     def onPlayerConnect(self, player_num, pos, orientation, level, team_name):
