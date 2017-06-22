@@ -5,6 +5,9 @@ class AIInterface:
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
 
+    def isRunning(self):
+        return self.zappy.running
+
     def getMapSize(self):
         return self.zappy.map_size
 

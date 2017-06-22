@@ -1,4 +1,5 @@
 import sys
+from Util import *
 
 class PacketParser:
 
@@ -7,7 +8,15 @@ class PacketParser:
         self.zappy = ZappyClient.instance()
 
     def parseClientNumPacket(self, raw):
-        pass
+        if raw == "ko":
+            self.zappy.running = False
+            return False
+        if not Util.isNumeric(raw):
+            return False
+        self.zappy.client_num = int(raw)
+
+    def parseCurrentLevelPacket(self, raw):
+        print(raw[len("Current level"):])
 
     def parseMapSizePacket(self, raw):
         data_splitted = raw.split(" ")
@@ -59,19 +68,12 @@ class PacketParser:
         return {"message": message}
 
     def parseIncantationPacket(self, packet, raw):
-        print("incantation: {}".format(raw))
         if raw == "ko":
-            return {
-                "status": raw
-            }
+            return raw
         elif raw == "Elevation underway":
-            return {
-                "status": "underway"
-            }
+            return "underway"
         elif raw.startswith("Current level"):
-            return {
-                "status": 1
-            }
+            return 1
         else:
             raise RuntimeError("Failed to parse incantation packet")
 

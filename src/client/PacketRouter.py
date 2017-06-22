@@ -32,6 +32,8 @@ class PacketRouter:
             Packet(cmd="Set"),
             Packet(cmd="Incantation",
                    parser=self.zappy.packet_parser.parseIncantationPacket),
+            Packet(cmd="Current level",
+                   parser=self.zappy.packet_parser.parseCurrentLevelPacket),
             Packet(cmd="dead",
                    parser=self.zappy.packet_parser.parseDeadPacket,
                    listeners=[self.zappy.ai.onPlayerDead]),
@@ -142,14 +144,14 @@ class PacketRouter:
         else:
             self.zappy.network.send(self.zappy.team_name)
 
-    def onClientNumPacket(self):
-        pass
-
     def onGameStart(self):
         if self.zappy.isGraphical():
             self.zappy.gui.onGameStart()
         else:
             self.zappy.ai.onGameStart()
+
+    def queuePacket(self, raw):
+        pass
 
     def route(self, raw):
         raw = raw[:-1]
@@ -173,7 +175,6 @@ class PacketRouter:
                 if not raw_parsed is None:
                     return p.callListeners(raw_parsed)
                 return
-#                return p.callListeners(p, raw_parsed)
 
         if not self.pending_packets.empty():
             packet = self.getPacket(self.pending_packets.get())

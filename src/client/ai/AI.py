@@ -7,7 +7,6 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-
         while (1):
             visible = self.ai_interface.lookAroundAction() #7pts
             print("On my cell, I can see:")
@@ -53,6 +52,9 @@ class AI:
 
     def onMessage(self, message):
         print("onMessage: {}".format(message))
+
+    def onLevelUp(self, level):
+        print("onLevelUp level={}".format(level))
 
     def onNbrOfTeamSlotsUnused(self, count):
         print(count)

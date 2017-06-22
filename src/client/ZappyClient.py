@@ -54,6 +54,7 @@ class ZappyClient:
         self.server_hostname = "localhost"
         self.server_port = None
         self.team_name = None
+        self.client_num = -1
         self.gui = GUI()
         self.ai = AI()
         self.graphical = False
