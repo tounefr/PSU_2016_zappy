@@ -13,4 +13,17 @@
 
 # define N_NETWORK_COMMANDS 13
 
+typedef struct      s_server
+{
+	int             port_number;
+	int             x;
+	int             y;
+	char            *team_names;
+	int             clientsNb;
+	int             timeUnit;
+}                   t_server;
+
+void                display_help();
+void                display_error(int);
+
 #endif //PROJETS_SERVER_H

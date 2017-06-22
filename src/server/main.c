@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <string.h>
 #include "server.h"
 #include "network.h"
 
@@ -20,18 +21,51 @@ t_network_commands network_commands[N_NETWORK_COMMANDS] =
         { "GRAPHIC", NULL, FLAG_GUI_CMD },
 };
 
-int     check_args(char **args)
+int                 check_atoi(char *str)
 {
-	if (strcmp(args[1], "-help") == 0)
+	unsigned int    i;
+
+	i = 0;
+	while (i < strlen(str))
 	{
-		display_help();
-		exit (4);
+		if (!(str[i] - 48 >= 0 && str[i] - 48 <= 9))
+			return (84);
+		i++;
 	}
+	return (0);
 }
 
-int     main(int ac, char **av)
+int                 check_args(char **args, int numberargs)
 {
-	if (check_args(av) == 4)
+	int             i;
+	t_server        *server;
+
+	if ((server = malloc(sizeof(t_server))) == NULL)
+		return (1);
+	i = 0;
+	if (strcmp(args[1], "-help") == 0)
+		display_help();
+	while (i < numberargs)
+	{
+		if (strcmp(args[i], "-p") == 0)
+			if (port_number(args, i, server) == 84)
+				display_error(1);
+		if (strcmp(args[i], "-x") == 0)
+			if (coordinates_assign(args, i, server) == 84)
+				display_error(1);
+		
+		i++;
+	}
+	return (0);
+}
+
+int                 main(int ac, char **av)
+{
+	if (ac < 2)
+		display_error(1);
+	if (check_args(av, ac) == 4)
 		return 0;
+	if (check_args(av, ac) == 0)
+	{}
 
 }
