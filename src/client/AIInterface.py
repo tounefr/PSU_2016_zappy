@@ -1,56 +1,51 @@
 
 class AIInterface:
 
-    g_instance = None
-
-    @staticmethod
-    def instance():
-        if AIInterface.g_instance is None:
-            AIInterface.g_instance = AIInterface()
-        return AIInterface.g_instance
-
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
 
+    def isRunning(self):
+        return self.zappy.running
+
     def getMapSize(self):
-        return 0
+        return self.zappy.map_size
 
     def getTeamName(self):
-        return 0
+        return self.zappy.team_name
 
     def turnRightAction(self):
-        self.zappy.network.send("Right")
+        return self.zappy.network.send_packet("Right")
 
     def turnLeftAction(self):
-        self.zappy.network.send("Left")
+        return self.zappy.network.send_packet("Left")
 
     def moveForwardAction(self):
-        self.zappy.network.send("Forward")
+        return self.zappy.network.send_packet("Forward")
 
     def lookAroundAction(self):
-        self.zappy.network.send("Look")
+        return self.zappy.network.send_packet("Look")
 
     def inventoryAction(self):
-        self.zappy.network.send("Inventory")
+        return self.zappy.network.send_packet("Inventory")
 
     def broadcastAction(self, text):
-        self.zappy.network.send("Broadcast {}".format(text))
+        return self.zappy.network.send_packet("Broadcast {}".format(text))
 
     def numberOfTeamSlotsUnusedAction(self):
-        self.zappy.network.send("Connect_nbr")
+        return self.zappy.network.send_packet("Connect_nbr")
 
     def forkAction(self):
-        self.zappy.network.send("Fork")
+        return self.zappy.network.send_packet("Fork")
 
     def ejectPlayerTileAction(self):
-        self.zappy.network.send("Eject")
+        return self.zappy.network.send_packet("Eject")
 
     def takeObjectAction(self, object):
-        self.zappy.network.send("Take {}".format(object))
+        return self.zappy.network.send_packet("Take {}".format(object))
 
     def setObjectDownAction(self, object):
-        self.zappy.network.send("Set {}".format(object))
+        return self.zappy.network.send_packet("Set {}".format(object))
 
     def startIncantationAction(self):
-        self.zappy.network.send("Incantation")
+        return self.zappy.network.send_packet("Incantation")

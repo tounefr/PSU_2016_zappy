@@ -1,22 +1,26 @@
 from ctypes import *
-from PacketRouter import *
+import queue
+import threading
 
 class Network:
-
     def __init__(self):
+        from ZappyClient import ZappyClient
         self.libnetwork = cdll.LoadLibrary("./libnetwork.so")
-        self.packet_router = PacketRouter()
         self.fd = self.libnetwork.socket_init()
+        self.zappy = ZappyClient.instance()
 
     def connect(self, hostname, port):
         hostname = hostname.encode()
-        ip = c_char_p(self.libnetwork.resolve_hostname(c_char_p(hostname))).value
+        resolved_hostname = self.libnetwork.resolve_hostname(c_char_p(hostname))
+        if not resolved_hostname:
+            return None
+        ip = c_char_p(resolved_hostname).value
         port = c_ushort(port)
         return self.libnetwork.socket_connect(self.fd, c_char_p(ip), byref(port))
 
     def connect_server(self):
-        hostname = "localhost"
-        port = 4242
+        hostname = self.zappy.server_hostname
+        port = self.zappy.server_port
         if not self.connect(hostname, port):
             raise RuntimeError("Failed to connect to {}:{}".format(hostname, port))
 
@@ -31,13 +35,15 @@ class Network:
         except:
             raise RuntimeError("Failed to decode packet")
 
-    def send_packet(self, packet):
-        self.packet_router.pending_packets.put(packet)
-        self.send(packet.cmd)
+    def send_packet(self, raw):
+        self.zappy.packet_router.pending_packets.put(raw)
+        with self.zappy.packet_router.cond:
+            self.send(raw)
+            self.zappy.packet_router.cond.wait()
+        return self.zappy.packet_router.res_packet
 
     def send(self, raw):
         print("Send>> {}".format(raw))
-        self.packet_router.pending_packets.put(raw)
         raw = "{}\n".format(raw)
         if not self.libnetwork.socket_send(self.fd, c_char_p(raw.encode())):
             raise RuntimeError("Failed to send packet : {}".format(raw))

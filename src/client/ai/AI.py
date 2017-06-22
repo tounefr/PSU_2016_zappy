@@ -1,81 +1,48 @@
 from AIInterface import *
-import queue
+import time
 
 class AI:
-
-    g_instance = None
-
-    @staticmethod
-    def instance():
-        if AI.g_instance is None:
-            AI.g_instance = AI()
-        return AI.g_instance
-
     def __init__(self):
-#        self.MsgQueue = queue.Queue()
-        pass
+        self.ai_interface = AIInterface()
 
-    @staticmethod
-    def on_game_start():
+    def onGameStart(self):
         print("Game start")
-        AIInterface.instance().turnRightAction()
-#        AIInterface.instance().turnLeftAction()
-#        AIInterface.instance().lookAroundAction()
+        while (1):
+            visible = self.ai_interface.lookAroundAction() #7pts
+            print("On my cell, I can see:")
+            for obj in visible[0]:
+                print(" > " + obj)
+            print(" END")
 
-    @staticmethod
-    def onMovement():
-        print("onMovement")
+            for obj in visible[0]:
+                self.ai_interface.takeObjectAction(obj) #7pts
+            self.ai_interface.moveForwardAction() #7pts
 
-    @staticmethod
-    def onTurn(direction):
-        print("onTurn dir={}".format(direction))
-        AIInterface.instance().inventoryAction()
-        AIInterface.instance().lookAroundAction()
-        AIInterface.instance().takeObjectAction("food")
-        AIInterface.instance().setObjectDownAction("food")
-#        AIInterface.instance().setObjectDownAction()
-#        AIInterface.instance().setObjectDownAction()
-#        AIInterface.instance().startIncantationAction()
 
-    @staticmethod
-    def onLookAroundResult(items):
-        print("onLookAroundResult")
-        print(items)
-        """
-        nb = len(items[0]) - 1
-        for i in range(0, nb):
-            AIInterface.instance().takeObjectAction("food")
-        """
+        '''
+        print("Turn right result : {}".format(self.ai_interface.turnRightAction()))
+        print("Turn left result : {}".format(self.ai_interface.turnLeftAction()))
+        print("Move forward result : {}".format(self.ai_interface.moveForwardAction()))
+        print("Look Around result : {}".format(self.ai_interface.lookAroundAction()))
+        print("Inventory result : {}".format(self.ai_interface.inventoryAction()))
+        print("Broadcast result : {}".format(self.ai_interface.broadcastAction("salut tout le monde")))
+        print("numberOfTeamSlotsUnusedAction result : {}".format(self.ai_interface.numberOfTeamSlotsUnusedAction()))
+        print("fork result : {}".format(self.ai_interface.forkAction()))
+#       bugged
+#        print("ejectPlayerTileAction result : {}".format(self.ai_interface.ejectPlayerTileAction()))
+        print("takeObjectAction result : {}".format(self.ai_interface.takeObjectAction("food")))
+        print("setObjectDownAction result : {}".format(self.ai_interface.setObjectDownAction("food")))
+#       bugged
+#        print("startIncantationAction result : {}".format(self.ai_interface.startIncantationAction()))
+        '''
 
-    @staticmethod
-    def onInventoryContent(inventory):
-        print("onInventoryContent")
-        print(inventory)
-#        AIInterface.instance().broadcastAction("Hello")
-
-    @staticmethod
-    def onPlayerForked():
-        print("Forked")
-
-    @staticmethod
-    def onPlayerEject(res):
+    def onPlayerEject(self, res):
         print("onPlayerEject res={}".format(res))
 
-    @staticmethod
-    def onPlayerDead():
+    def onPlayerDead(self, status):
         print("onPlayerDead")
 
-    @staticmethod
-    def onTakeObject(res):
-        print("onTakeObject res={}".format(res))
-
-    @staticmethod
-    def onObjectDown(res):
-        print("onObjectDown res={}".format(res))
-
-    @staticmethod
-    # status peut être égale à ko ou "underway" ou le level sur un int
-    def onIncantation(status):
+    def onIncantation(self, status):
         if type(status) is int:
             print("Level up : {}".format(status))
         elif status == "underway":
@@ -83,10 +50,11 @@ class AI:
         elif status == "ko":
             print("Incantation failed")
 
-    @staticmethod
-    def onBroadcast():
-        pass
+    def onMessage(self, message):
+        print("onMessage: {}".format(message))
 
-    @staticmethod
-    def onMessage(i, msg):
-        print(msg)
+    def onLevelUp(self, level):
+        print("onLevelUp level={}".format(level))
+
+    def onNbrOfTeamSlotsUnused(self, count):
+        print(count)
