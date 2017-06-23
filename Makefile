@@ -22,7 +22,8 @@ CLIENT_OBJS = $(CLIENT_SRCS:.c=.o)
 
 SERVER_NAME = zappy_server
 SERVER_SRCS = $(wildcard src/server/*.c) \
-              $(wildcard src/common/*.c)
+              $(wildcard src/common/*.c) \
+              $(wildcard src/libnetwork/*.c)
 SERVER_OBJS = $(SERVER_SRCS:.c=.o)
 
 LIBNETWORK_NAME = libnetwork.so
@@ -30,7 +31,7 @@ LIBNETWORK_SRCS = $(wildcard src/common/*.c \
 		          $(wildcard src/libnetwork/*.c))
 LIBNETWORK_OBJS = $(LIBNETWORK_SRCS:.c=.o)
 
-all: libnetwork
+all: libnetwork zappy_server
 
 libnetwork: $(LIBNETWORK_OBJS)
 	$(CC) -fPIC -shared -o $(LIBNETWORK_NAME) $(LIBNETWORK_OBJS)

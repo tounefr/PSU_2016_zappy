@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "server.h"
 
+/*
 int         coordinates_assign(char **args, int i, t_server server)
 {
 	if (check_atoi(args[i + 1]) == 0)
@@ -33,3 +34,4 @@ int         port_number(char **args, int i, t_server server)
 		return (84);
 	return (0);
 }
+ */

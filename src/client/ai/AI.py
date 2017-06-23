@@ -7,6 +7,13 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
+
+        while self.ai_interface.isRunning():
+            self.ai_interface.moveForwardAction()
+            self.ai_interface.broadcastAction("forward")
+            time.sleep(1)
+
+        """
         while (1):
             visible = self.ai_interface.lookAroundAction() #7pts
             print("On my cell, I can see:")
@@ -17,6 +24,7 @@ class AI:
             for obj in visible[0]:
                 self.ai_interface.takeObjectAction(obj) #7pts
             self.ai_interface.moveForwardAction() #7pts
+        """
 
 
         '''
@@ -50,8 +58,8 @@ class AI:
         elif status == "ko":
             print("Incantation failed")
 
-    def onMessage(self, message):
-        print("onMessage: {}".format(message))
+    def onMessage(self, player_num, message):
+        print("onMessage: player_num={} message={}".format(player_num,  message))
 
     def onLevelUp(self, level):
         print("onLevelUp level={}".format(level))

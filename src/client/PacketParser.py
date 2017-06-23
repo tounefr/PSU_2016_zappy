@@ -62,10 +62,16 @@ class PacketParser:
         }
 
     def parseMessagePacket(self, packet, raw):
-        message_splitted = raw.split(", ")
-        i = message_splitted[0].split(' ')[1]
-        message = message_splitted[1][0:]
-        return {"message": message}
+        try:
+            message_splitted = raw.split(", ")
+            player_num = int(message_splitted[0].split(' ')[1])
+            message = ", ".join(message_splitted[1:])
+            return {
+                "player_num": player_num,
+                "message": message
+            }
+        except:
+            raise RuntimeError("Failed to parse message packet")
 
     def parseIncantationPacket(self, packet, raw):
         if raw == "ko":

@@ -63,3 +63,11 @@ resolve_hostname(char *host)
     }
     return NULL;
 }
+
+char
+socket_nbsend(int fd, char *buffer)
+{
+    if (-1 == send(fd, buffer, strlen(buffer), MSG_DONTWAIT))
+        return exit_error(0, "write error : %s\n", strerror(errno));
+    return 1;
+}

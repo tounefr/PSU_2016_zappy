@@ -8,7 +8,7 @@
 typedef struct s_network_commands
 {
     char *cmd;
-    char (*callback)(char*);
+    char (*callback)(t_server*, t_client*, char*);
     char flags;
 } t_network_commands;
 extern t_network_commands network_commands[N_NETWORK_COMMANDS];
