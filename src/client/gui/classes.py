@@ -21,8 +21,7 @@ class SpriteSheet:
                 image = pygame.Surface([width, height]).convert()
                 image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
                 image.set_colorkey(color.BLACK)
-                return image              
-
+                return image
 
 class Texture(object):
         def __init__(self):
