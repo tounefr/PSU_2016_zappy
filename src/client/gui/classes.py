@@ -4,6 +4,14 @@ import pygame
 from pygame.locals import * 
 from constantes import *
 
+
+class Loop():
+    def __init__(self):
+        self.quitter_jeu = False
+        self.quitter_menu = False
+        self.continuer = True
+
+
 class Color(object):
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -21,6 +29,7 @@ class SpriteSheet:
                 image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
                 image.set_colorkey(color)
                 return image
+
 
 class Texture(object):
         def __init__(self):
@@ -60,11 +69,11 @@ class Texture(object):
                 bord = eau.get_image(303, 863, 15, 15, color.BLACK)
                 self.bord = pygame.transform.scale(bord, (48, 48))
 
+
 class Map:
     def __init__(self, fichier):
         self.fichier = fichier
         self.structure = 0
-
 
     def generer(self):
         with open(self.fichier, "r") as fichier:
@@ -76,7 +85,6 @@ class Map:
                         ligne_niveau.append(sprite)
                 structure_niveau.append(ligne_niveau)
             self.structure = structure_niveau
-
 
     def afficher(self, fenetre):
         texture = Texture()
@@ -113,7 +121,6 @@ class Perso:
         self.y = 1
         self.direction = self.droite
         self.map = map
-
 
     def move(self, direction):
 
