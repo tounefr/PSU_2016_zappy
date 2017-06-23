@@ -54,8 +54,8 @@ while continuer:
     while quit_game != 1:
 
         pygame.time.Clock().tick(30)
-        son = pygame.mixer.Sound("src/client/gui/assets/main_theme.wav")
-        son.play()
+        #son = pygame.mixer.Sound("src/client/gui/assets/main_theme.wav")
+        #son.play()
         for event in pygame.event.get():
             if event.type == QUIT:
                 quit_menu = 1

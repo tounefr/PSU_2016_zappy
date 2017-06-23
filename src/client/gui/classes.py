@@ -16,31 +16,48 @@ class SpriteSheet:
         def __init__(self, file_name):
                 self.sprite_sheet = pygame.image.load(file_name).convert()
                     
-        def get_image(self, x, y, width, height):
-                color = Color()
+        def get_image(self, x, y, width, height, color):
                 image = pygame.Surface([width, height]).convert()
                 image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-                image.set_colorkey(color.BLACK)
+                image.set_colorkey(color)
                 return image
 
 class Texture(object):
         def __init__(self):
-                spritesheet = SpriteSheet("src/client/gui/assets/tileset_world.png")
-                image_herbe_basse = spritesheet.get_image(253, 57, 16, 16)
-                image_herbe_haute = spritesheet.get_image(270, 57, 16, 16)
+                color = Color()
+
+                herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
+                image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
+                image_herbe_haute = herbe.get_image(270, 57, 16, 16, color.BLACK)
                 self.herbe_basse = pygame.transform.scale(image_herbe_basse, (48, 48))
                 self.herbe_haute = pygame.transform.scale(image_herbe_haute, (48, 48))
+
+                rubis = SpriteSheet("src/client/gui/assets/tileset_rubis.png")
+                image_rubis_vert = rubis.get_image(167, 363, 30, 48, color.WHITE)
+                image_rubis_bleu = rubis.get_image(195, 363, 30, 48, color.WHITE)
+                image_rubis_jaune = rubis.get_image(223, 363, 30, 48, color.WHITE)
+                image_rubis_rouge = rubis.get_image(251, 363, 30, 48, color.WHITE)
+                image_rubis_violet = rubis.get_image(278, 363, 30, 48, color.WHITE)
+                image_rubis_orange = rubis.get_image(305, 363, 30, 48, color.WHITE)
+                self.rubis_vert = pygame.transform.scale(image_rubis_vert, (12, 24))
+                self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (12, 24))
+                self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (12, 24))
+                self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (12, 24))
+                self.rubis_violet = pygame.transform.scale(image_rubis_violet, (12, 24))
+                self.rubis_orange = pygame.transform.scale(image_rubis_orange, (12, 24))
+
                 linkvert = SpriteSheet("src/client/gui/assets/persos.png")
-                bas = linkvert.get_image(222, 485, 25, 25)
-                droite = linkvert.get_image(197, 453, 25, 25)
-                gauche = linkvert.get_image(10, 453, 25, 25)
-                haut = linkvert.get_image(10, 486, 25, 25)
+                bas = linkvert.get_image(222, 485, 25, 25, color.BLACK)
+                droite = linkvert.get_image(197, 453, 25, 25, color.BLACK)
+                gauche = linkvert.get_image(10, 453, 25, 25, color.BLACK)
+                haut = linkvert.get_image(10, 486, 25, 25, color.BLACK)
                 self.bas = pygame.transform.scale(bas, (48, 48))
                 self.droite = pygame.transform.scale(droite, (48, 48))
                 self.gauche = pygame.transform.scale(gauche, (48, 48))
                 self.haut = pygame.transform.scale(haut, (48, 48))
+
                 eau = SpriteSheet("src/client/gui/assets/eau.png")
-                bord = eau.get_image(303, 863, 15, 15)
+                bord = eau.get_image(303, 863, 15, 15, color.BLACK)
                 self.bord = pygame.transform.scale(bord, (48, 48))
 
 class Map:
