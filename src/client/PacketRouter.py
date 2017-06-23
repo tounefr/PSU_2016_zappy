@@ -32,61 +32,109 @@ class PacketRouter:
             Packet(cmd="Set"),
             Packet(cmd="Incantation",
                    parser=self.zappy.packet_parser.parseIncantationPacket),
+            Packet(cmd="Current level",
+                   parser=self.zappy.packet_parser.parseCurrentLevelPacket),
             Packet(cmd="dead",
-                   listeners=[AI.onPlayerDead]),
+                   parser=self.zappy.packet_parser.parseDeadPacket,
+                   listeners=[self.zappy.ai.onPlayerDead]),
             Packet(cmd="Broadcast"),
             Packet(cmd="message",
                    parser=self.zappy.packet_parser.parseMessagePacket,
-                   listeners=[AI.onMessage]),
+                   listeners=[self.zappy.ai.onMessage]),
             Packet(cmd="msz",
-                   listeners=[],
+                   parser=self.zappy.packet_parser.parseGUIMapSizePacket,
+                   listeners=[self.zappy.gui.onMapSize],
                    gui=True),
             Packet(cmd="bct",
+                   parser=self.zappy.packet_parser.parseGUIMapCaseContentPacket,
+                   listeners=[self.zappy.gui.onMapCaseContent],
                    gui=True),
             Packet(cmd="tna",
+                   parser=self.zappy.packet_parser.parseGUITeamName,
+                   listeners=[self.zappy.gui.onTeamName],
                    gui=True),
             Packet(cmd="pnw",
+                   parser=self.zappy.packet_parser.parseGUIPlayerConnect,
+                   listeners=[self.zappy.gui.onPlayerConnect],
                    gui=True),
             Packet(cmd="ppo",
+                   parser=self.zappy.packet_parser.parseGUIPlayerPos,
+                   listeners=[self.zappy.gui.onPlayerPos],
                    gui=True),
             Packet(cmd="plv",
+                   parser=self.zappy.packet_parser.parseGUIPlayerLevel,
+                   listeners=[self.zappy.gui.onPlayerLevel],
                    gui=True),
             Packet(cmd="pin",
+                   parser=self.zappy.packet_parser.parseGUIPlayerInventory,
+                   listeners=[self.zappy.gui.onPlayerInventory],
                    gui=True),
             Packet(cmd="pex",
+                   parser=self.zappy.packet_parser.parseGUIPlayerNum,
+                   listeners=[self.zappy.gui.onPlayerSlay],
                    gui=True),
             Packet(cmd="pbc",
+                   parser=self.zappy.packet_parser.parseGUIPlayerBroadcast,
+                   listeners=[self.zappy.gui.onPlayerBroadcast],
                    gui=True),
             Packet(cmd="pic",
+                   parser=self.zappy.packet_parser.parseGUIFirstPlayerTriggerSpell,
+                   listeners=[self.zappy.gui.onFirstPlayerTriggerSpell],
                    gui=True),
             Packet(cmd="pie",
+                   parser=self.zappy.packet_parser.parseGUIEndSpell,
+                   listeners=[self.zappy.gui.onEndSpell],
                    gui=True),
             Packet(cmd="pfk",
+                   parser=self.zappy.packet_parser.parseGUIPlayerNum,
+                   listeners=[self.zappy.gui.onPlayerLayEgg],
                    gui=True),
             Packet(cmd="pdr",
+                   parser=self.zappy.packet_parser.parsePlayerResource,
+                   listeners=[self.zappy.gui.onPlayerThrowResource],
                    gui=True),
             Packet(cmd="pgt",
+                   parser=self.zappy.packet_parser.parsePlayerResource,
+                   listeners=[self.zappy.gui.onPlayerTakeResource],
                    gui=True),
             Packet(cmd="pdi",
+                   parser=self.zappy.packet_parser.parseGUIPlayerNum,
+                   listeners=[self.zappy.gui.onPlayerDieOfHunger],
                    gui=True),
             Packet(cmd="enw",
+                   parser=self.zappy.packet_parser.parseGUIlayerLaid,
+                   listeners=[self.zappy.gui.onPlayerLaid],
                    gui=True),
             Packet(cmd="eht",
+                   parser=self.zappy.packet_parser.parseGUIEggNum,
+                   listeners=[self.zappy.gui.onEggHatch],
                    gui=True),
             Packet(cmd="ebo",
+                   parser=self.zappy.packet_parser.parseGUIEggNum,
+                   listeners=[self.zappy.gui.onEggDieOfHunger],
                    gui=True),
             Packet(cmd="edi",
+                   parser=self.zappy.packet_parser.parseGUIEggNum,
+                   listeners=[self.zappy.gui.onServerTimeUnit],
                    gui=True),
             Packet(cmd="sgt",
+                   parser=self.zappy.packet_parser.parseGUIUnitTime,
+                   listeners=[self.zappy.gui.onServerTimeUnitUpdated],
                    gui=True),
             Packet(cmd="seg",
+                   parser=self.zappy.packet_parser.parseGUITeamName,
+                   listeners=[self.zappy.gui.onEndGame],
                    gui=True),
             Packet(cmd="smg",
+                   parser=self.zappy.packet_parser.parseGUIMessage,
+                   listeners=[self.zappy.gui.onServerMessage],
                    gui=True),
             Packet(cmd="suc",
+                   listeners=[self.zappy.gui.onWrongCommand],
                    gui=True),
             Packet(cmd="sbp",
-                   gui=True),
+                   listeners=[self.zappy.gui.onWrongCommandParameters],
+                   gui=True)
         ]
 
 
@@ -96,14 +144,14 @@ class PacketRouter:
         else:
             self.zappy.network.send(self.zappy.team_name)
 
-    def onClientNumPacket(self):
-        pass
-
     def onGameStart(self):
         if self.zappy.isGraphical():
             self.zappy.gui.onGameStart()
         else:
             self.zappy.ai.onGameStart()
+
+    def queuePacket(self, raw):
+        pass
 
     def route(self, raw):
         raw = raw[:-1]
@@ -111,19 +159,22 @@ class PacketRouter:
 
         if self.packet_i == 1:
             return self.onWelcomePacket()
-        elif self.packet_i == 2:
+        elif self.packet_i == 2 and not self.zappy.isGraphical():
             return self.zappy.packet_parser.parseClientNumPacket(raw)
-        elif self.packet_i == 3:
-            if not self.zappy.isGraphical():
-                self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
+        elif self.packet_i == 3 and not self.zappy.isGraphical():
+            self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
             return self.onGameStart()
 
         for p in self.packets:
+            if not self.zappy.isGraphical() and p.gui:
+                continue
             if raw[0:len(p.cmd)] == p.cmd:
                 raw_parsed = None
                 if p.parser:
                     raw_parsed = p.parser(p, raw)
-                return p.callListeners(p, raw_parsed)
+                if not raw_parsed is None:
+                    return p.callListeners(raw_parsed)
+                return
 
         if not self.pending_packets.empty():
             packet = self.getPacket(self.pending_packets.get())

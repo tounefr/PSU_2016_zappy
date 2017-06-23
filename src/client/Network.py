@@ -11,7 +11,10 @@ class Network:
 
     def connect(self, hostname, port):
         hostname = hostname.encode()
-        ip = c_char_p(self.libnetwork.resolve_hostname(c_char_p(hostname))).value
+        resolved_hostname = self.libnetwork.resolve_hostname(c_char_p(hostname))
+        if not resolved_hostname:
+            return None
+        ip = c_char_p(resolved_hostname).value
         port = c_ushort(port)
         return self.libnetwork.socket_connect(self.fd, c_char_p(ip), byref(port))
 

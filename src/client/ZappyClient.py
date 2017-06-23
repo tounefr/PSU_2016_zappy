@@ -10,7 +10,7 @@ class ZappyClient:
     g_instance = None
 
     def isGraphical(self):
-        return False
+        return self.graphical
 
     @staticmethod
     def instance():
@@ -36,6 +36,8 @@ class ZappyClient:
                     self.server_hostname = sys.argv[i + 1]
                 elif arg == "-help":
                     sys.exit(ZappyClient.print_usage())
+                elif arg == "-graphical":
+                    self.graphical = True
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
 
@@ -52,11 +54,13 @@ class ZappyClient:
         self.server_hostname = "localhost"
         self.server_port = None
         self.team_name = None
+        self.client_num = -1
+        self.gui = GUI()
+        self.ai = AI()
+        self.graphical = False
         self.network = Network()
         self.packet_parser = PacketParser()
         self.packet_router = PacketRouter()
-        self.gui = GUI()
-        self.ai = AI()
         self.running = True
 
         self.optparser()
@@ -68,6 +72,13 @@ class ZappyClient:
 
         tp = ThreadPool(10)
         while self.running:
-            raw = self.network.recv_packet()
-            tp.add_task(self.packet_router.route, raw)
+            try:
+                try:
+                    raw = self.network.recv_packet()
+                except RuntimeError as msg:
+                    print("Socket error : {}".format(msg))
+                    sys.exit(1)
+                tp.add_task(self.packet_router.route, raw)
+            except KeyboardInterrupt:
+                sys.exit(1)
         tp.wait_completion()

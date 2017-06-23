@@ -13,3 +13,12 @@ void    display_help()
 	printf(" of authorized clients per team\n\tfreq\t  is the reciprocal of time");
 	printf(" unit for execution of actions\n");
 }
+
+void    display_error(int error_code)
+{
+	if (error_code == 1)
+	{
+		printf("Bad argument\n");
+		exit (1);
+	}
+}
