@@ -5,44 +5,25 @@ class AI:
     def __init__(self):
         self.ai_interface = AIInterface()
 
+    def BHV_FindFood(self):
+        visible = self.ai_interface.lookAroundAction() # 7pts
+        obj = "food"
+        bSeeFood = 0
+        for indexVisible in range(0, len(visible)):
+            if (obj in visible[indexVisible]):
+                bSeeFood = 1
+                break;
+
+        if (bSeeFood == 1):
+            if (obj in visible[0]):
+                self.ai_interface.takeObjectAction(obj)
+
     def onGameStart(self):
         print("Game start")
-
-        print("Turn right result : {}".format(self.ai_interface.turnRightAction()))
-        print("Turn left result : {}".format(self.ai_interface.turnLeftAction()))
-        print("Move forward result : {}".format(self.ai_interface.moveForwardAction()))
-        print("Inventory : {}".format(self.ai_interface.inventoryAction()))
-
-        """
         while (1):
-            visible = self.ai_interface.lookAroundAction() #7pts
-            print("On my cell, I can see:")
-            for obj in visible[0]:
-                print(" > " + obj)
-            print(" END")
-
-            for obj in visible[0]:
-                self.ai_interface.takeObjectAction(obj) #7pts
-            self.ai_interface.moveForwardAction() #7pts
-        """
-
-
-        '''
-        print("Turn right result : {}".format(self.ai_interface.turnRightAction()))
-        print("Turn left result : {}".format(self.ai_interface.turnLeftAction()))
-        print("Move forward result : {}".format(self.ai_interface.moveForwardAction()))
-        print("Look Around result : {}".format(self.ai_interface.lookAroundAction()))
-        print("Inventory result : {}".format(self.ai_interface.inventoryAction()))
-        print("Broadcast result : {}".format(self.ai_interface.broadcastAction("salut tout le monde")))
-        print("numberOfTeamSlotsUnusedAction result : {}".format(self.ai_interface.numberOfTeamSlotsUnusedAction()))
-        print("fork result : {}".format(self.ai_interface.forkAction()))
-#       bugged
-#        print("ejectPlayerTileAction result : {}".format(self.ai_interface.ejectPlayerTileAction()))
-        print("takeObjectAction result : {}".format(self.ai_interface.takeObjectAction("food")))
-        print("setObjectDownAction result : {}".format(self.ai_interface.setObjectDownAction("food")))
-#       bugged
-#        print("startIncantationAction result : {}".format(self.ai_interface.startIncantationAction()))
-        '''
+            inventory = self.ai_interface.inventoryAction() # 1pt
+            if (inventory['food'] < 4):
+                self.BHV_FindFood()
 
     def onPlayerEject(self, res):
         print("onPlayerEject res={}".format(res))
