@@ -21,7 +21,7 @@ void select_init(t_server *server, int *nfds,
     *nfds = server->server_fd + 1;
     FD_ZERO(fds);
     timeout->tv_sec = 0;
-    timeout->tv_usec = 10000; //10ms
+    timeout->tv_usec = 1000000 / server->freq;
     FD_SET(server->server_fd, fds);
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1)

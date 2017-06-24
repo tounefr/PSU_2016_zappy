@@ -78,9 +78,11 @@ typedef struct s_server
 	char teams_name[MAX_TEAMS][TEAM_NAME_MAX_LEN];
 	t_client clients[MAX_CLIENTS];
     int server_fd;
-	unsigned int freq;
+	float freq;
 	unsigned short listen_port;
 	t_map map;
+    float cycle_time;
+    unsigned int cur_cycle;
 	unsigned int clients_per_team;
 } t_server;
 
@@ -132,6 +134,9 @@ char on_available_data(t_server *server, t_client *client);
 
 // map.c
 void init_map(t_map *map);
+
+// cycle.c
+char is_next_cycle(t_server *server, struct timeval *last_tick);
 
 /*
 typedef struct      s_server

@@ -32,6 +32,7 @@ libnetwork: $(LIBNETWORK_OBJS)
 	$(CC) -fPIC -shared -o $(LIBNETWORK_NAME) $(LIBNETWORK_OBJS)
 
 zappy_ai:
+	sudo apt-get install python3-pip -y
 	pip3 install -r requirements.txt
 
 zappy_server: $(SERVER_OBJS)

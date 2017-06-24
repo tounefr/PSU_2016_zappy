@@ -26,6 +26,8 @@ void init_server(t_server *server)
         init_client(&server->clients[i]);
     server->freq = DEFAULT_FREQUENCY;
     server->listen_port = DEFAULT_LISTEN_PORT;
+    server->cycle_time = (1.0f / server->freq) * 1000; // ms
+    server->cur_cycle = 0;
     init_map(&server->map);
     server->clients_per_team = DEFAULT_CLIENTS_PER_TEAM;
 }
@@ -44,9 +46,12 @@ char listen_server(t_server *server)
     return 1;
 }
 
-char update(t_server *server, t_client *client)
+char update(t_server *server, struct timeval *last_tick)
 {
-
+    if (is_next_cycle(server, last_tick)) {
+        
+    }
+    return 1;
 }
 
 char main_loop(t_server *server)
@@ -55,15 +60,19 @@ char main_loop(t_server *server)
     fd_set fds;
     int selectrv;
     struct timeval timeout;
+    struct timeval last_tick;
     int i;
 
     if (!listen_server(server))
         return 0;
+    gettimeofday(&last_tick, 0);
     while (1) {
         select_init(server, &nfds, &fds, &timeout);
         if ((selectrv = select(nfds, &fds, NULL, NULL, &timeout)) == -1)
             return exit_error(0, "select error : %s\n", strerror(errno));
-        if (!on_select_data(server, &fds))
+        if (selectrv > 0 && !on_select_data(server, &fds))
+            return 0;
+        if (!update(server, &last_tick))
             return 0;
     }
 }
