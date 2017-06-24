@@ -1,4 +1,6 @@
-from GUIInterface import *
+#!/usr/bin/python3
+
+#from GUIInterface import *
 
 class GUI:
     def __init__(self):
