@@ -1,3 +1,12 @@
+/*
+** packet.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
+** 
+** Made by Thomas HENON
+** Login   <thomas.henon@epitech.eu>
+** 
+** Started on  Fri Jun 23 15:01:20 2017 Thomas HENON
+** Last update Fri Jun 23 15:01:20 2017 Thomas HENON
+*/
 
 #include <string.h>
 #include <stdio.h>
@@ -7,12 +16,25 @@
 #include "server.h"
 #include "network.h"
 
+char packet_send(int fd, char *format, ...)
+{
+    va_list args;
+    int returnv;
+
+    va_start(args, format);
+    returnv = dprintf(fd, format, args);
+    printf("Send>> %s", format);
+    va_end(args);
+    return returnv;
+}
+
 char packet_callback(t_server *server, t_client *client, char *packet)
 {
     int i;
 
     for (i = 0; i < N_NETWORK_COMMANDS; i++) {
-        if (!strcmp(network_commands[i].cmd, packet) &&
+        if (!strncmp(network_commands[i].cmd, packet,
+                     strlen(network_commands[i].cmd)) &&
                 network_commands[i].callback)
             return network_commands[i].callback(server, client, packet);
     }

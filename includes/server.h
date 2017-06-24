@@ -16,15 +16,15 @@
 # define MAX_MAP_HEIGHT 30
 # define RESOURCE_MAX_LENGTH 50
 # define RESOURCES_NBR_TYPES 7
-# define BUFFER_SIZE 512
+# define BUFFER_SIZE 2048
 # define TEAM_NAME_MAX_LEN 100
-# define MAX_CLIENTS 10000
+# define MAX_CLIENTS 1000
 # define MAX_TEAMS 20
 
 # define DEFAULT_FREQUENCY 100
 # define DEFAULT_MAP_SIZE 30
 # define DEFAULT_CLIENTS_PER_TEAM 10
-# define DEFAULT_LISTEN_PORT 4243
+# define DEFAULT_LISTEN_PORT 4242
 
 # define TYPE_PLAYER 0
 # define TYPE_LINEMATE 1
@@ -33,6 +33,12 @@
 # define TYPE_MENDIANE 4
 # define TYPE_PHIRAS 5
 # define TYPE_THYSTAME 6
+# define TYPE_FOOD 7
+
+# define ORIENTATION_LEFT 1
+# define ORIENTATION_RIGHT 2
+# define ORIENTATION_TOP 3
+# define ORIENTATION_BOTTOM 4
 
 #include <sys/time.h>
 #include <sys/types.h>
@@ -43,15 +49,15 @@
 
 typedef struct s_pos
 {
-	char x;
-	char y;
+	int x;
+	int y;
 } t_pos;
 
 typedef struct s_map
 {
-	unsigned int width;
-	unsigned int height;
-	unsigned int cases[MAX_MAP_HEIGHT * MAX_MAP_HEIGHT][RESOURCES_NBR_TYPES];
+	int width;
+	int height;
+	int cases[MAX_MAP_HEIGHT * MAX_MAP_HEIGHT][RESOURCES_NBR_TYPES];
 } t_map;
 
 typedef struct s_client
@@ -63,6 +69,7 @@ typedef struct s_client
 	int client_num;
 	t_pos pos;
 	char is_gui;
+    char orientation;
 	unsigned char inventory[RESOURCES_NBR_TYPES];
 } t_client;
 
@@ -117,6 +124,7 @@ int get_team_name_index(t_server *server, char *team_name);
 char is_legal_network_char(char c);
 
 // packet.c
+char packet_send(int fd, char *format, ...);
 char packet_callback(t_server *server, t_client *client, char *packet);
 char packet_route(t_server *server, t_client *client, char *packet);
 char on_packet(t_server *server, t_client *client, int i, char *packet);

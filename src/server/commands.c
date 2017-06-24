@@ -1,3 +1,12 @@
+/*
+** commands.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
+** 
+** Made by Thomas HENON
+** Login   <thomas.henon@epitech.eu>
+** 
+** Started on  Fri Jun 23 15:00:43 2017 Thomas HENON
+** Last update Fri Jun 23 15:00:44 2017 Thomas HENON
+*/
 
 #include "server.h"
 #include "network.h"
@@ -53,7 +62,7 @@ char    onEjectPacket(t_server *server, t_client *client, char *packet)
 char    onForkPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
-    (void)client;
     (void)packet;
+    packet_send(client->socket_fd, "ok\n");
     return 1;
 }

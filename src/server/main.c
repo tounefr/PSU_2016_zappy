@@ -1,15 +1,11 @@
-
 /*
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <fcntl.h>
+** main.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
+** 
+** Made by Thomas HENON
+** Login   <thomas.henon@epitech.eu>
+** 
+** Started on  Fri Jun 23 15:01:16 2017 Thomas HENON
+** Last update Fri Jun 23 15:01:17 2017 Thomas HENON
 */
 
 #include "server.h"
@@ -22,6 +18,5 @@ int main(int ac, char **av)
 	(void)ac;
 	(void)av;
 	init_server(&server);
-    main_loop(&server);
-
+    return (main_loop(&server) ? 0 : 84);
 }

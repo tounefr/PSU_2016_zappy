@@ -12,8 +12,8 @@ CC = gcc
 
 RM = rm -f
 
-LDFLAGS+= -W -Wall
-CFLAGS+= -I./includes -W -Wall -fPIC
+LDFLAGS+= -W -Wall -g
+CFLAGS+= -I./includes -W -Wall -fPIC -g
 
 SERVER_NAME = zappy_server
 SERVER_SRCS = $(wildcard src/server/*.c) \

@@ -1,3 +1,12 @@
+/*
+** map.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
+** 
+** Made by Thomas HENON
+** Login   <thomas.henon@epitech.eu>
+** 
+** Started on  Fri Jun 23 15:00:58 2017 Thomas HENON
+** Last update Fri Jun 23 15:00:58 2017 Thomas HENON
+*/
 
 #include "server.h"
 #include "network.h"

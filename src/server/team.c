@@ -1,3 +1,12 @@
+/*
+** team.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
+** 
+** Made by Thomas HENON
+** Login   <thomas.henon@epitech.eu>
+** 
+** Started on  Fri Jun 23 15:01:05 2017 Thomas HENON
+** Last update Fri Jun 23 15:01:06 2017 Thomas HENON
+*/
 
 #include <string.h>
 #include <stdlib.h>

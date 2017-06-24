@@ -8,10 +8,10 @@ class AI:
     def onGameStart(self):
         print("Game start")
 
-        while self.ai_interface.isRunning():
-            self.ai_interface.moveForwardAction()
-            self.ai_interface.broadcastAction("forward")
-            time.sleep(1)
+        print("Turn right result : {}".format(self.ai_interface.turnRightAction()))
+        print("Turn left result : {}".format(self.ai_interface.turnLeftAction()))
+        print("Move forward result : {}".format(self.ai_interface.moveForwardAction()))
+        print("Inventory : {}".format(self.ai_interface.inventoryAction()))
 
         """
         while (1):

@@ -19,25 +19,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-typedef struct      t_my_select
-{
-    int             nfds;
-    int             readfds_n;
-    fd_set          readfds;
-    fd_set          writefds;
-    int             writefds_n;
-    struct timeval  timeout;
-    fd_set          exceptfds;
-} t_my_select;
-
-// my_select.c
-void
-init_my_select(t_my_select *server_select);
-
-void
-add_readfd_my_select(t_my_select *server_select,
-                         int fd);
-
 // error.c
 void malloc_error();
 
@@ -55,8 +36,5 @@ char*
 exit_ptr_error(char *returnv,
                char *format,
                ...);
-
-char*
-generate_nickname();
 
 #endif //PROJETS_UTIL_H

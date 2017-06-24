@@ -1,3 +1,12 @@
+/*
+** client.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
+** 
+** Made by Thomas HENON
+** Login   <thomas.henon@epitech.eu>
+** 
+** Started on  Fri Jun 23 15:01:11 2017 Thomas HENON
+** Last update Fri Jun 23 15:01:11 2017 Thomas HENON
+*/
 
 #include <stdio.h>
 #include <string.h>
@@ -16,6 +25,7 @@ void init_client(t_client *client)
     client->pos.y = 0;
     client->packet_i = 0;
     client->is_gui = 0;
+    client->orientation = ORIENTATION_LEFT;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
 }
@@ -40,13 +50,11 @@ char on_new_client(t_server *server)
     i = 0;
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1) {
-            printf("new co\n");
             server->clients[i].socket_fd = socket_accept(server->server_fd);
-            return socket_send(server->clients[i].socket_fd, "BIENVENUE\n");
+            return packet_send(server->clients[i].socket_fd, "BIENVENUE\n");
         }
     }
-    printf("no slots available\n");
-    return 0;
+    return exit_error(0, "error : no slots available\n");
 }
 
 void close_client_connection(t_client *client)
