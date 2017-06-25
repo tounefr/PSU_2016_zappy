@@ -149,6 +149,7 @@ int get_team_name_index(t_server *server, char *team_name);
 
 // util.c
 char is_legal_network_char(char c);
+char is_numeric(char *s);
 
 // packet.c
 char packet_send(int fd, char *format, ...);

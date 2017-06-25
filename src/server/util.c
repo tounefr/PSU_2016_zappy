@@ -13,3 +13,18 @@ char is_legal_network_char(char c)
     return (!(c >= 32 && c <= 126) &&
             c != '\n');
 }
+
+char is_numeric(char *s)
+{
+    int len;
+    int i;
+
+    len = strlen(s);
+    if (len == 0)
+        return 0;
+    for (i = 0; i < len; i++) {
+        if (s[i] < '0' || s[i] > '9')
+            return 0;
+    }
+    return 1;
+}
