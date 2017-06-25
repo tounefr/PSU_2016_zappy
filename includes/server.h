@@ -85,8 +85,10 @@ typedef struct s_client
 	int	socket_fd;
 	char buffer[BUFFER_SIZE];
     unsigned int cur_cycle;
-    t_network_commands *cur_packet;
-    t_network_commands *pending_packets[MAX_PENDING_PACKETS];
+    char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
+    char *cur_packet;
+//    t_network_commands *cur_packet;
+//    t_network_commands *pending_packets[MAX_PENDING_PACKETS];
     int remain_cycles;
     int recv_packet_i;
 
@@ -166,6 +168,9 @@ char is_next_cycle(t_server *server, struct timeval *last_tick);
 
 // resources.c
 char generate_resources(t_server *server);
+
+// packet.c
+t_network_commands *get_network_command(char *packet);
 
 /*
 typedef struct      s_server

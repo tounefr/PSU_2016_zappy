@@ -28,7 +28,7 @@ void init_client(t_client *client)
     client->orientation = ORIENT_SOUTH;
     client->cur_packet = NULL;
     for (i = 0; i < MAX_PENDING_PACKETS; i++)
-        client->pending_packets[i] = NULL;
+        memset(&client->pending_packets[i], 0, BUFFER_SIZE);
     client->remain_cycles = -1;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;

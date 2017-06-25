@@ -45,6 +45,7 @@ char update(t_server *server, struct timeval *last_tick)
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
+        printf("cycle %d\n", server->cur_cycle);
         if ((server->cur_cycle % 600) == 0)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
@@ -53,9 +54,9 @@ char update(t_server *server, struct timeval *last_tick)
                 continue;
             if (client->remain_cycles == -1)
                 packet_pre_cycle(client);
-            else if (client->remain_cycles > 0)
+            else if (client->remain_cycles > 1)
                 client->remain_cycles--;
-            if (client->cur_packet)
+            else if (client->cur_packet)
                 packet_post_cycle(server, client);
         }
     }
