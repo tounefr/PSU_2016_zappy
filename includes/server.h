@@ -13,13 +13,17 @@
 
 # define N_NETWORK_COMMANDS 12
 
+# define MAX_MAP_WIDTH 30
 # define MAX_MAP_HEIGHT 30
 # define RESOURCE_MAX_LENGTH 50
 # define RESOURCES_NBR_TYPES 7
 # define BUFFER_SIZE 2048
 # define TEAM_NAME_MAX_LEN 100
+
 # define MAX_CLIENTS 1000
 # define MAX_TEAMS 20
+# define MAX_PENDING_PACKETS 10
+# define MAX_PACKET_SIZE 100
 
 # define DEFAULT_FREQUENCY 100
 # define DEFAULT_MAP_SIZE 30
@@ -35,10 +39,10 @@
 # define TYPE_THYSTAME 6
 # define TYPE_FOOD 7
 
-# define ORIENTATION_LEFT 1
-# define ORIENTATION_RIGHT 2
-# define ORIENTATION_TOP 3
-# define ORIENTATION_BOTTOM 4
+# define ORIENT_NORTH 1
+# define ORIENT_SOUTH 2
+# define ORIENT_EST 3
+# define ORIENT_OUEST 4
 
 #include <sys/time.h>
 #include <sys/types.h>
@@ -46,6 +50,22 @@
 
 #include "util.h"
 #include "socket.h"
+
+# define FLAG_NONE 0
+# define FLAG_GUI_CMD 1
+
+typedef struct s_server t_server;
+typedef struct s_client t_client;
+
+typedef struct s_network_commands
+{
+    char *cmd;
+    char (*callback)(t_server*, t_client*, char*);
+    unsigned int cycles;
+    char flags;
+} t_network_commands;
+extern t_network_commands network_commands[N_NETWORK_COMMANDS];
+
 
 typedef struct s_pos
 {
@@ -57,15 +77,20 @@ typedef struct s_map
 {
 	int width;
 	int height;
-	int cases[MAX_MAP_HEIGHT * MAX_MAP_HEIGHT][RESOURCES_NBR_TYPES];
+	int cases[MAX_MAP_WIDTH * MAX_MAP_HEIGHT][RESOURCES_NBR_TYPES];
 } t_map;
 
 typedef struct s_client
 {
 	int	socket_fd;
 	char buffer[BUFFER_SIZE];
+    unsigned int cur_cycle;
+    t_network_commands *cur_packet;
+    t_network_commands *pending_packets[MAX_PENDING_PACKETS];
+    int remain_cycles;
+    int recv_packet_i;
+
 	int team_i;
-	int packet_i;
 	int client_num;
 	t_pos pos;
 	char is_gui;
@@ -129,7 +154,7 @@ char is_legal_network_char(char c);
 char packet_send(int fd, char *format, ...);
 char packet_callback(t_server *server, t_client *client, char *packet);
 char packet_route(t_server *server, t_client *client, char *packet);
-char on_packet(t_server *server, t_client *client, int i, char *packet);
+char on_packet(t_server *server, t_client *client, int i);
 char on_available_data(t_server *server, t_client *client);
 
 // map.c
@@ -137,6 +162,9 @@ void init_map(t_map *map);
 
 // cycle.c
 char is_next_cycle(t_server *server, struct timeval *last_tick);
+
+// resources.c
+char generate_resources(t_server *server);
 
 /*
 typedef struct      s_server

@@ -11,7 +11,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "server.h"
-#include "network.h"
 
 int get_team_name_index(t_server *server, char *team_name)
 {

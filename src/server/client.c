@@ -10,8 +10,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
 #include "server.h"
-#include "network.h"
 
 void init_client(t_client *client)
 {
@@ -23,9 +23,13 @@ void init_client(t_client *client)
     client->client_num = -1;
     client->pos.x = 0;
     client->pos.y = 0;
-    client->packet_i = 0;
+    client->recv_packet_i = 0;
     client->is_gui = 0;
-    client->orientation = ORIENTATION_LEFT;
+    client->orientation = ORIENT_SOUTH;
+    client->cur_packet = NULL;
+    for (i = 0; i < MAX_PENDING_PACKETS; i++)
+        client->pending_packets[i] = NULL;
+    client->remain_cycles = -1;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
 }
@@ -46,11 +50,17 @@ int clients_in_team(t_client *clients, int team_i)
 char on_new_client(t_server *server)
 {
     int i;
+    int flags;
+    int fd;
 
     i = 0;
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1) {
             server->clients[i].socket_fd = socket_accept(server->server_fd);
+            fd = server->clients[i].socket_fd;
+            flags = fcntl(fd, F_GETFL, 0);
+            if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
+                return exit_error(0, "fcntl error : %s\n", strerror(errno));
             return packet_send(server->clients[i].socket_fd, "BIENVENUE\n");
         }
     }

@@ -9,7 +9,6 @@
 */
 
 #include "server.h"
-#include "network.h"
 
 void init_map(t_map *map)
 {

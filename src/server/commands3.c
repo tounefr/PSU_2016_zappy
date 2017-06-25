@@ -9,20 +9,19 @@
 */
 
 #include "server.h"
-#include "network.h"
 
 char    onLeftPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
     (void)packet;
-    if (client->orientation == ORIENTATION_LEFT)
-        client->orientation = ORIENTATION_BOTTOM;
-    else if (client->orientation == ORIENTATION_RIGHT)
-        client->orientation = ORIENTATION_TOP;
-    else if (client->orientation == ORIENTATION_TOP)
-        client->orientation = ORIENTATION_LEFT;
-    else if (client->orientation == ORIENTATION_BOTTOM)
-        client->orientation = ORIENTATION_RIGHT;
+    if (client->orientation == ORIENT_OUEST)
+        client->orientation = ORIENT_SOUTH;
+    else if (client->orientation == ORIENT_EST)
+        client->orientation = ORIENT_NORTH;
+    else if (client->orientation == ORIENT_NORTH)
+        client->orientation = ORIENT_OUEST;
+    else if (client->orientation == ORIENT_SOUTH)
+        client->orientation = ORIENT_EST;
     packet_send(client->socket_fd, "ok\n");
     return 1;
 }

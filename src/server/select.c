@@ -11,7 +11,6 @@
 #include <sys/select.h>
 #include <stdio.h>
 #include "server.h"
-#include "network.h"
 
 void select_init(t_server *server, int *nfds,
                  fd_set *fds, struct timeval *timeout)

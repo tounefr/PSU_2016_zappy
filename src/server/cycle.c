@@ -10,7 +10,6 @@
 
 #include <time.h>
 #include "server.h"
-#include "network.h"
 
 float timedifference_msec(struct timeval t0, struct timeval t1)
 {
@@ -28,6 +27,36 @@ char is_next_cycle(t_server *server, struct timeval *last_tick)
         server->cur_cycle++;
         gettimeofday(last_tick, 0);
         return 1;
+    }
+    return 0;
+}
+
+char packet_pre_cycle(t_client *client)
+{
+    int i;
+
+    for (i = 0; i < MAX_PENDING_PACKETS; i++) {
+        if (client->pending_packets[i]) {
+            client->cur_packet = client->pending_packets[i];
+            client->remain_cycles = client->cur_packet->cycles;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+char packet_post_cycle(t_server *server, t_client *client)
+{
+    int i;
+
+    for (i = 0; i < MAX_PENDING_PACKETS; i++) {
+        if (client->cur_packet == client->pending_packets[i]) {
+            client->pending_packets[i] = NULL;
+            client->cur_packet->callback(server, client, client->cur_packet->cmd);
+            client->remain_cycles = -1;
+            client->cur_packet = NULL;
+            return 1;
+        }
     }
     return 0;
 }

@@ -12,9 +12,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include "server.h"
-#include "network.h"
 
 void init_server(t_server *server)
 {
@@ -34,13 +32,8 @@ void init_server(t_server *server)
 
 char listen_server(t_server *server)
 {
-    int flags;
-
     if (-1 == (server->server_fd = socket_init()))
         return 0;
-    flags = fcntl(server->server_fd, F_GETFL, 0);
-    if (-1 == fcntl(server->server_fd, F_SETFL, flags | O_NONBLOCK))
-        return exit_error(0, "fcntl error : %s\n", strerror(errno));
     if (!socket_listen(server->server_fd, "0.0.0.0", &server->listen_port))
         return 0;
     return 1;
@@ -48,8 +41,23 @@ char listen_server(t_server *server)
 
 char update(t_server *server, struct timeval *last_tick)
 {
+    int i;
+    t_client *client;
+
     if (is_next_cycle(server, last_tick)) {
-        
+        if ((server->cur_cycle % 600) == 0)
+            generate_resources(server);
+        for (i = 0; i < MAX_CLIENTS; i++) {
+            client = &server->clients[i];
+            if (client->socket_fd == -1)
+                continue;
+            if (client->remain_cycles == -1)
+                packet_pre_cycle(client);
+            else if (client->remain_cycles > 0)
+                client->remain_cycles--;
+            if (client->cur_packet)
+                packet_post_cycle(server, client);
+        }
     }
     return 1;
 }

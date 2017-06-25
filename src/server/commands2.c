@@ -9,7 +9,6 @@
 */
 
 #include "server.h"
-#include "network.h"
 
 char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
 {
@@ -47,13 +46,13 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 char    onForwardPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
-    if (client->orientation == ORIENTATION_LEFT)
+    if (client->orientation == ORIENT_OUEST)
         client->pos.x--;
-    if (client->orientation == ORIENTATION_RIGHT)
+    if (client->orientation == ORIENT_EST)
         client->pos.x++;
-    if (client->orientation == ORIENTATION_TOP)
+    if (client->orientation == ORIENT_NORTH)
         client->pos.y--;
-    if (client->orientation == ORIENTATION_BOTTOM)
+    if (client->orientation == ORIENT_SOUTH)
         client->pos.y++;
     if (client->pos.y < 0)
         client->pos.y = server->map.height - 1;
@@ -71,14 +70,14 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
     (void)packet;
-    if (client->orientation == ORIENTATION_LEFT)
-        client->orientation = ORIENTATION_TOP;
-    else if (client->orientation == ORIENTATION_RIGHT)
-        client->orientation = ORIENTATION_BOTTOM;
-    else if (client->orientation == ORIENTATION_TOP)
-        client->orientation = ORIENTATION_RIGHT;
-    else if (client->orientation == ORIENTATION_BOTTOM)
-        client->orientation = ORIENTATION_LEFT;
+    if (client->orientation == ORIENT_OUEST)
+        client->orientation = ORIENT_NORTH;
+    else if (client->orientation == ORIENT_EST)
+        client->orientation = ORIENT_SOUTH;
+    else if (client->orientation == ORIENT_NORTH)
+        client->orientation = ORIENT_EST;
+    else if (client->orientation == ORIENT_SOUTH)
+        client->orientation = ORIENT_OUEST;
     packet_send(client->socket_fd, "ok\n");
     return 1;
 }
