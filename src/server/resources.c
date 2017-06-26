@@ -12,6 +12,14 @@
 #include <time.h>
 #include "server.h"
 
+char is_stone(int type)
+{
+    return (type == TYPE_LINEMATE || type == TYPE_DERAUMERE ||
+            type == TYPE_SIBUR || type == TYPE_MENDIANE ||
+            type == TYPE_MENDIANE || type == TYPE_PHIRAS ||
+            type == TYPE_THYSTAME);
+}
+
 void	rand_ressource(t_server *server, int p)
 {
   int	item;

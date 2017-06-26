@@ -19,7 +19,7 @@ void init_server(t_server *server)
     int i;
 
     for (i = 0; i < MAX_TEAMS; i++)
-        memset(&server->teams_name[i], 0, sizeof(server->teams_name[i]));
+        memset(&server->teams[i], 0, sizeof(server->teams));
     for (i = 0; i < MAX_CLIENTS; i++)
         init_client(&server->clients[i]);
     server->freq = DEFAULT_FREQUENCY;
@@ -50,10 +50,11 @@ char update(t_server *server, struct timeval *last_tick)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
+            hatch_eggs(server, client);
             if (client->socket_fd == -1)
                 continue;
             if (client->remain_cycles == -1)
-                packet_pre_cycle(client);
+                packet_pre_cycle(server, client);
             else if (client->remain_cycles > 1)
                 client->remain_cycles--;
             else if (client->cur_packet)

@@ -29,10 +29,16 @@ char parse_team_names(t_server *server, int *i, int ac, char **av)
 {
     int i2;
     int i3;
+    t_team *team;
 
     i3 = 0;
-    for (i2 = *i + 1; i2 < ac && av[i2][0] != '-'; i2++)
-        strncpy((char*)&server->teams_name[i3++], av[i2], TEAM_NAME_MAX_LEN - 1);
+    for (i2 = *i + 1; i2 < ac && av[i2][0] != '-'; i2++) {
+        if (!strcasecmp("GRAPHICAL", av[i2]))
+            continue;
+        team = &server->teams[i3++];
+        strncpy((char *) &team->name, av[i2], TEAM_NAME_MAX_LEN - 1);
+        team->slots = server->clients_per_team;
+    }
     *i = i2;
     return 1;
 }

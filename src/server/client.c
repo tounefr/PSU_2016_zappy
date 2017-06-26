@@ -19,7 +19,6 @@ void init_client(t_client *client)
 
     client->socket_fd = -1;
     memset(&client->buffer, 0, sizeof(client->buffer));
-    client->team_i = -1;
     client->client_num = -1;
     client->pos.x = 0;
     client->pos.y = 0;
@@ -28,25 +27,16 @@ void init_client(t_client *client)
     client->orientation = ORIENT_SOUTH;
     client->cur_packet = NULL;
     client->level = 1;
+    client->team = NULL;
     for (i = 0; i < MAX_PENDING_PACKETS; i++)
         memset(&client->pending_packets[i], 0, BUFFER_SIZE);
     client->remain_cycles = -1;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
+    for (i = 0; i < MAX_EGGS_PER_CLIENT; i++)
+        memset(&client->eggs[i], 0, sizeof(t_egg));
 }
 
-int clients_in_team(t_client *clients, int team_i)
-{
-    int i;
-    int c;
-
-    c = 0;
-    for (i = 0; i < MAX_CLIENTS; i++) {
-        if (clients[i].team_i == team_i)
-            c++;
-    }
-    return c;
-}
 
 char on_new_client(t_server *server)
 {

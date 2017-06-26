@@ -8,6 +8,7 @@
 ** Last update Fri Jun 23 15:01:31 2017 Thomas HENON
 */
 
+#include <stdlib.h>
 #include <string.h>
 
 char is_legal_network_char(char c)
@@ -29,4 +30,9 @@ char is_numeric(char *s)
             return 0;
     }
     return 1;
+}
+
+int my_rand(int a, int b)
+{
+    return rand() % (b - a) + a;
 }

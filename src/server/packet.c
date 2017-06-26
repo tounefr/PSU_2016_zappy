@@ -43,6 +43,7 @@ int stack_packet(t_server *server, t_client *client, char *packet)
 {
     int i2;
 
+    (void)server;
     for (i2 = 0; i2 < MAX_PENDING_PACKETS; i2++) {
         if (strlen(client->pending_packets[i2]) > 0)
             continue;
@@ -54,6 +55,7 @@ int stack_packet(t_server *server, t_client *client, char *packet)
 
 char alloc_packet(t_server *server, t_client *client, int i, char *packet)
 {
+    (void)server;
     memset(packet, 0, BUFFER_SIZE);
     memcpy(packet, &client->buffer, BUFFER_SIZE - 1);
     if (i + 1 < BUFFER_SIZE) {
@@ -76,9 +78,8 @@ char on_packet(t_server *server, t_client *client, int i)
         return 0;
     printf("Recv<< %s\n", (char*)&packet);
     client->recv_packet_i++;
-    if (client->recv_packet_i == 1) {
+    if (client->recv_packet_i == 1)
         return on_welcome(server, client, (char*)&packet);
-    }
     if (!get_network_command((char*)&packet))
         return exit_error(0, "Unknown packet\n");
     if ((i2 = stack_packet(server, client, (char*)&packet)) == -1)
