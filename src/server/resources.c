@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sat Jun 24 16:09:57 2017 Thomas HENON
-** Last update Mon Jun 26 12:02:49 2017 arsene
+** Last update Mon Jun 26 13:04:28 2017 arsene
 */
 
 #include <stdio.h>
@@ -16,7 +16,7 @@ void	rand_ressource(t_server *server, int p)
 {
   int	item;
 
-  item = (rand() % (b - a) + a);
+  item = (rand() % (100 - 0) + 100);
   if (item <= 56)
     break;
   else if (item <= 57 && item > 56)
