@@ -17,7 +17,7 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
     (void)server;
     (void)client;
     (void)packet;
-    dprintf(client->socket_fd, "%d\n", client->team->slots);
+    packet_send(client->socket_fd, "%d\n", client->team->slots);
     return 1;
 }
 
@@ -41,7 +41,7 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
              client->inventory[TYPE_PHIRAS], client->inventory[TYPE_THYSTAME],
              client->inventory[TYPE_FOOD]) == -1)
         return exit_error(0, "malloc error\n");
-    dprintf(client->socket_fd, "%s", buffer);
+    packet_send(client->socket_fd, "%s", buffer);
     send_gui_packet(server, "pin %d %d %d %d %d %d %d %d %d %d\n",
         client->num, client->pos.x, client->pos.y,
                     client->inventory[TYPE_FOOD], client->inventory[TYPE_LINEMATE],

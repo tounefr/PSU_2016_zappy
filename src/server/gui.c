@@ -59,7 +59,7 @@ char gui_send_teams(t_server *server, t_client *client)
     for (i = 0; i < MAX_TEAMS; i++) {
         if (strlen(server->teams[i].name) == 0)
             continue;
-        dprintf(client->socket_fd, "tna %s\n", server->teams[i].name);
+        packet_send(client->socket_fd, "tna %s\n", server->teams[i].name);
     }
     return 1;
 }

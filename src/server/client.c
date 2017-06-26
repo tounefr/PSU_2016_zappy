@@ -33,6 +33,8 @@ void init_client(t_client *client)
     client->remain_cycles = -1;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
+    client->inventory[TYPE_FOOD] = PLAYER_LIFE_UNITS;
+    client->life_cycles = client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT;
     for (i = 0; i < MAX_EGGS_PER_CLIENT; i++)
         memset(&client->eggs[i], 0, sizeof(t_egg));
 }

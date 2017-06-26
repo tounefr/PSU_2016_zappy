@@ -46,16 +46,19 @@ char update(t_server *server, struct timeval *last_tick)
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-//        printf("cycle %d\n", server->cur_cycle);
+        printf("cycle %d\n", server->cur_cycle);
         if (server->cur_cycle == 1 || (server->cur_cycle % 600) == 0)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
+            if (client->socket_fd == -1)
+                continue;
+            client->life_cycles--;
+            if ((client->life_cycles % 126) == 0)
+                client->inventory[TYPE_FOOD]--;
             if (check_player_dead(server, client))
                 continue;
             hatch_eggs(server, client);
-            if (client->socket_fd == -1)
-                continue;
             if (client->remain_cycles == -1)
                 packet_pre_cycle(server, client);
             else if (client->remain_cycles > 1)

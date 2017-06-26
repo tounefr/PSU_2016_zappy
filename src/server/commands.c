@@ -69,6 +69,8 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
             server->map.cases[client_pos][g_foods[i].type]++;
             send_gui_packet(server, "pdr %d %d\n",
                             client->num, g_foods[i].type);
+            if (g_foods[i].type == TYPE_FOOD)
+                client->life_cycles -= CYCLES_PER_LIFE_UNIT;
             return packet_send(client->socket_fd, "ok\n");
         }
     }
@@ -94,6 +96,8 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
             server->map.cases[client_pos][g_foods[i].type]--;
             send_gui_packet(server, "pgt %d %d\n",
                             client->num, g_foods[i].type);
+            if (g_foods[i].type == TYPE_FOOD)
+                client->life_cycles += CYCLES_PER_LIFE_UNIT;
             return packet_send(client->socket_fd, "ok\n");
         }
     }

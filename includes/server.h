@@ -33,6 +33,9 @@
 # define DEFAULT_CLIENTS_PER_TEAM 10
 # define DEFAULT_LISTEN_PORT 4242
 
+# define PLAYER_LIFE_UNITS 10
+# define CYCLES_PER_LIFE_UNIT 126
+
 # define TYPE_FOOD 0
 # define TYPE_LINEMATE 1
 # define TYPE_DERAUMERE 2
@@ -122,6 +125,7 @@ typedef struct s_client
     t_egg eggs[MAX_EGGS_PER_CLIENT];
     t_team *team;
     int remain_cycles;
+    int life_cycles;
     int recv_packet_i;
     int level;
 	int num;

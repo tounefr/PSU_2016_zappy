@@ -21,8 +21,11 @@ char packet_send(int fd, char *format, ...)
     int returnv;
 
     va_start(args, format);
+    printf("Send>> ");
+    vprintf(format, args);
+    va_end(args);
+    va_start(args, format);
     returnv = vdprintf(fd, format, args);
-    printf("Send>> %s", format);
     va_end(args);
     return returnv;
 }
