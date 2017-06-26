@@ -12,24 +12,27 @@
 #include <stdlib.h>
 #include "server.h"
 
-int get_team_name_index(t_server *server, char *team_name)
+char client_assign_team(t_server *server, t_client *client, char *packet)
 {
     int i;
-    char *unused_team_name;
-    int unused_team_name_i;
-
-    unused_team_name = NULL;
     for (i = 0; i < MAX_TEAMS; i++) {
-        if (!strcmp(server->teams_name[i], team_name))
-            return i;
-        else if (server->teams_name[i][0] == 0) {
-            unused_team_name = (char*)&server->teams_name[i];
-            unused_team_name_i = i;
+        if (!strcmp(packet, server->teams[i].name)) {
+            client->team = &server->teams[i];
+            return 1;
         }
     }
-    if (unused_team_name) {
-        strncpy(unused_team_name, team_name, TEAM_NAME_MAX_LEN);
-        return unused_team_name_i;
+    return exit_error(0, "can't allocat new team\n");
+}
+
+int clients_in_team(t_server *server, t_team *team)
+{
+    int i;
+    int c;
+
+    c = 0;
+    for (i = 0; i < MAX_CLIENTS; i++) {
+        if (server->clients[i].team == team)
+            c++;
     }
-    return -1;
+    return c;
 }

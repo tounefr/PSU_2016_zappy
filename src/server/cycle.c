@@ -31,7 +31,7 @@ char is_next_cycle(t_server *server, struct timeval *last_tick)
     return 0;
 }
 
-char packet_pre_cycle(t_client *client)
+char packet_pre_cycle(t_server *server, t_client *client)
 {
     int i;
     t_network_commands *net_cmd;
@@ -42,6 +42,10 @@ char packet_pre_cycle(t_client *client)
 //            printf("Precycle %s\n", client->cur_packet);
             if (!(net_cmd = get_network_command(client->cur_packet)))
                 continue;
+           /* if (net_cmd->pre_callback) {
+                if (!net_cmd->pre_callback(server, client, client->cur_packet))
+                    return 0;
+            }*/
             client->remain_cycles = net_cmd->cycles;
             return 1;
         }
@@ -60,7 +64,8 @@ char packet_post_cycle(t_server *server, t_client *client)
         if ((char*)&client->pending_packets[i] == client->cur_packet) {
             if (!(net_cmd = get_network_command(client->cur_packet)))
                 continue;
-            net_cmd->callback(server, client, client->cur_packet);
+            if (net_cmd->post_callback)
+                net_cmd->post_callback(server, client, client->cur_packet);
             client->remain_cycles = -1;
 //            printf("Postcycle %s\n", client->cur_packet);
             memset(client->cur_packet, 0, BUFFER_SIZE);

@@ -76,9 +76,8 @@ char on_packet(t_server *server, t_client *client, int i)
         return 0;
     printf("Recv<< %s\n", (char*)&packet);
     client->recv_packet_i++;
-    if (client->recv_packet_i == 1) {
+    if (client->recv_packet_i == 1)
         return on_welcome(server, client, (char*)&packet);
-    }
     if (!get_network_command((char*)&packet))
         return exit_error(0, "Unknown packet\n");
     if ((i2 = stack_packet(server, client, (char*)&packet)) == -1)

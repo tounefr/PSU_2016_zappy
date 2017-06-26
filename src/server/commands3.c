@@ -22,8 +22,7 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_OUEST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_EST;
-    packet_send(client->socket_fd, "ok\n");
-    return 1;
+    return packet_send(client->socket_fd, "ok\n");
 }
 
 char    onLookPacket(t_server *server, t_client *client, char *packet)
@@ -35,25 +34,22 @@ char    onLookPacket(t_server *server, t_client *client, char *packet)
   return 1;
 }
 
-char on_welcome(t_server *server, t_client *client, char *packet)
-{
-  int team_i;
-  int client_in_team_left;
+char on_welcome(t_server *server, t_client *client, char *packet) {
+    int client_in_team_left;
 
-  if (!strcmp(packet, "GRAPHIC"))
-    client->is_gui = 1;
-  else {
-    if ((team_i = get_team_name_index(server, packet)) == -1) {
-      dprintf(client->socket_fd, "ko\n");
-      return exit_error(0, "can't allocate new team\n");
+    if (!strcmp(packet, "GRAPHIC")) {
+        client->is_gui = 1;
+        dprintf(client->socket_fd, "msz %d %d\n", server->map.width, server->map.height);
+        dprintf(client->socket_fd, "sgt %d\n", (int) server->freq);
+        gui_send_map_content(server, client);
+        gui_send_teams(server, client);
+    } else {
+        if (!client_assign_team(server, client, packet))
+            return dprintf(client->socket_fd, "ko\n");
+        client->team->slots--;
+        dprintf(client->socket_fd, "%d\n", client->team->slots);
+        dprintf(client->socket_fd, "%d %d\n",
+                server->map.width, server->map.height);
     }
-    client->team_i = team_i;
-    client_in_team_left = server->clients_per_team -
-      clients_in_team((t_client*)&server->clients, team_i);
-    dprintf(client->socket_fd, "%d\n", client_in_team_left);
-    dprintf(client->socket_fd, "%d %d\n",
-	    server->map.width, server->map.height);
     return 1;
-  }
-  return 1;
 }

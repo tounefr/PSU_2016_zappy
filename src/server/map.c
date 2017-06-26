@@ -8,7 +8,13 @@
 ** Last update Fri Jun 23 15:00:58 2017 Thomas HENON
 */
 
+#include <stdlib.h>
 #include "server.h"
+
+int get_random_map_pos(t_server *server)
+{
+    return my_rand(0, (server->map.width * server->map.height) - 1);
+}
 
 void init_map(t_map *map)
 {

@@ -15,9 +15,10 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
     int client_in_team_left;
 
     (void)packet;
-    client_in_team_left = server->clients_per_team -
+    //TODO:
+/*    client_in_team_left = server->clients_per_team -
                           clients_in_team((t_client*)&server->clients, client->team_i);
-    dprintf(client->socket_fd, "%d\n", client_in_team_left);
+    dprintf(client->socket_fd, "%d\n", client_in_team_left);*/
     return 1;
 }
 
