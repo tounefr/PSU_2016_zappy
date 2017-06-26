@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sat Jun 24 16:09:57 2017 Thomas HENON
-** Last update Mon Jun 26 13:13:58 2017 arsene
+** Last update Mon Jun 26 14:32:34 2017 arsene
 */
 
 #include <stdio.h>
@@ -18,7 +18,7 @@ void	rand_ressource(t_server *server, int p)
 
   item = (rand() % (100 - 0) + 0);
   if (item <= 56)
-    break;
+    return;
   else if (item <= 57 && item > 56)
     server->map.cases[p][TYPE_THYSTAME]++;
   else if (item <= 61 && item > 57)
