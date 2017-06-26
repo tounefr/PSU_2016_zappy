@@ -36,6 +36,7 @@ char packet_pre_cycle(t_server *server, t_client *client)
     int i;
     t_network_commands *net_cmd;
 
+    (void)server;
     for (i = 0; i < MAX_PENDING_PACKETS; i++) {
         if (strlen(client->pending_packets[i]) > 0) {
             client->cur_packet = (char*)&client->pending_packets[i];

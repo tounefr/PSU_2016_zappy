@@ -12,8 +12,8 @@
 
 char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
 {
-    int client_in_team_left;
-
+    (void)server;
+    (void)client;
     (void)packet;
     //TODO:
 /*    client_in_team_left = server->clients_per_team -

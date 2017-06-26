@@ -35,8 +35,6 @@ char    onLookPacket(t_server *server, t_client *client, char *packet)
 }
 
 char on_welcome(t_server *server, t_client *client, char *packet) {
-    int client_in_team_left;
-
     if (!strcmp(packet, "GRAPHIC")) {
         client->is_gui = 1;
         dprintf(client->socket_fd, "msz %d %d\n", server->map.width, server->map.height);

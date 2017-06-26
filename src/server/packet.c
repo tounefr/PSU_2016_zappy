@@ -43,6 +43,7 @@ int stack_packet(t_server *server, t_client *client, char *packet)
 {
     int i2;
 
+    (void)server;
     for (i2 = 0; i2 < MAX_PENDING_PACKETS; i2++) {
         if (strlen(client->pending_packets[i2]) > 0)
             continue;
@@ -54,6 +55,7 @@ int stack_packet(t_server *server, t_client *client, char *packet)
 
 char alloc_packet(t_server *server, t_client *client, int i, char *packet)
 {
+    (void)server;
     memset(packet, 0, BUFFER_SIZE);
     memcpy(packet, &client->buffer, BUFFER_SIZE - 1);
     if (i + 1 < BUFFER_SIZE) {

@@ -14,11 +14,10 @@
 char checkIncantationPacket(t_server *server, t_client *client, char *packet)
 {
     int i;
-    t_incantation *incantation;
 
+    (void)packet;
     if (client->level > 7)
         return 0;
-    incantation = &g_incantations[client->level - 1];
     int i2 = client->pos.x + client->pos.y * server->map.height;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++) {
         if (server->map.cases[i2][i] != client->inventory[i]) {

@@ -49,5 +49,6 @@ char gui_send_teams(t_server *server, t_client *client)
 
 char send_gui_packet(t_server *server)
 {
+    (void)server;
     return 1;
 }

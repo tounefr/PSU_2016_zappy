@@ -184,7 +184,8 @@ char listen_server(t_server *server);
 char main_loop(t_server *server);
 
 // team.c
-int get_team_name_index(t_server *server, char *team_name);
+char client_assign_team(t_server *server, t_client *client, char *packet);
+int clients_in_team(t_server *server, t_team *team);
 
 // util.c
 char is_legal_network_char(char c);

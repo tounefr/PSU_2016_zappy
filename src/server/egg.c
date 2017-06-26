@@ -22,6 +22,7 @@ char hatch_eggs(t_server *server, t_client *client)
 {
     int i;
 
+    (void)server;
     for (i = 0; i < MAX_EGGS_PER_CLIENT; i++) {
         if ((client->eggs[i].remain_cycles - 1) == 0) {
             printf("eclosion!!!!!\n");
@@ -29,4 +30,5 @@ char hatch_eggs(t_server *server, t_client *client)
         if (client->eggs[i].remain_cycles > 0)
             client->eggs[i].remain_cycles--;
     }
+    return 1;
 }
