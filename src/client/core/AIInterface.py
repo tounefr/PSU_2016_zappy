@@ -8,6 +8,9 @@ class AIInterface:
     def isRunning(self):
         return self.zappy.running
 
+    def forkProcess(self):
+        self.zappy.fork_cond.set()
+
     def getMapSize(self):
         return self.zappy.map_size
 
