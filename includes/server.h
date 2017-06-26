@@ -1,11 +1,11 @@
 /*
 ** server.h for  in /home/toune/Documents/Epitech/projets/PSU_2016_myirc
-** 
+**
 ** Made by Thomas HENON
 ** Login   <thomas.henon@epitech.eu>
-** 
+**
 ** Started on  Sun Jun  4 12:04:38 2017 Thomas HENON
-** Last update Sun Jun  4 12:04:39 2017 Thomas HENON
+** Last update Mon Jun 26 16:41:58 2017 arsene
 */
 
 #ifndef PROJETS_SERVER_H
@@ -46,7 +46,7 @@
 # define ORIENT_NORTH 1
 # define ORIENT_SOUTH 2
 # define ORIENT_EST 3
-# define ORIENT_OUEST 4
+# define ORIENT_WEST 4
 
 #include <sys/time.h>
 #include <sys/types.h>
