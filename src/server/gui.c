@@ -35,6 +35,23 @@ char gui_send_map_content(t_server *server, t_client *client)
     return 1;
 }
 
+char send_client_pos(t_server *server, t_client *client)
+{
+    char *buffer;
+
+    if (asprintf(&buffer, "ppo %d %d %d %d\n",
+             client->num, client->pos.x, client->pos.y, client->orientation) == -1)
+        return exit_error(0, "malloc error\n");
+    send_gui_packet(server, buffer);
+    free(buffer);
+    return 1;
+}
+
+char gui_send_levelup(t_client *client)
+{
+
+}
+
 char gui_send_teams(t_server *server, t_client *client)
 {
     int i;
@@ -47,8 +64,14 @@ char gui_send_teams(t_server *server, t_client *client)
     return 1;
 }
 
-char send_gui_packet(t_server *server)
+char send_gui_packet(t_server *server, char *packet, ...)
 {
-    (void)server;
+    va_list args;
+
+    va_start(args, packet);
+    if (!server->gui_client)
+        return exit_error(0, "no gui client connected\n");
+    vdprintf(server->gui_client->socket_fd, packet, args);
+    va_end(args);
     return 1;
 }

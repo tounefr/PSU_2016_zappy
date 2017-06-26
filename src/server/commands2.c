@@ -8,6 +8,8 @@
 ** Last update Fri Jun 23 15:00:47 2017 Thomas HENON
 */
 
+#define _GNU_SOURCE
+#include <stdio.h>
 #include "server.h"
 
 char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
@@ -15,10 +17,7 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
     (void)server;
     (void)client;
     (void)packet;
-    //TODO:
-/*    client_in_team_left = server->clients_per_team -
-                          clients_in_team((t_client*)&server->clients, client->team_i);
-    dprintf(client->socket_fd, "%d\n", client_in_team_left);*/
+    dprintf(client->socket_fd, "%d\n", client->team->slots);
     return 1;
 }
 
@@ -32,19 +31,24 @@ char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
 
 char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 {
-    char buffer[1000];
+    char *buffer;
 
-    (void)packet;
-    (void)server;
-    memset(&buffer, 0, sizeof(buffer));
-    snprintf((char*)&buffer, (size_t)(sizeof(buffer) - 1),
+    if (asprintf(&buffer,
              "[ linemate %d, deraumere %d, sibur %d, "
-             "mendiane %d, phiras %d, thystame %d, food %d ]\n",
-        client->inventory[TYPE_LINEMATE], client->inventory[TYPE_DERAUMERE],
-         client->inventory[TYPE_SIBUR], client->inventory[TYPE_MENDIANE],
-         client->inventory[TYPE_PHIRAS], client->inventory[TYPE_THYSTAME],
-        client->inventory[TYPE_FOOD]);
-    dprintf(client->socket_fd, "%s", (char*)&buffer);
+            "mendiane %d, phiras %d, thystame %d, food %d ]\n",
+             client->inventory[TYPE_LINEMATE], client->inventory[TYPE_DERAUMERE],
+             client->inventory[TYPE_SIBUR], client->inventory[TYPE_MENDIANE],
+             client->inventory[TYPE_PHIRAS], client->inventory[TYPE_THYSTAME],
+             client->inventory[TYPE_FOOD]) == -1)
+        return exit_error(0, "malloc error\n");
+    dprintf(client->socket_fd, "%s", buffer);
+    send_gui_packet(server, "pin %d %d %d %d %d %d %d %d %d %d\n",
+        client->num, client->pos.x, client->pos.y,
+                    client->inventory[TYPE_FOOD], client->inventory[TYPE_LINEMATE],
+                    client->inventory[TYPE_DERAUMERE], client->inventory[TYPE_SIBUR],
+                    client->inventory[TYPE_MENDIANE], client->inventory[TYPE_PHIRAS],
+                    client->inventory[TYPE_THYSTAME]);
+    free(buffer);
     return 1;
 }
 
@@ -68,8 +72,10 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
         client->pos.y = 0;
     if (client->pos.x >= server->map.width)
         client->pos.x = 0;
-    packet_send(client->socket_fd, "ok\n");
-    return 1;
+    if (!send_client_pos(server, client))
+        return packet_send(client->socket_fd, "ko\n");
+    send_client_pos(server, client);
+    return packet_send(client->socket_fd, "ok\n");
 }
 
 char    onRightPacket(t_server *server, t_client *client, char *packet)
@@ -85,5 +91,6 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_OUEST;
     packet_send(client->socket_fd, "ok\n");
+    send_client_pos(server, client);
     return 1;
 }

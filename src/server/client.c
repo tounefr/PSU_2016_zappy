@@ -19,7 +19,7 @@ void init_client(t_client *client)
 
     client->socket_fd = -1;
     memset(&client->buffer, 0, sizeof(client->buffer));
-    client->client_num = -1;
+    client->num = -1;
     client->pos.x = 0;
     client->pos.y = 0;
     client->recv_packet_i = 0;

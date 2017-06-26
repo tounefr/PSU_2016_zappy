@@ -28,26 +28,26 @@ t_network_commands g_network_commands[N_NETWORK_COMMANDS] =
 
 t_incantation g_incantations[NBR_LEVELS] =
 {
-        { 1, { 0, 1, 0, 0, 0, 0, 0 } },
-        { 2, { 0, 1, 1, 1, 0, 0, 0 } },
-        { 2, { 0, 2, 0, 1, 0, 2, 0 } },
-        { 4, { 0, 1, 1, 2, 0, 1, 0 } },
-        { 4, { 0, 1, 2, 1, 3, 0, 0 } },
-        { 6, { 0, 1, 2, 3, 0, 1, 0 } },
-        { 6, { 0, 2, 2, 2, 2, 2, 1 } }
+    { 1, { 0, 1, 0, 0, 0, 0, 0 } },
+    { 2, { 0, 1, 1, 1, 0, 0, 0 } },
+    { 2, { 0, 2, 0, 1, 0, 2, 0 } },
+    { 4, { 0, 1, 1, 2, 0, 1, 0 } },
+    { 4, { 0, 1, 2, 1, 3, 0, 0 } },
+    { 6, { 0, 1, 2, 3, 0, 1, 0 } },
+    { 6, { 0, 2, 2, 2, 2, 2, 1 } }
 };
 
 t_food g_foods[RESOURCES_NBR_TYPES] =
 {
-        { "food", TYPE_FOOD },
-        { "thystame", TYPE_THYSTAME },
-        { "phiras", TYPE_PHIRAS },
-        { "mendiane", TYPE_MENDIANE },
-        { "sibur", TYPE_SIBUR },
-        { "deraumere", TYPE_DERAUMERE },
-        { "linemate", TYPE_LINEMATE },
-        { "food", TYPE_PLAYER },
-        { "egg", TYPE_EGG }
+    { "food", TYPE_FOOD },
+    { "thystame", TYPE_THYSTAME },
+    { "phiras", TYPE_PHIRAS },
+    { "mendiane", TYPE_MENDIANE },
+    { "sibur", TYPE_SIBUR },
+    { "deraumere", TYPE_DERAUMERE },
+    { "linemate", TYPE_LINEMATE },
+    { "food", TYPE_PLAYER },
+    { "egg", TYPE_EGG }
 };
 
 char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
@@ -67,6 +67,8 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
                 return packet_send(client->socket_fd, "ko\n");
             client->inventory[g_foods[i].type]--;
             server->map.cases[client_pos][g_foods[i].type]++;
+            send_gui_packet(server, "pdr %d %d\n",
+                            client->num, g_foods[i].type);
             return packet_send(client->socket_fd, "ok\n");
         }
     }
@@ -90,6 +92,8 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
                 return packet_send(client->socket_fd, "ko\n");
             client->inventory[g_foods[i].type]++;
             server->map.cases[client_pos][g_foods[i].type]--;
+            send_gui_packet(server, "pgt %d %d\n",
+                            client->num, g_foods[i].type);
             return packet_send(client->socket_fd, "ok\n");
         }
     }

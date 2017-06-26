@@ -26,6 +26,7 @@ void init_server(t_server *server)
     server->listen_port = DEFAULT_LISTEN_PORT;
     server->cycle_time = (1.0f / server->freq) * 1000; // ms
     server->cur_cycle = 0;
+    server->gui_client = NULL;
     init_map(&server->map);
     server->clients_per_team = DEFAULT_CLIENTS_PER_TEAM;
 }
@@ -50,6 +51,8 @@ char update(t_server *server, struct timeval *last_tick)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
+            if (check_player_dead(server, client))
+                continue;
             hatch_eggs(server, client);
             if (client->socket_fd == -1)
                 continue;
