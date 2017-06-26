@@ -12,9 +12,12 @@
 
 char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
 {
-    (void)server;
-    (void)client;
+    int client_in_team_left;
+
     (void)packet;
+    client_in_team_left = server->clients_per_team -
+                          clients_in_team((t_client*)&server->clients, client->team_i);
+    dprintf(client->socket_fd, "%d\n", client_in_team_left);
     return 1;
 }
 
@@ -30,6 +33,7 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 {
     char buffer[1000];
 
+    (void)packet;
     (void)server;
     memset(&buffer, 0, sizeof(buffer));
     snprintf((char*)&buffer, (size_t)(sizeof(buffer) - 1),
@@ -46,6 +50,7 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 char    onForwardPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
+    (void)server;
     if (client->orientation == ORIENT_OUEST)
         client->pos.x--;
     if (client->orientation == ORIENT_EST)

@@ -32,9 +32,9 @@ t_network_commands *get_network_command(char *packet)
     int i;
 
     for (i = 0; i < N_NETWORK_COMMANDS; i++) {
-        if (!strncmp(network_commands[i].cmd, packet,
-                     strlen(network_commands[i].cmd)))
-            return &network_commands[i];
+        if (!strncmp(g_network_commands[i].cmd, packet,
+                     strlen(g_network_commands[i].cmd)))
+            return &g_network_commands[i];
     }
     return NULL;
 }
@@ -46,7 +46,7 @@ int stack_packet(t_server *server, t_client *client, char *packet)
     for (i2 = 0; i2 < MAX_PENDING_PACKETS; i2++) {
         if (strlen(client->pending_packets[i2]) > 0)
             continue;
-        strncpy(&client->pending_packets[i2], packet, BUFFER_SIZE - 1);
+        strncpy((char*)&client->pending_packets[i2], packet, BUFFER_SIZE - 1);
         return i2;
     }
     return exit_error(-1, "no slots available\n");
@@ -63,6 +63,7 @@ char alloc_packet(t_server *server, t_client *client, int i, char *packet)
                BUFFER_SIZE - strlen(client->buffer));
     } else
         memset(&client->buffer, 0, BUFFER_SIZE);
+    packet[i] = '\0';
     return 1;
 }
 
@@ -71,16 +72,16 @@ char on_packet(t_server *server, t_client *client, int i)
     int i2;
     char packet[BUFFER_SIZE];
 
-    if (!alloc_packet(server, client, i, &packet))
+    if (!alloc_packet(server, client, i, (char*)&packet))
         return 0;
-    printf("Recv<< %s", &packet);
+    printf("Recv<< %s\n", (char*)&packet);
     client->recv_packet_i++;
     if (client->recv_packet_i == 1) {
-        return on_welcome(server, client, &packet);
+        return on_welcome(server, client, (char*)&packet);
     }
-    if (!get_network_command(&packet))
+    if (!get_network_command((char*)&packet))
         return exit_error(0, "Unknown packet\n");
-    if ((i2 = stack_packet(server, client, &packet)) == -1)
+    if ((i2 = stack_packet(server, client, (char*)&packet)) == -1)
         return 0;
     return 1;
 }

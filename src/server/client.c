@@ -27,6 +27,7 @@ void init_client(t_client *client)
     client->is_gui = 0;
     client->orientation = ORIENT_SOUTH;
     client->cur_packet = NULL;
+    client->level = 1;
     for (i = 0; i < MAX_PENDING_PACKETS; i++)
         memset(&client->pending_packets[i], 0, BUFFER_SIZE);
     client->remain_cycles = -1;

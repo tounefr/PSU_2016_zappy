@@ -17,6 +17,7 @@ char generate_resources(t_server *server)
     int y;
     int p;
 
+
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
             p = y * server->map.height + x;
@@ -27,7 +28,17 @@ char generate_resources(t_server *server)
             server->map.cases[p][TYPE_PHIRAS]++;
             server->map.cases[p][TYPE_THYSTAME]++;
             server->map.cases[p][TYPE_FOOD]++;
+
+            // temporaire
+            server->map.cases[p][TYPE_LINEMATE] = 100;
+            server->map.cases[p][TYPE_DERAUMERE] = 100;
+            server->map.cases[p][TYPE_SIBUR] = 100;
+            server->map.cases[p][TYPE_MENDIANE] = 100;
+            server->map.cases[p][TYPE_PHIRAS] = 100;
+            server->map.cases[p][TYPE_THYSTAME] = 100;
+            server->map.cases[p][TYPE_FOOD] = 100;
         }
     }
     printf("New ressources generated\n");
+    return 1;
 }

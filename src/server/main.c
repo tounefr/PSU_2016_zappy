@@ -32,8 +32,9 @@ char parse_team_names(t_server *server, int *i, int ac, char **av)
 
     i3 = 0;
     for (i2 = *i + 1; i2 < ac && av[i2][0] != '-'; i2++)
-        strncpy(&server->teams_name[i3++], av[i2], TEAM_NAME_MAX_LEN - 1);
+        strncpy((char*)&server->teams_name[i3++], av[i2], TEAM_NAME_MAX_LEN - 1);
     *i = i2;
+    return 1;
 }
 
 char check_opts_values(t_server *server)

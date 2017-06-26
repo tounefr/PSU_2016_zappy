@@ -24,6 +24,7 @@
 # define MAX_TEAMS 20
 # define MAX_PENDING_PACKETS 10
 # define MAX_PACKET_SIZE 100
+# define MAX_LEVEL 8
 
 # define DEFAULT_FREQUENCY 100
 # define DEFAULT_MAP_SIZE 30
@@ -64,8 +65,22 @@ typedef struct s_network_commands
     unsigned int cycles;
     char flags;
 } t_network_commands;
-extern t_network_commands network_commands[N_NETWORK_COMMANDS];
+extern t_network_commands g_network_commands[N_NETWORK_COMMANDS];
 
+# define NBR_LEVELS 7
+typedef struct s_incantation
+{
+    int nb_players;
+    int type[RESOURCES_NBR_TYPES];
+} t_incantation;
+extern t_incantation g_incantations[NBR_LEVELS];
+
+typedef struct s_food
+{
+    char *s;
+    int type;
+} t_food;
+extern t_food g_foods[RESOURCES_NBR_TYPES];
 
 typedef struct s_pos
 {
@@ -92,6 +107,7 @@ typedef struct s_client
     int remain_cycles;
     int recv_packet_i;
 
+    int level;
 	int team_i;
 	int client_num;
 	t_pos pos;
@@ -165,26 +181,13 @@ void init_map(t_map *map);
 
 // cycle.c
 char is_next_cycle(t_server *server, struct timeval *last_tick);
+char packet_pre_cycle(t_client *client);
+char packet_post_cycle(t_server *server, t_client *client);
 
 // resources.c
 char generate_resources(t_server *server);
 
 // packet.c
 t_network_commands *get_network_command(char *packet);
-
-/*
-typedef struct      s_server
-{
-	int             port_number;
-	int             x;
-	int             y;
-	char            *team_names;
-	int             clientsNb;
-	int             timeUnit;
-}                   t_server;
- */
-
-//void                display_help();
-//char                display_error(int);
 
 #endif //PROJETS_SERVER_H

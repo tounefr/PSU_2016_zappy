@@ -38,8 +38,8 @@ char packet_pre_cycle(t_client *client)
 
     for (i = 0; i < MAX_PENDING_PACKETS; i++) {
         if (strlen(client->pending_packets[i]) > 0) {
-            client->cur_packet = &client->pending_packets[i];
-            printf("Precycle %s\n", client->cur_packet);
+            client->cur_packet = (char*)&client->pending_packets[i];
+//            printf("Precycle %s\n", client->cur_packet);
             if (!(net_cmd = get_network_command(client->cur_packet)))
                 continue;
             client->remain_cycles = net_cmd->cycles;
@@ -57,16 +57,16 @@ char packet_post_cycle(t_server *server, t_client *client)
     t_network_commands *net_cmd;
 
     for (i = 0; i < MAX_PENDING_PACKETS; i++) {
-        if (&client->pending_packets[i] == client->cur_packet) {
+        if ((char*)&client->pending_packets[i] == client->cur_packet) {
             if (!(net_cmd = get_network_command(client->cur_packet)))
                 continue;
             net_cmd->callback(server, client, client->cur_packet);
             client->remain_cycles = -1;
-            printf("Postcycle %s\n", client->cur_packet);
+//            printf("Postcycle %s\n", client->cur_packet);
             memset(client->cur_packet, 0, BUFFER_SIZE);
             for (i2 = i + 1; i2 < MAX_PENDING_PACKETS; i2++) {
                 if (strlen(client->pending_packets[i]) > 0) {
-                    client->cur_packet = &client->pending_packets[i2];
+                    client->cur_packet = (char*)&client->pending_packets[i2];
                     return 1;
                 }
             }
