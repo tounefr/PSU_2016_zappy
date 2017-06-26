@@ -14,12 +14,12 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
     (void)packet;
-    if (client->orientation == ORIENT_OUEST)
+    if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_SOUTH;
     else if (client->orientation == ORIENT_EST)
         client->orientation = ORIENT_NORTH;
     else if (client->orientation == ORIENT_NORTH)
-        client->orientation = ORIENT_OUEST;
+        client->orientation = ORIENT_WEST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_EST;
     packet_send(client->socket_fd, "ok\n");

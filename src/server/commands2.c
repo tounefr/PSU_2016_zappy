@@ -56,7 +56,7 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
     (void)server;
-    if (client->orientation == ORIENT_OUEST)
+    if (client->orientation == ORIENT_WEST)
         client->pos.x--;
     if (client->orientation == ORIENT_EST)
         client->pos.x++;
@@ -82,14 +82,14 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
     (void)packet;
-    if (client->orientation == ORIENT_OUEST)
+    if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_NORTH;
     else if (client->orientation == ORIENT_EST)
         client->orientation = ORIENT_SOUTH;
     else if (client->orientation == ORIENT_NORTH)
         client->orientation = ORIENT_EST;
     else if (client->orientation == ORIENT_SOUTH)
-        client->orientation = ORIENT_OUEST;
+        client->orientation = ORIENT_WEST;
     packet_send(client->socket_fd, "ok\n");
     send_client_pos(server, client);
     return 1;

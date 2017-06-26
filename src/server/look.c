@@ -8,6 +8,8 @@
 ** Last update Mon Jun 26 16:39:28 2017 arsene
 */
 
+#include "server.h"
+
 char		*look(t_client *client, t_server *server)
 {
   char		*field_of_view;
@@ -30,6 +32,6 @@ char		*look(t_client *client, t_server *server)
     {
 
     }
-  else
+//  else
     //ERROR
 }
