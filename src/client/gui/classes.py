@@ -2,7 +2,7 @@
 
 import sys
 import pygame
-from pygame.locals import * 
+from pygame.locals import *
 from constantes import *
 import random
 
@@ -33,7 +33,7 @@ class SpriteSheet:
                 #pygame.display.set_caption(titre_fenetre)
                 #window = pygame.display.set_mode((600, 1000))
                 self.sprite_sheet = pygame.image.load(file_name).convert()
-                    
+
         def get_image(self, x, y, width, height, color):
                 image = pygame.Surface([width, height]).convert()
                 image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
@@ -83,14 +83,28 @@ class Texture(object):
 
 class Map:
     def __init__(self, fichier):
+        self.map = []
         self.fichier = fichier
         self.structure = 0
         self.sprite_width = 0
         self.sprite_height = 0
 
+        color = Color()
+        herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
+        image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
+        image_herbe_haute = herbe.get_image(270, 57, 16, 16, color.BLACK)
+        self.herbe_basse = pygame.transform.scale(image_herbe_basse, (48, 48))
+        self.herbe_haute = pygame.transform.scale(image_herbe_haute, (48, 48))
+
+
     def create(self, window):
         width = self.sprite_width // 48
         height = self.sprite_height // 48
+        cell = {'texture':self.herbe_basse, 'food':6}
+        self.map = [[cell for x in range(width)] for y in range(h)]
+
+
+        """
         try:
             file = open("map.txt", 'w+')
         except IOError:
@@ -105,6 +119,7 @@ class Map:
                     else:
                         file.write(",")
             file.write("\n")
+        """
 
     def read(self, window):
         try:
@@ -117,6 +132,12 @@ class Map:
         bord = texture.bord
         width = self.sprite_width // 48
         height = self.sprite_height // 48
+
+        for x in range(width):
+            for y in range(height):
+                window.blit(self.map[y][x]['texture'])
+
+        """
         for i in range(height):
             for j in range(width + 1):
                 c = file.read(1)
@@ -126,6 +147,7 @@ class Map:
                     window.blit(herbe_haute, (j * 48, i * 48))
                 elif c == ",":
                     window.blit(herbe_basse, (j * 48, i * 48))
+        """
 
 
     def generer(self):
