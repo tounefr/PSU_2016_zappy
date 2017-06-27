@@ -57,6 +57,7 @@
 
 #include "util.h"
 #include "socket.h"
+#include "generic_list.h"
 
 # define FLAG_NONE 0
 # define FLAG_GUI_CMD 1
@@ -117,15 +118,23 @@ typedef struct s_team
     int slots;
 } t_team;
 
+typedef struct s_packet
+{
+    char *raw;
+    int remain_cycles;
+} t_packet;
+
 typedef struct s_client
 {
 	int	socket_fd;
-	char buffer[BUFFER_SIZE];
+    char *buffer;
+//	char buffer[BUFFER_SIZE];
     unsigned int cur_cycle;
-    char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
-    char *cur_packet;
+//    char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
+
+    t_packet *cur_packet;
+
     t_team *team;
-    int remain_cycles;
     int life_cycles;
     int recv_packet_i;
     int level;
@@ -134,6 +143,9 @@ typedef struct s_client
 	char is_gui;
     char orientation;
 	unsigned char inventory[RESOURCES_NBR_TYPES];
+
+    t_generic_list *read_packets;
+	t_generic_list *write_packets;
 } t_client;
 
 typedef struct s_server
@@ -180,12 +192,14 @@ char on_welcome(t_server *server, t_client *client, char *packet);
 
 // select.c
 void select_init(t_server *server, int *nfds,
-                 fd_set *fds, struct timeval *timeout);
-char on_select_data(t_server *server, fd_set *fds);
+                 fd_set *fds, fd_set *);
+char on_select_read_data(t_server *server, fd_set *fds);
+char on_select_write_data(t_server *server, fd_set *fds);
 
 // server.c
 void init_server(t_server *server);
 char listen_server(t_server *server);
+char update(t_server *server, struct timeval *last_tick);
 char main_loop(t_server *server);
 
 // team.c
@@ -198,10 +212,12 @@ char is_numeric(char *s);
 int my_rand(int a, int b);
 
 // packet.c
-char packet_send(int fd, char *format, ...);
-char packet_callback(t_server *server, t_client *client, char *packet);
-char packet_route(t_server *server, t_client *client, char *packet);
-char on_packet(t_server *server, t_client *client, int i);
+char packet_send(t_client *client, char *format, ...);
+t_network_commands *get_network_command(char *packet);
+char handle_pre_packet(t_server *server, t_client *client);
+char handle_post_packet(t_server *server, t_client *client);
+
+// packet2.c
 char on_available_data(t_server *server, t_client *client);
 
 // map.c
@@ -226,10 +242,11 @@ char    onPreIncantPacket(t_server *server, t_client *client, char *packet);
 char    onPostIncantPacket(t_server *server, t_client *client, char *packet);
 
 // gui.c
-char gui_send_map_content(t_server *server, t_client *client);
+char gui_send_map_content(t_server *server);
 char send_client_pos(t_server *server, t_client *client);
 char gui_send_teams(t_server *server, t_client *client);
 char send_gui_packet(t_server *server, char *packet, ...);
+char send_gui_players_connected(t_server *server);
 
 // egg.c
 char egg_pending_client(t_server *server, t_client *client);

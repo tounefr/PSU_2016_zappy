@@ -18,7 +18,7 @@ void init_client(t_client *client)
     int i;
 
     client->socket_fd = -1;
-    memset(&client->buffer, 0, sizeof(client->buffer));
+    client->buffer = NULL;
     client->num = -1;
     client->pos.x = 0;
     client->pos.y = 0;
@@ -28,21 +28,21 @@ void init_client(t_client *client)
     client->cur_packet = NULL;
     client->level = 1;
     client->team = NULL;
-    for (i = 0; i < MAX_PENDING_PACKETS; i++)
-        memset(&client->pending_packets[i], 0, BUFFER_SIZE);
-    client->remain_cycles = -1;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
     client->inventory[TYPE_FOOD] = PLAYER_LIFE_UNITS;
     client->life_cycles = client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT;
+    client->write_packets = NULL;
 }
 
 char on_exit_client(t_server *server, t_client *client)
 {
     if (client->team)
         client->team->slots++;
+    socket_close(client->socket_fd);
     init_client(client);
     printf("on_exit_client\n");
+    return 1;
 }
 
 char on_new_client(t_server *server)
@@ -59,7 +59,8 @@ char on_new_client(t_server *server)
             flags = fcntl(fd, F_GETFL, 0);
             if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
                 return exit_error(0, "fcntl error : %s\n", strerror(errno));
-            return packet_send(server->clients[i].socket_fd, "BIENVENUE\n");
+            packet_send(&server->clients[i], "BIENVENUE\n");
+            return 1;
         }
     }
     return exit_error(0, "error : no slots available\n");

@@ -45,4 +45,7 @@ void
 generic_list_destory(t_generic_list **list,
                      char (*rm_func)(void *));
 
+void*
+generic_list_pop(t_generic_list **list);
+
 #endif //PROJETS_GENERIC_LIST_H

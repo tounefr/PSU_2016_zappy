@@ -14,7 +14,7 @@ char check_player_dead(t_server *server, t_client *client)
 {
     if (client->life_cycles <= 0) {
         printf("client killed\n");
-        packet_send(client->socket_fd, "dead\n");
+        packet_send(client, "dead\n");
         send_gui_packet(server, "pdi %d\n", client->num);
         socket_close(client->socket_fd);
         init_client(client);

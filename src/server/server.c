@@ -48,25 +48,31 @@ char update(t_server *server, struct timeval *last_tick)
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-//        printf("cycle %d\n", server->cur_cycle);
-        if (server->cur_cycle == 1 || (server->cur_cycle % 600) == 0)
+        printf("cycle %d\n", server->cur_cycle);
+        if (server->cur_cycle == 1 || (server->cur_cycle % 1200) == 0)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
-            if (client->socket_fd == -1 || client->is_gui)
+            if (client->socket_fd == -1)
                 continue;
+            /*if (client->is_gui)
+                continue;*/
+            if (!client->cur_packet) {
+                if (!handle_pre_packet(server, client)) {
+                    on_exit_client(server, client);
+                    continue;
+                }
+            }
             client->life_cycles--;
             if ((client->life_cycles % 126) == 0)
                 client->inventory[TYPE_FOOD]--;
-            if (check_player_dead(server, client))
-                continue;
+            /*if (check_player_dead(server, client))
+                continue;*/
             hatch_eggs(server, client);
-            if (client->remain_cycles == -1)
-                packet_pre_cycle(server, client);
-            else if (client->remain_cycles > 1)
-                client->remain_cycles--;
-            else if (client->cur_packet)
-                packet_post_cycle(server, client);
+            if (!handle_post_packet(server, client)) {
+                on_exit_client(server, client);
+                continue;
+            }
         }
     }
     return 1;
@@ -75,7 +81,8 @@ char update(t_server *server, struct timeval *last_tick)
 char main_loop(t_server *server)
 {
     int nfds;
-    fd_set fds;
+    fd_set read_fds;
+    fd_set write_fds;
     int selectrv;
     struct timeval timeout;
     struct timeval last_tick;
@@ -84,10 +91,15 @@ char main_loop(t_server *server)
         return 0;
     gettimeofday(&last_tick, 0);
     while (1) {
-        select_init(server, &nfds, &fds, &timeout);
-        if ((selectrv = select(nfds, &fds, NULL, NULL, &timeout)) == -1)
+        select_init(server, &nfds, &read_fds, &write_fds);
+        timeout.tv_sec = 0;
+        timeout.tv_usec = server->cycle_time;
+        if ((selectrv = select(nfds, &read_fds,
+                               &write_fds, NULL, &timeout)) == -1)
             return exit_error(0, "select error : %s\n", strerror(errno));
-        if (selectrv > 0 && !on_select_data(server, &fds))
+        if (selectrv > 0 && !on_select_read_data(server, &read_fds))
+            return 0;
+        if (selectrv > 0 && !on_select_write_data(server, &write_fds))
             return 0;
         if (!update(server, &last_tick))
             return 0;

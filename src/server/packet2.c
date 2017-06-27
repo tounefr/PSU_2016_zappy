@@ -8,57 +8,76 @@
 ** Last update Mon Jun 26 23:29:07 2017 Thomas HENON
 */
 
+#include <sys/types.h>
+#include <sys/socket.h>
 #include "server.h"
 
-static char on_available_data2(t_server *server,
-                               t_client *client,
-                               int recvrv,
-                               char *buffer)
+static char increase_buffer(t_server *server, t_client *client, char *buffer)
 {
-    int retv;
-    int i;
+    int len;
 
-    do {
-        retv = 0;
-        for (i = 0; i < BUFFER_SIZE && buffer[i] != 0; i++) {
-            if (i < recvrv && is_legal_network_char(buffer[i])) {
-                on_exit_client(server, client);
-                return exit_error(0, "unknown packet : illegal char: %d\n",
-                                  buffer[i]);
-            }
-            if (client->buffer[i] == '\n') {
-                if (!on_packet(server, client, i)) {
-                    on_exit_client(server, client);
-                    return 0;
-                }
-                retv = 1;
-                break;
-            }
+    if (!client->buffer) {
+        client->buffer = buffer;
+        return 1;
+    } else {
+        len = strlen(client->buffer) + strlen(buffer) + 1;
+        if (!(client->buffer = realloc(client->buffer, len)))
+            return exit_error(0, "malloc error\n");
+        client->buffer[len - 1] = '\0';
+        strcpy(client->buffer + strlen(client->buffer), buffer);
+    }
+    return 1;
+}
+
+static char split_buffer(t_server *server, t_client *client)
+{
+    int i;
+    int len;
+    int start;
+    char *packet;
+
+    len = strlen(client->buffer);
+    start = 0;
+    for (i = 0; i < len; i++) {
+        if (client->buffer[i] == '\n') {
+            client->buffer[i] = '\0';
+            if (!(packet = strdup(&client->buffer[start])))
+                return exit_error(0, "malloc error\n");
+            start = i + 1;
+            printf("Recv<< %s\n", packet);
+            if (!generic_list_append(&client->read_packets, packet))
+                return exit_error(0, "malloc error\n");
+            start = i + 1;
         }
-    } while (retv);
+    }
+    if (!(client->buffer = strdup(&client->buffer[start])))
+        return exit_error(0, "malloc error\n");
     return 1;
 }
 
 char on_available_data(t_server *server, t_client *client)
 {
-    int buff_av_size;
     char *buffer;
     int recvrv;
-    int retv;
 
-    buff_av_size = BUFFER_SIZE - strlen((char*)&client->buffer);
-    if (buff_av_size < 0) {
+    if (!(buffer = malloc(BUFFER_SIZE))) {
         on_exit_client(server, client);
-        return exit_error(0, "unknown packet : data too long\n");
+        return exit_error(0, "malloc error\n");
     }
-    buffer = (char*)&client->buffer + strlen((char*)client->buffer);
-    if ((recvrv = recv(client->socket_fd, buffer, buff_av_size - 1, 0)) == -1) {
+    memset(buffer, 0, BUFFER_SIZE);
+    if ((recvrv = recv(client->socket_fd, buffer, BUFFER_SIZE - 1, 0)) <= 0) {
+        free(buffer);
         on_exit_client(server, client);
+        if (recvrv == 0)
+            return exit_error(0, "recv error: no data\n");
         return exit_error(0, "recv error : %s\n", strerror(errno));
     }
-    else if (recvrv == 0) {
+    if (!increase_buffer(server, client, buffer) ||
+            !split_buffer(server, client)) {
+        free(buffer);
         on_exit_client(server, client);
-        return exit_error(0, "recv error : no data\n");
+        return 0;
     }
-    return on_available_data2(server, client, recvrv, buffer);
+    free(buffer);
+    return 1;
 }
