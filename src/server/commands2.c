@@ -17,7 +17,7 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
     (void)server;
     (void)client;
     (void)packet;
-    packet_send(client->socket_fd, "%d\n", client->team->slots);
+    packet_send(client, "%d\n", client->team->slots);
     return 1;
 }
 
@@ -29,20 +29,18 @@ char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
     int k;
 
     k = 1; //TODO
-    if (strlen(packet) < strlen("Broadcast "))
-        return packet_send(client->socket_fd, "ko\n");
+    if (strlen(packet) + 1 < strlen("Broadcast "))
+        return packet_send(client, "ko\n");
     msg = packet + strlen("Broadcast ");
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1)
             continue;
         if (&server->clients[i] == client)
             continue;
-        if (server->clients[i].team == client->team) {
-            packet_send(server->clients[i].socket_fd,
-                        "message %d, %s\n", k, msg);
-        }
+        packet_send(&server->clients[i],
+                    "message %d, %s\n", k, msg);
     }
-    return packet_send(client->socket_fd, "ok\n");
+    return packet_send(client, "ok\n");
 }
 
 char    onInventoryPacket(t_server *server, t_client *client, char *packet)
@@ -57,7 +55,7 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
              client->inventory[TYPE_PHIRAS], client->inventory[TYPE_THYSTAME],
              client->inventory[TYPE_FOOD]) == -1)
         return exit_error(0, "malloc error\n");
-    packet_send(client->socket_fd, "%s", buffer);
+    packet_send(client, "%s", buffer);
     send_gui_packet(server, "pin %d %d %d %d %d %d %d %d %d %d\n",
         client->num, client->pos.x, client->pos.y,
                     client->inventory[TYPE_FOOD], client->inventory[TYPE_LINEMATE],
@@ -90,7 +88,7 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
         client->pos.x = 0;
     send_gui_packet(server, "ppo %d %d %d %d\n",
                     client->num, client->pos.x, client->pos.y, client->orientation);
-    return packet_send(client->socket_fd, "ok\n");
+    return packet_send(client, "ok\n");
 }
 
 char    onRightPacket(t_server *server, t_client *client, char *packet)
@@ -105,7 +103,7 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_EAST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_WEST;
-    packet_send(client->socket_fd, "ok\n");
+    packet_send(client, "ok\n");
     send_gui_packet(server, "ppo %d %d %d %d\n",
                     client->num, client->pos.x, client->pos.y, client->orientation);
     return 1;

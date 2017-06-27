@@ -67,3 +67,16 @@ generic_list_destroy(t_generic_list **list,
     free(*list);
     *list = NULL;
 }
+
+void*
+generic_list_pop(t_generic_list **list)
+{
+    void *elem;
+
+    elem = NULL;
+    if (!list || !*list)
+        return NULL;
+    elem = (*list)->data;
+    generic_list_remove(list, elem, NULL);
+    return elem;
+}

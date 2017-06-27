@@ -20,7 +20,7 @@ char gui_send_map_content(t_server *server, t_client *client)
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
             pos = x + y * server->map.height;
-            dprintf(client->socket_fd, "bct %d %d %d %d %d %d %d %d %d\n",
+            send_gui_packet(server, "bct %d %d %d %d %d %d %d %d %d\n",
                     x, y,
                     server->map.cases[pos][TYPE_FOOD],
                     server->map.cases[pos][TYPE_LINEMATE],
@@ -42,7 +42,7 @@ char gui_send_teams(t_server *server, t_client *client)
     for (i = 0; i < MAX_TEAMS; i++) {
         if (strlen(server->teams[i].name) == 0)
             continue;
-        packet_send(client->socket_fd, "tna %s\n", server->teams[i].name);
+        packet_send(client, "tna %s\n", server->teams[i].name);
     }
     return 1;
 }

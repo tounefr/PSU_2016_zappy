@@ -24,17 +24,17 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
             continue;
         if (!strcmp(get_g_foods()[i].s, (char*)&food)) {
             if (client->inventory[get_g_foods()[i].type] - 1 < 0)
-                return packet_send(client->socket_fd, "ko\n");
+                return packet_send(client, "ko\n");
             client->inventory[get_g_foods()[i].type]--;
             server->map.cases[client_pos][get_g_foods()[i].type]++;
             send_gui_packet(server, "pdr %d %d\n",
                             client->num, get_g_foods()[i].type);
             if (get_g_foods()[i].type == TYPE_FOOD)
                 client->life_cycles -= CYCLES_PER_LIFE_UNIT;
-            return packet_send(client->socket_fd, "ok\n");
+            return packet_send(client, "ok\n");
         }
     }
-    return packet_send(client->socket_fd, "ko\n");
+    return packet_send(client, "ko\n");
 }
 
 
@@ -52,17 +52,17 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
             continue;
         if (!strcmp(get_g_foods()[i].s, (char*)&food)) {
             if (server->map.cases[client_pos][get_g_foods()[i].type] - 1 < 0)
-                return packet_send(client->socket_fd, "ko\n");
+                return packet_send(client, "ko\n");
             client->inventory[get_g_foods()[i].type]++;
             server->map.cases[client_pos][get_g_foods()[i].type]--;
             send_gui_packet(server, "pgt %d %d\n",
                             client->num, get_g_foods()[i].type);
             if (get_g_foods()[i].type == TYPE_FOOD)
                 client->life_cycles += CYCLES_PER_LIFE_UNIT;
-            return packet_send(client->socket_fd, "ok\n");
+            return packet_send(client, "ok\n");
         }
     }
-    return packet_send(client->socket_fd, "ko\n");
+    return packet_send(client, "ko\n");
 }
 
 char    onPreForkPacket(t_server *server, t_client *client, char *packet)
@@ -76,6 +76,6 @@ char    onPostForkPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
     if (!lay_egg(server, client))
-        return packet_send(client->socket_fd, "ko\n");
-    return packet_send(client->socket_fd, "ok\n");
+        return packet_send(client, "ko\n");
+    return packet_send(client, "ok\n");
 }

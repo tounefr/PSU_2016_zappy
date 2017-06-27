@@ -86,7 +86,13 @@ class ZappyClient:
         """
 
     def start(self):
-        self.network.connect_server()
+
+        try:
+            self.network.connect_server()
+        except RuntimeError:
+            print("Failed to connect to {}:{}".format(self.server_hostname, self.server_port))
+            sys.exit(1)
+
         tp = ThreadPool(10)
         while self.running:
             try:

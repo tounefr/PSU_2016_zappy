@@ -45,9 +45,10 @@ char    onEjectPacket(t_server *server, t_client *client, char *packet)
             continue;
         dest = get_dest_case(server, client);
         server->clients[i].pos = dest;
-        packet_send(server->clients[i].socket_fd, "eject: %d\n", k);
+        packet_send(&server->clients[i], "eject: %d\n", k);
         send_gui_packet(server, "ppo %d %d %d %d\n",
                         server->clients[i].num, server->clients[i].pos.x,
                         server->clients[i].pos.y, server->clients[i].orientation);
     }
+    return 1;
 }
