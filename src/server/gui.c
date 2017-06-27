@@ -58,3 +58,20 @@ char send_gui_packet(t_server *server, char *packet, ...)
     va_end(args);
     return 1;
 }
+
+char send_gui_players_connected(t_server *server)
+{
+    int i;
+    t_client *client;
+
+    for (i = 0 ; i < MAX_CLIENTS; i++) {
+        client = &server->clients[i];
+        if (client->is_gui || client->socket_fd == -1)
+            continue;
+        send_gui_packet(server, "pnw %d %d %d %d %d %s\n",
+                        client->num, client->pos.x,
+                        client->pos.y, client->orientation,
+                        client->level, client->team->name);
+    }
+    return 1;
+}

@@ -46,6 +46,7 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
         send_gui_packet(server, "sgt %d\n", (int) server->freq);
         gui_send_map_content(server);
         gui_send_teams(server, client);
+        send_gui_players_connected(server);
     } else {
         client->num = server->client_lastnum++;
         if (!client_assign_team(server, client, packet))
