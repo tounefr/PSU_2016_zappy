@@ -22,8 +22,8 @@ class GUI:
     #msz
     # size=(width, height)
     def onMapSize(self, size):
-        self.map = Map(size[0] * 48 + 96, size[1] * 48 + 96)
-        self.window = pygame.display.set_mode((self.map.sprite_width, self.map.sprite_height))
+        self.window = pygame.display.set_mode((size[0] * 48, size[1] * 48))
+        self.map = Map(size[0] * 48 , size[1] * 48)
         self.map.create(self.window)
         self.map.read(self.window)
         pygame.display.flip()
@@ -43,8 +43,8 @@ class GUI:
         link = Perso(player_num, team_name, 0, self.map)
         link.assign_model()
         link.set_direction(orientation)
-        link.x = 48 + pos[0] * 48
-        link.y = 48 + pos[1] * 48
+        link.x = pos[0] * 48
+        link.y = pos[1] * 48
 
         self.playerList.add_player(link)
         self.map.read(self.window)
@@ -59,8 +59,8 @@ class GUI:
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
         player.set_direction(orientation)
-        player.x = 48 + pos[0] * 48
-        player.y = 48 + pos[1] * 48
+        player.x = pos[0] * 48
+        player.y = pos[1] * 48
 
         self.map.read(self.window)
         self.playerList.display_players(self.window)

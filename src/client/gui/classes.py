@@ -98,8 +98,17 @@ class Map:
 
 
     def create(self, window):
-        cell = {'texture':self.herbe_basse, 'food':6}
-        self.map = [[cell for x in range(self.width)] for y in range(self.height)]
+        cell = {'texture':self.herbe_haute, 'food':0}
+        self.map = [[{} for x in range(self.width)] for y in range(self.height)]
+
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = {
+                    'texture':  self.herbe_haute,
+                    'food':     y * self.width + x,
+                }
+                self.map[y][x] = cell
+        print("onEggHatch egg_num={}".format(self.map))
 
         """
         try:
