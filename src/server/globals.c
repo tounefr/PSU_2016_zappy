@@ -5,7 +5,7 @@
 ** Login   <arsene@arsene-HP-EliteBook-840-G2>
 **
 ** Started on  Tue Jun 27 11:19:54 2017 arsene
-** Last update Tue Jun 27 11:32:15 2017 arsene
+** Last update Tue Jun 27 17:34:47 2017 arsene
 */
 
 #include "server.h"
@@ -21,7 +21,7 @@ t_food				*get_g_foods()
       { "sibur", TYPE_SIBUR },
       { "deraumere", TYPE_DERAUMERE },
       { "linemate", TYPE_LINEMATE },
-      { "food", TYPE_PLAYER },
+      { "player", TYPE_PLAYER },
       { "egg", TYPE_EGG }
     };
   return (g_foods);

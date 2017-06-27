@@ -2,7 +2,7 @@
 
 import sys
 import pygame
-from pygame.locals import * 
+from pygame.locals import *
 from constantes import *
 import random
 
@@ -33,7 +33,7 @@ class SpriteSheet:
                 #pygame.display.set_caption(titre_fenetre)
                 #window = pygame.display.set_mode((600, 1000))
                 self.sprite_sheet = pygame.image.load(file_name).convert()
-                    
+
         def get_image(self, x, y, width, height, color):
                 image = pygame.Surface([width, height]).convert()
                 image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
@@ -81,47 +81,138 @@ class Texture(object):
                 self.bord = pygame.transform.scale(bord, (48, 48))
 
 
+class Stone:
+    def __init__(self):
+        color = Color()
+
+        rubis = SpriteSheet("src/client/gui/assets/tileset_rubis.png")
+        image_rubis_vert = rubis.get_image(167, 363, 30, 48, color.WHITE)
+        image_rubis_bleu = rubis.get_image(195, 363, 30, 48, color.WHITE)
+        image_rubis_jaune = rubis.get_image(223, 363, 30, 48, color.WHITE)
+        image_rubis_rouge = rubis.get_image(251, 363, 30, 48, color.WHITE)
+        image_rubis_violet = rubis.get_image(278, 363, 30, 48, color.WHITE)
+        image_rubis_orange = rubis.get_image(305, 363, 30, 48, color.WHITE)
+        self.rubis_vert = pygame.transform.scale(image_rubis_vert, (12, 24))
+        self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (12, 24))
+        self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (12, 24))
+        self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (12, 24))
+        self.rubis_violet = pygame.transform.scale(image_rubis_violet, (12, 24))
+        self.rubis_orange = pygame.transform.scale(image_rubis_orange, (12, 24))
+
+    def display_linemate(self, window, coordLinemate):
+        for coord in coordLinemate.tab_coord:
+            window.blit(self.rubis_vert, (coord.x, coord.y))
+
+    def display_deraumere(self, window, coordDeraumere):
+        for coord in coordDeraumere.tab_coord:
+            window.blit(self.rubis_bleu, (coord.x, coord.y))
+
+    def display_sibur(self, window, coordSibur):
+        for coord in coordSibur.tab_coord:
+            window.blit(self.rubis_jaune, (coord.x, coord.y))
+
+    def display_mendiane(self, window, coordMendiane):
+        for coord in coordMendiane.tab_coord:
+            window.blit(self.rubis_rouge, (coord.x, coord.y))
+
+    def display_phiras(self, window, coordPhiras):
+        for coord in coordPhiras.tab_coord:
+            window.blit(self.rubis_violet, (coord.x, coord.y))
+
+    def display_thystame(self, window, coordThystame):
+        for coord in coordThystame.tab_coord:
+            window.blit(self.rubis_orange, (coord.x, coord.y))
+
+class Coord:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
+class CoordStone:
+    def __init__(self, nb_stone, x, y):
+        self.x = x
+        self.y = y
+        self.nb_stone = nb_stone
+        self.tab_coord = []
+
+    def set_coord_stone(self):
+        for i in range(self.nb_stone):
+            coord = Coord(random.randint(0, 36) + self.x * 48, random.randint(0, 24) + self.y * 48)
+            self.tab_coord.append(coord)
+
 class Map:
     def __init__(self, sprite_width, sprite_height):
+        self.map = []
+        self.stone_map = []
         self.sprite_width = sprite_width
         self.sprite_height = sprite_height
         self.width = sprite_width // 48
         self.height = sprite_height // 48
+        self.stone = Stone()
+
+        color = Color()
+        herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
+        image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
+        image_herbe_haute = herbe.get_image(270, 57, 16, 16, color.BLACK)
+        self.herbe_basse = pygame.transform.scale(image_herbe_basse, (48, 48))
+        self.herbe_haute = pygame.transform.scale(image_herbe_haute, (48, 48))
+
 
     def create(self, window):
-        try:
-            file = open("map.txt", 'w+')
-        except IOError:
-            pass
+        cell = {'texture':self.herbe_haute, 'food':0}
+        self.map = [[{} for x in range(self.width)] for y in range(self.height)]
+
+        coordStone = CoordStone(0, 0, 0)
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = {
+                    'texture':  self.herbe_haute,
+                    'food':     y * self.width + x,
+                    'linemate': coordStone,
+                    'deraumere': coordStone,
+                    'sibur': coordStone,
+                    'mendiane': coordStone,
+                    'phiras': coordStone,
+                    'thystame': coordStone
+                }
+                self.map[y][x] = cell
+        print("onEggHatch egg_num={}".format(self.map))
+
+    def add_case_content(self, x, y, resources):
+        coordLinemate = CoordStone(resources['linemate'], x, y)
+        coordLinemate.set_coord_stone()
+        self.map[y][x]['linemate'] = coordLinemate
+        coordDeraumere = CoordStone(resources['deraumere'], x, y)
+        coordDeraumere.set_coord_stone()
+        self.map[y][x]['deraumere'] = coordDeraumere
+        coordSibur = CoordStone(resources['sibur'], x, y)
+        coordSibur.set_coord_stone()
+        self.map[y][x]['sibur'] = coordSibur
+        coordMendiane = CoordStone(resources['mendiane'], x, y)
+        coordMendiane.set_coord_stone()
+        self.map[y][x]['mendiane'] = coordMendiane
+        coordPhiras = CoordStone(resources['phiras'], x, y)
+        coordPhiras.set_coord_stone()
+        self.map[y][x]['phiras'] = coordPhiras
+        coordThystame = CoordStone(resources['thystame'], x, y)
+        coordThystame.set_coord_stone()
+        self.map[y][x]['thystame'] = coordThystame
+
+    def display_content(self, window):
         for i in range(self.height):
             for j in range(self.width):
-                if i == 0 or i == self.height - 1 or j == 0 or j == self.width - 1:
-                    file.write("o")
-                else:
-                    if random.randint(0, 1) == 0:
-                        file.write(".")
-                    else:
-                        file.write(",")
-            file.write("\n")
+                self.stone.display_linemate(window, self.map[i][j]['linemate'])
+                self.stone.display_deraumere(window, self.map[i][j]['deraumere'])
+                self.stone.display_sibur(window, self.map[i][j]['sibur'])
+                self.stone.display_mendiane(window, self.map[i][j]['mendiane'])
+                self.stone.display_phiras(window, self.map[i][j]['phiras'])
+                self.stone.display_thystame(window, self.map[i][j]['thystame'])
 
     def read(self, window):
-        try:
-            file = open("map.txt", 'r')
-        except IOError:
-            pass
-        texture = Texture()
-        herbe_basse = texture.herbe_basse
-        herbe_haute = texture.herbe_haute
-        bord = texture.bord
-        for i in range(self.height):
-            for j in range(self.width + 1):
-                c = file.read(1)
-                if c == "o":
-                    window.blit(bord, (j * 48, i * 48))
-                elif c == ".":
-                    window.blit(herbe_haute, (j * 48, i * 48))
-                elif c == ",":
-                    window.blit(herbe_basse, (j * 48, i * 48))
+        for x in range(self.width):
+            for y in range(self.height):
+                window.blit(self.map[y][x]['texture'], (x * 48, y * 48))
 
 
 class PlayerList:
