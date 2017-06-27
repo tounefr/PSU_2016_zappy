@@ -41,10 +41,10 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
     if (!strcmp(packet, "GRAPHIC")) {
         client->is_gui = 1;
         server->gui_client = client;
-        packet_send(client, "msz %d %d\n",
+        send_gui_packet(server, "msz %d %d\n",
                     server->map.width, server->map.height);
-        packet_send(client, "sgt %d\n", (int) server->freq);
-        gui_send_map_content(server, client);
+        send_gui_packet(server, "sgt %d\n", (int) server->freq);
+        gui_send_map_content(server);
         gui_send_teams(server, client);
     } else {
         client->num = server->client_lastnum++;
@@ -59,6 +59,10 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
         packet_send(client, "%d\n", client->team->slots);
         packet_send(client, "%d %d\n",
                 server->map.width, server->map.height);
+        send_gui_packet(server, "pnw %d %d %d %d %d %s\n",
+                        client->num, client->pos.x,
+                        client->pos.y, client->orientation,
+                        client->level, client->team->name);
     }
     return 1;
 }

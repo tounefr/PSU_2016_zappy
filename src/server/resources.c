@@ -56,5 +56,7 @@ char	generate_resources(t_server *server)
 	    rand_ressource(server, p);
         }
     }
+    printf("resources generated\n");
+    gui_send_map_content(server);
     return 1;
 }

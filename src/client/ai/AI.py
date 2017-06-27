@@ -8,9 +8,6 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-        while 1:
-            self.ai_interface.moveForwardAction()
-            self.ai_interface.turnRightAction()
         while (1):
             inventory = self.ai_interface.inventoryAction() # 1pt
             if (inventory['food'] < 4):

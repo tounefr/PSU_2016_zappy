@@ -55,6 +55,8 @@ char update(t_server *server, struct timeval *last_tick)
             client = &server->clients[i];
             if (client->socket_fd == -1)
                 continue;
+            if (client->is_gui)
+                continue;
             if (!client->cur_packet) {
                 if (!handle_pre_packet(server, client)) {
                     on_exit_client(server, client);

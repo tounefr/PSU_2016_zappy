@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include "server.h"
 
-char gui_send_map_content(t_server *server, t_client *client)
+char gui_send_map_content(t_server *server)
 {
     int y;
     int x;
