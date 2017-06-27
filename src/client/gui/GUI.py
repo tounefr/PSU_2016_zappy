@@ -32,6 +32,11 @@ class GUI:
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
     def onMapCaseContent(self, pos, resources):
+        self.map.read(self.window)
+        self.map.add_case_content(pos[0], pos[1], resources)
+        self.map.display_content(self.window)
+        self.playerList.display_players(self.window)
+        pygame.display.flip()
         print("onMapCaseContent pos={} resources={}".format(pos, resources))
 
     #tna
@@ -48,6 +53,7 @@ class GUI:
 
         self.playerList.add_player(link)
         self.map.read(self.window)
+        self.map.display_content(self.window)
         self.playerList.display_players(self.window)
         pygame.display.flip()
         print("onPlayerConnect player_num={} pos={} orien={} level={} team_name={}".format(
@@ -63,6 +69,7 @@ class GUI:
         player.y = pos[1] * 48
 
         self.map.read(self.window)
+        self.map.display_content(self.window)
         self.playerList.display_players(self.window)
         pygame.display.flip()
         print("onPlayerPos player_num={} pos={} orien={}".format(
@@ -122,6 +129,7 @@ class GUI:
     def onPlayerDieOfHunger(self, player_num):
         self.playerList.remove_player(player_num)
         self.map.read(self.window)
+        self.map.display_content(self.window)
         self.playerList.display_players(self.window)
         pygame.display.flip()
         print("onPlayerDieOfHunger player_num={}".format(player_num))
