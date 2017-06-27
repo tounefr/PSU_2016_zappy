@@ -82,12 +82,12 @@ class Texture(object):
 
 
 class Map:
-    def __init__(self, fichier):
+    def __init__(self, sprite_width, sprite_height):
         self.map = []
-        self.fichier = fichier
-        self.structure = 0
-        self.sprite_width = 0
-        self.sprite_height = 0
+        self.sprite_width = sprite_width
+        self.sprite_height = sprite_height
+        self.width = sprite_width // 48
+        self.height = sprite_height // 48
 
         color = Color()
         herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
@@ -98,20 +98,17 @@ class Map:
 
 
     def create(self, window):
-        width = self.sprite_width // 48
-        height = self.sprite_height // 48
         cell = {'texture':self.herbe_basse, 'food':6}
-        self.map = [[cell for x in range(width)] for y in range(h)]
-
+        self.map = [[cell for x in range(self.width)] for y in range(self.height)]
 
         """
         try:
             file = open("map.txt", 'w+')
         except IOError:
             pass
-        for i in range(height):
-            for j in range(width):
-                if i == 0 or i == height - 1 or j == 0 or j == width - 1:
+        for i in range(self.height):
+            for j in range(self.width):
+                if i == 0 or i == self.height - 1 or j == 0 or j == self.width - 1:
                     file.write("o")
                 else:
                     if random.randint(0, 1) == 0:
@@ -122,6 +119,7 @@ class Map:
         """
 
     def read(self, window):
+        """
         try:
             file = open("map.txt", 'r')
         except IOError:
@@ -130,16 +128,15 @@ class Map:
         herbe_basse = texture.herbe_basse
         herbe_haute = texture.herbe_haute
         bord = texture.bord
-        width = self.sprite_width // 48
-        height = self.sprite_height // 48
+        """
 
-        for x in range(width):
-            for y in range(height):
-                window.blit(self.map[y][x]['texture'])
+        for x in range(self.width):
+            for y in range(self.height):
+                window.blit(self.map[y][x]['texture'], (x * 48, y * 48))
 
         """
-        for i in range(height):
-            for j in range(width + 1):
+        for i in range(self.height):
+            for j in range(self.width + 1):
                 c = file.read(1)
                 if c == "o":
                     window.blit(bord, (j * 48, i * 48))
@@ -150,57 +147,33 @@ class Map:
         """
 
 
-    def generer(self):
-        with open(self.fichier, "r") as fichier:
-            structure_niveau = []
-            for ligne in fichier:
-                ligne_niveau = []
-                for sprite in ligne:
-                    if sprite != '\n':
-                        ligne_niveau.append(sprite)
-                structure_niveau.append(ligne_niveau)
-            self.structure = structure_niveau
-
-    def afficher(self, fenetre):
-        texture = Texture()
-        basse = texture.herbe_basse
-        haute = texture.herbe_haute
-
-        num_ligne = 0
-        for ligne in self.structure:
-            num_case = 0
-            for sprite in ligne:
-                x = num_case * 48
-                y = num_ligne * 48
-                if sprite == 'm':
-                    fenetre.blit(haute, (x,y))
-                elif sprite == 'e':
-                    fenetre.blit(texture.bord, (x,y))
-                else:
-                    fenetre.blit(basse, (x,y))
-                num_case += 1
-            num_ligne += 1
-
-    def addCaseContent(self, fenetre, x, y, resources):
-        nb_resources = resources["sibur"] + resources["mendian"] + resources["deraumere"] + resources["phiras"] + resources["linemate"] + resources["thystame"] + resources["food"]
-
 class PlayerList:
     def __init__(self):
         self.list = []
 
+    def display_players(self, window):
+        for i in range(len(self.list)):
+            player = self.list[i]
+            window.blit(player.direction, (player.x, player.y))
+
     def get_player(self, player_num):
         i = 0
-        while i < len(self.list):
-            if self.list[i].player_num == player_num:
+        for player in self.list:
+            if int(player.player_num) == int(player_num):
                 return i
             i += 1
-        return -1
+        return i
 
     def add_player(self, player):
         self.list.append(player)
 
-    def remove_player(self, player):
-        self.list.remove(player)
+    def remove_player(self, player_num):
+        i = 0
+        for player in self.list:
+            if int(player.player_num) == int(player_num):
+                self.list.pop(i)
+            i += 1
+
 
 class Perso:
     def __init__(self, player_num, team, model, map):
