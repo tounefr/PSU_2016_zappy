@@ -8,13 +8,16 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-        self.ai_interface.forkAction()
-        return
         while (1):
             inventory = self.ai_interface.inventoryAction() # 1pt
             if (inventory['food'] < 4):
                 self.BHV_FindFood()
-
+                """
+            elif NbMessage() > 0:
+                self.HandleMessages():
+            else:
+                self.FindStone()
+                """
 
     def BHV_FindFood(self):
         direction = 0

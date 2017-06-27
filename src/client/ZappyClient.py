@@ -44,40 +44,46 @@ class ZappyClient:
                     self.graphical = True
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
-
-        if self.server_port is None or self.team_name is None:
-            sys.exit(ZappyClient.print_usage())
+        if not self.graphical:
+            if self.server_port is None or self.team_name is None:
+                sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
         self.fork_cond = Event()
         self.running = True
+        self.map_size = ()
+        self.player_pos = ()
+        self.server_hostname = "localhost"
+        self.server_port = None
+        self.team_name = None
+        self.client_num = -1
+        self.graphical = False
+        self.optparser()
+
+        """
         try:
             pid = os.fork()
         except:
             sys.exit(1)
         if pid == 0:
-            if not ZappyClient.g_instance is None:
-                return
-            ZappyClient.g_instance = self
+        """
 
-            self.map_size = ()
-            self.player_pos = ()
-            self.server_hostname = "localhost"
-            self.server_port = None
-            self.team_name = None
-            self.client_num = -1
-            self.gui = GUI()
-            self.ai = AI()
-            self.graphical = False
-            self.network = Network()
-            self.packet_parser = PacketParser()
-            self.packet_router = PacketRouter()
-            self.optparser()
-            self.start()
+        if not ZappyClient.g_instance is None:
+            return
+        ZappyClient.g_instance = self
 
+        self.gui = GUI()
+        self.ai = AI()
+        self.network = Network()
+        self.packet_parser = PacketParser()
+        self.packet_router = PacketRouter()
+        self.start()
+
+        """
         else:
             self.fork_cond.wait()
             self.fork_cond.clear()
+        """
 
     def start(self):
         self.network.connect_server()
@@ -89,7 +95,10 @@ class ZappyClient:
                 except RuntimeError as msg:
                     print("Socket error : {}".format(msg))
                     sys.exit(1)
-                tp.add_task(self.packet_router.route, raw)
+                if self.graphical:
+                    self.packet_router.route(raw)
+                else:
+                    tp.add_task(self.packet_router.route, raw)
             except KeyboardInterrupt:
                 sys.exit(1)
         tp.wait_completion()

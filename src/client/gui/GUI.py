@@ -3,6 +3,7 @@
 from GUIInterface import *
 from constantes import *
 from random import *
+from sys import *
 
 class GUI:
     def __init__(self):
@@ -16,18 +17,13 @@ class GUI:
 
     def onGameStart(self):
         pygame.init()
-        #pygame.display.set_caption(titre_fenetre)
+        pygame.display.set_caption(titre_fenetre)
 
     #msz
     # size=(width, height)
     def onMapSize(self, size):
-        self.map = Map("src/client/gui/n1")
-        self.map.sprite_width = size[0] * 48 + 96
-        self.map.sprite_height = size[1] * 48 + 96
-        pygame.init()
-        pygame.display.set_caption(titre_fenetre)
+        self.map = Map(size[0] * 48 + 96, size[1] * 48 + 96)
         self.window = pygame.display.set_mode((self.map.sprite_width, self.map.sprite_height))
-        self.texture = Texture()
         self.map.create(self.window)
         self.map.read(self.window)
         pygame.display.flip()
@@ -52,7 +48,7 @@ class GUI:
 
         self.playerList.add_player(link)
         self.map.read(self.window)
-        self.window.blit(link.direction, (link.x, link.y))
+        self.playerList.display_players(self.window)
         pygame.display.flip()
         print("onPlayerConnect player_num={} pos={} orien={} level={} team_name={}".format(
             player_num, pos, orientation, level, team_name
@@ -60,16 +56,14 @@ class GUI:
 
     #ppo
     def onPlayerPos(self, player_num, pos, orientation):
-        index = self.playerList.get_player(player_num)
-        if index == -1:
-            print("index = -1")
+        index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
         player.set_direction(orientation)
         player.x = 48 + pos[0] * 48
         player.y = 48 + pos[1] * 48
 
         self.map.read(self.window)
-        self.window.blit(player.direction, (player.x, player.y))
+        self.playerList.display_players(self.window)
         pygame.display.flip()
         print("onPlayerPos player_num={} pos={} orien={}".format(
             player_num, pos, orientation
@@ -126,6 +120,10 @@ class GUI:
 
     #pdi
     def onPlayerDieOfHunger(self, player_num):
+        self.playerList.remove_player(player_num)
+        self.map.read(self.window)
+        self.playerList.display_players(self.window)
+        pygame.display.flip()
         print("onPlayerDieOfHunger player_num={}".format(player_num))
 
     #enw
