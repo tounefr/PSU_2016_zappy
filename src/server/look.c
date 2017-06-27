@@ -24,7 +24,7 @@ char		*look(t_client *client, t_server *server)
     {
 
     }
-  else if (client->orientation == ORIENT_EST)
+  else if (client->orientation == ORIENT_EAST)
     {
 
     }

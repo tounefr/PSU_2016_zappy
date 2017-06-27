@@ -22,7 +22,7 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
     if (client->level > 7)
         return 0;
     pos = client->pos.x + client->pos.y * server->map.height;
-    incantation = &g_incantations[client->level - 1];
+    incantation = &get_g_incantations()[client->level - 1];
     if (get_nb_players_lvl(server, client->level) != incantation->nb_players)
         return exit_error(0, "no enought players with same level to levelup\n");
     for (i = 0 ; i < RESOURCES_NBR_TYPES; i++) {
@@ -34,7 +34,7 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
     return 1;
 }
 
-char    onPreIncantationPacket(t_server *server,
+char    onPreIncantPacket(t_server *server,
                                t_client *client,
                                char *packet)
 {
@@ -65,7 +65,7 @@ static char on_level_up(t_server *server, t_client *client)
 {
     t_incantation *incantation;
 
-    incantation = &g_incantations[client->level - 1];
+    incantation = &get_g_incantations()[client->level - 1];
     client->level++;
     send_gui_packet(server, "plv %d %d\n", client->num, client->level);
     send_gui_packet(server, "pie %d %d %d\n",
@@ -76,7 +76,7 @@ static char on_level_up(t_server *server, t_client *client)
         return on_game_win(server);
 }
 
-char    onPostIncantationPacket(t_server *server,
+char    onPostIncantPacket(t_server *server,
                                 t_client *client,
                                 char *packet)
 {

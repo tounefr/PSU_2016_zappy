@@ -35,9 +35,9 @@ t_network_commands *get_network_command(char *packet)
     int i;
 
     for (i = 0; i < N_NETWORK_COMMANDS; i++) {
-        if (!strncmp(g_network_commands[i].cmd, packet,
-                     strlen(g_network_commands[i].cmd)))
-            return &g_network_commands[i];
+        if (!strncmp(g_network_commands()[i].cmd, packet,
+                     strlen(g_network_commands()[i].cmd)))
+            return &g_network_commands()[i];
     }
     return NULL;
 }

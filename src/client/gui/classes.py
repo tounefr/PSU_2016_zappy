@@ -1,11 +1,18 @@
 #!/usr/bin/python3
 
+import sys
 import pygame
 from pygame.locals import * 
 from constantes import *
+import random
 
 
-class Loop():
+class Window:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+class Loop:
     def __init__(self):
         self.quitter_jeu = False
         self.quitter_menu = False
@@ -22,6 +29,9 @@ class Color(object):
 
 class SpriteSheet:
         def __init__(self, file_name):
+                pygame.init()
+                #pygame.display.set_caption(titre_fenetre)
+                #window = pygame.display.set_mode((600, 1000))
                 self.sprite_sheet = pygame.image.load(file_name).convert()
                     
         def get_image(self, x, y, width, height, color):
@@ -52,6 +62,7 @@ class Texture(object):
                 self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (12, 24))
                 self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (12, 24))
                 self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (12, 24))
+
                 self.rubis_violet = pygame.transform.scale(image_rubis_violet, (12, 24))
                 self.rubis_orange = pygame.transform.scale(image_rubis_orange, (12, 24))
 
@@ -74,6 +85,48 @@ class Map:
     def __init__(self, fichier):
         self.fichier = fichier
         self.structure = 0
+        self.sprite_width = 0
+        self.sprite_height = 0
+
+    def create(self, window):
+        width = self.sprite_width // 48
+        height = self.sprite_height // 48
+        try:
+            file = open("map.txt", 'w+')
+        except IOError:
+            pass
+        for i in range(height):
+            for j in range(width):
+                if i == 0 or i == height - 1 or j == 0 or j == width - 1:
+                    file.write("o")
+                else:
+                    if random.randint(0, 1) == 0:
+                        file.write(".")
+                    else:
+                        file.write(",")
+            file.write("\n")
+
+    def read(self, window):
+        try:
+            file = open("map.txt", 'r')
+        except IOError:
+            pass
+        texture = Texture()
+        herbe_basse = texture.herbe_basse
+        herbe_haute = texture.herbe_haute
+        bord = texture.bord
+        width = self.sprite_width // 48
+        height = self.sprite_height // 48
+        for i in range(height):
+            for j in range(width + 1):
+                c = file.read(1)
+                if c == "o":
+                    window.blit(bord, (j * 48, i * 48))
+                elif c == ".":
+                    window.blit(herbe_haute, (j * 48, i * 48))
+                elif c == ",":
+                    window.blit(herbe_basse, (j * 48, i * 48))
+
 
     def generer(self):
         with open(self.fichier, "r") as fichier:
@@ -95,8 +148,8 @@ class Map:
         for ligne in self.structure:
             num_case = 0
             for sprite in ligne:
-                x = num_case * taille_sprite
-                y = num_ligne * taille_sprite
+                x = num_case * 48
+                y = num_ligne * 48
                 if sprite == 'm':
                     fenetre.blit(haute, (x,y))
                 elif sprite == 'e':
@@ -106,21 +159,66 @@ class Map:
                 num_case += 1
             num_ligne += 1
 
+    def addCaseContent(self, fenetre, x, y, resources):
+        nb_resources = resources["sibur"] + resources["mendian"] + resources["deraumere"] + resources["phiras"] + resources["linemate"] + resources["thystame"] + resources["food"]
 
+class PlayerList:
+    def __init__(self):
+        self.list = []
 
+    def get_player(self, player_num):
+        i = 0
+        while i < len(self.list):
+            if self.list[i].player_num == player_num:
+                return i
+            i += 1
+        return -1
+
+    def add_player(self, player):
+        self.list.append(player)
+
+    def remove_player(self, player):
+        self.list.remove(player)
 
 class Perso:
-    def __init__(self, droite, gauche, haut, bas, map):
-        self.droite = droite
-        self.gauche = gauche
-        self.haut = haut
-        self.bas = bas
+    def __init__(self, player_num, team, model, map):
+        self.team = team
+        self.player_num = player_num
+        self.level = 1
+        self.model = model
         self.case_x = 1
         self.case_y = 1
         self.x = 1
         self.y = 1
-        self.direction = self.droite
+        self.direction = 0
+        self.droite = 0
+        self.gauche = 0
+        self.bas = 0
+        self.haut = 0
         self.map = map
+
+    def assign_model(self):
+        color = Color()
+        if self.model == 0:
+            linkvert = SpriteSheet("src/client/gui/assets/persos.png")
+            bas = linkvert.get_image(222, 485, 25, 25, color.BLACK)
+            droite = linkvert.get_image(197, 453, 25, 25, color.BLACK)
+            gauche = linkvert.get_image(10, 453, 25, 25, color.BLACK)
+            haut = linkvert.get_image(10, 486, 25, 25, color.BLACK)
+            self.bas = pygame.transform.scale(bas, (48, 48))
+            self.droite = pygame.transform.scale(droite, (48, 48))
+            self.gauche = pygame.transform.scale(gauche, (48, 48))
+            self.haut = pygame.transform.scale(haut, (48, 48))
+
+    def set_direction(self, orientation):
+        if orientation == 1:
+            self.direction = self.bas
+        elif orientation == 2:
+            self.direction = self.droite
+        elif orientation == 4:
+            self.direction = self.gauche
+        elif orientation == 3:
+            self.direction = self.haut
 
     def move(self, direction):
 
