@@ -72,8 +72,6 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
         client->pos.y = 0;
     if (client->pos.x >= server->map.width)
         client->pos.x = 0;
-    if (!send_client_pos(server, client))
-        return packet_send(client->socket_fd, "ko\n");
     send_client_pos(server, client);
     return packet_send(client->socket_fd, "ok\n");
 }

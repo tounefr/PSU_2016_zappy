@@ -40,12 +40,13 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
     if (!strcmp(packet, "GRAPHIC")) {
         client->is_gui = 1;
         server->gui_client = client;
-        packet_send(client->socket_fd, "msz %d %d\n", server->map.width, server->map.height);
+        packet_send(client->socket_fd, "msz %d %d\n",
+                    server->map.width, server->map.height);
         packet_send(client->socket_fd, "sgt %d\n", (int) server->freq);
         gui_send_map_content(server, client);
         gui_send_teams(server, client);
     } else {
-        client->num = 1; //TODO: fix client num
+        client->num = server->client_lastnum++;
         if (!client_assign_team(server, client, packet))
             return packet_send(client->socket_fd, "ko\n");
         if (client->team->slots - 1 < 0)

@@ -27,6 +27,7 @@ void init_server(t_server *server)
     server->cycle_time = (1.0f / server->freq) * 1000; // ms
     server->cur_cycle = 0;
     server->gui_client = NULL;
+    server->client_lastnum = 1;
     init_map(&server->map);
     server->clients_per_team = DEFAULT_CLIENTS_PER_TEAM;
 }
@@ -46,7 +47,7 @@ char update(t_server *server, struct timeval *last_tick)
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-        printf("cycle %d\n", server->cur_cycle);
+//        printf("cycle %d\n", server->cur_cycle);
         if (server->cur_cycle == 1 || (server->cur_cycle % 600) == 0)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {

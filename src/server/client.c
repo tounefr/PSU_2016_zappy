@@ -39,6 +39,12 @@ void init_client(t_client *client)
         memset(&client->eggs[i], 0, sizeof(t_egg));
 }
 
+char on_exit_client(t_server *server, t_client *client)
+{
+    client->team->slots++;
+    init_client(client);
+    printf("on_exit_client\n");
+}
 
 char on_new_client(t_server *server)
 {

@@ -13,7 +13,8 @@
 
 float timedifference_msec(struct timeval t0, struct timeval t1)
 {
-    return (t1.tv_sec - t0.tv_sec) * 1000.0f + (t1.tv_usec - t0.tv_usec) / 1000.0f;
+    return (t1.tv_sec - t0.tv_sec) * 1000.0f +
+            (t1.tv_usec - t0.tv_usec) / 1000.0f;
 }
 
 char is_next_cycle(t_server *server, struct timeval *last_tick)
@@ -58,7 +59,6 @@ char packet_post_cycle(t_server *server, t_client *client)
 {
     int i;
     int i2;
-
     t_network_commands *net_cmd;
 
     for (i = 0; i < MAX_PENDING_PACKETS; i++) {

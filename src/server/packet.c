@@ -89,35 +89,3 @@ char on_packet(t_server *server, t_client *client, int i)
         return 0;
     return 1;
 }
-
-char on_available_data(t_server *server, t_client *client)
-{
-    int buff_av_size;
-    char *buffer;
-    int i;
-    int recvrv;
-    int retv;
-
-    buff_av_size = BUFFER_SIZE - strlen((char*)&client->buffer);
-    if (buff_av_size < 0)
-        return exit_error(0, "unknown packet : data too long\n");
-    buffer = (char*)&client->buffer + strlen((char*)client->buffer);
-    if ((recvrv = recv(client->socket_fd, buffer, buff_av_size - 1, 0)) == -1)
-        return exit_error(0, "recv error : %s\n", strerror(errno));
-    else if (recvrv == 0)
-        return exit_error(0, "recv error : no data\n");
-    do {
-        retv = 0;
-        for (i = 0; i < BUFFER_SIZE && buffer[i] != 0; i++) {
-            if (i < recvrv && is_legal_network_char(buffer[i]))
-                return exit_error(0, "unknown packet : illegal char: %d\n", buffer[i]);
-            if (client->buffer[i] == '\n') {
-                if (!on_packet(server, client, i))
-                    return 0;
-                retv = 1;
-                break;
-            }
-        }
-    } while (retv);
-    return 1;
-}

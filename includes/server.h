@@ -139,6 +139,7 @@ typedef struct s_server
 {
     t_team teams[MAX_TEAMS];
 	t_client clients[MAX_CLIENTS];
+    int client_lastnum;
     t_client *gui_client;
     int server_fd;
 	float freq;
@@ -155,6 +156,7 @@ void init_client(t_client *client);
 int clients_in_team(t_server *server, t_team *team);
 char on_new_client(t_server *server);
 void close_client_connection(t_client *client);
+char on_exit_client(t_server *server, t_client *client);
 
 // command.c
 char    onPreIncantationPacket(t_server *server, t_client *client, char *packet);
@@ -232,5 +234,9 @@ char hatch_eggs(t_server *server, t_client *client);
 
 // player.c
 char check_player_dead(t_server *server, t_client *client);
+int get_nb_players_lvl(t_server *server, int level);
+
+// game.c
+char on_game_win(t_server *server);
 
 #endif //PROJETS_SERVER_H
