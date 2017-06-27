@@ -141,6 +141,15 @@ class CoordStone:
             coord = Coord(random.randint(0, 36) + self.x * 48, random.randint(0, 24) + self.y * 48)
             self.tab_coord.append(coord)
 
+    def add(self, nb):
+        for i in range(nb):
+            coord = Coord(random.randint(0, 36) + self.x * 48, random.randint(0, 24) + self.y * 48)
+            self.tab_coord.append(coord)
+
+    def remove(self, nb):
+        for i in range(nb):
+            del self.tab_coord[i]
+
 class Map:
     def __init__(self, sprite_width, sprite_height):
         self.map = []
@@ -163,7 +172,7 @@ class Map:
         cell = {'texture':self.herbe_haute, 'food':0}
         self.map = [[{} for x in range(self.width)] for y in range(self.height)]
 
-        coordStone = CoordStone(0, 0, 0)
+        coordStone = CoordStone(-1, -1, -1)
         for y in range(self.height):
             for x in range(self.width):
                 cell = {
@@ -179,25 +188,47 @@ class Map:
                 self.map[y][x] = cell
         print("onEggHatch egg_num={}".format(self.map))
 
+    def compare_stone(self, coordPrec, coordNext):
+        print("\n" + str(coordPrec.nb_stone) + " - " + str(coordNext.nb_stone) + "\n")
+        if coordPrec.nb_stone == -1:
+            #print("\n\n\n\n----------\n\n\n\n")
+            return coordNext
+        elif coordPrec.nb_stone == coordNext.nb_stone:
+            #print("\n\n\n\n====\n\n\n\n")
+            coordNext = coordPrec
+        elif coordPrec.nb_stone > coordNext.nb_stone:
+            #print("\n\n\n\n>>>>\n\n\n\n")
+            nb_stone = coordNext.nb_stone
+            coordNext = coordPrec
+            coordNext.remove(CoordPrec.nb_stone - nb_stone)
+        elif coordPrec.nb_stone < coordNext.nb_stone:
+            #print("\n\n\n\n<<<<<<\n\n\n\n")
+            nb_stone = coordNext.nb_stone
+            coordNext = coordPrec
+            coordNext.nb_stone = nb_stone
+            coordNext.add(nb_stone - coordPrec.nb_stone)
+        return coordNext
+
+
     def add_case_content(self, x, y, resources):
         coordLinemate = CoordStone(resources['linemate'], x, y)
         coordLinemate.set_coord_stone()
-        self.map[y][x]['linemate'] = coordLinemate
+        self.map[y][x]['linemate'] = self.compare_stone(self.map[y][x]['linemate'], coordLinemate)
         coordDeraumere = CoordStone(resources['deraumere'], x, y)
         coordDeraumere.set_coord_stone()
-        self.map[y][x]['deraumere'] = coordDeraumere
+        self.map[y][x]['deraumere'] = self.compare_stone(self.map[y][x]['deraumere'], coordDeraumere)
         coordSibur = CoordStone(resources['sibur'], x, y)
         coordSibur.set_coord_stone()
-        self.map[y][x]['sibur'] = coordSibur
+        self.map[y][x]['sibur'] = self.compare_stone(self.map[y][x]['sibur'], coordSibur)
         coordMendiane = CoordStone(resources['mendiane'], x, y)
         coordMendiane.set_coord_stone()
-        self.map[y][x]['mendiane'] = coordMendiane
+        self.map[y][x]['mendiane'] = self.compare_stone(self.map[y][x]['mendiane'], coordMendiane)
         coordPhiras = CoordStone(resources['phiras'], x, y)
         coordPhiras.set_coord_stone()
-        self.map[y][x]['phiras'] = coordPhiras
+        self.map[y][x]['phiras'] = self.compare_stone(self.map[y][x]['phiras'], coordPhiras)
         coordThystame = CoordStone(resources['thystame'], x, y)
         coordThystame.set_coord_stone()
-        self.map[y][x]['thystame'] = coordThystame
+        self.map[y][x]['thystame'] = self.compare_stone(self.map[y][x]['thystame'], coordThystame)
 
     def display_content(self, window):
         for i in range(self.height):
