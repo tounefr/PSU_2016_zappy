@@ -44,9 +44,9 @@ class ZappyClient:
                     self.graphical = True
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
-
-        if self.server_port is None or self.team_name is None:
-            sys.exit(ZappyClient.print_usage())
+        if not self.graphical:
+            if self.server_port is None or self.team_name is None:
+                sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
         self.fork_cond = Event()

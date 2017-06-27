@@ -23,10 +23,26 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
 
 char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
 {
-    (void)server;
-    (void)client;
-    (void)packet;
-    return 1;
+    int i;
+    int i2;
+    char *msg;
+    int k;
+
+    k = 1; //TODO
+    if (strlen(packet) < strlen("Broadcast "))
+        return packet_send(client->socket_fd, "ko\n");
+    msg = packet + strlen("Broadcast ");
+    for (i = 0; i < MAX_CLIENTS; i++) {
+        if (server->clients[i].socket_fd == -1)
+            continue;
+        if (&server->clients[i] == client)
+            continue;
+        if (server->clients[i].team == client->team) {
+            packet_send(server->clients[i].socket_fd,
+                        "message %d, %s\n", k, msg);
+        }
+    }
+    return packet_send(client->socket_fd, "ok\n");
 }
 
 char    onInventoryPacket(t_server *server, t_client *client, char *packet)
@@ -72,7 +88,8 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
         client->pos.y = 0;
     if (client->pos.x >= server->map.width)
         client->pos.x = 0;
-    send_client_pos(server, client);
+    send_gui_packet(server, "ppo %d %d %d %d\n",
+                    client->num, client->pos.x, client->pos.y, client->orientation);
     return packet_send(client->socket_fd, "ok\n");
 }
 
@@ -89,6 +106,7 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_WEST;
     packet_send(client->socket_fd, "ok\n");
-    send_client_pos(server, client);
+    send_gui_packet(server, "ppo %d %d %d %d\n",
+                    client->num, client->pos.x, client->pos.y, client->orientation);
     return 1;
 }

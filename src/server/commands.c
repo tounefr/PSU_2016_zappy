@@ -65,14 +65,6 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
     return packet_send(client->socket_fd, "ko\n");
 }
 
-char    onEjectPacket(t_server *server, t_client *client, char *packet)
-{
-    (void)server;
-    (void)client;
-    (void)packet;
-    return 1;
-}
-
 char    onPreForkPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
