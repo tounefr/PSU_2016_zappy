@@ -12,7 +12,12 @@ class AI:
             inventory = self.ai_interface.inventoryAction() # 1pt
             if (inventory['food'] < 4):
                 self.BHV_FindFood()
-
+                """
+            elif NbMessage() > 0:
+                self.HandleMessages():
+            else:
+                self.FindStone()
+                """
 
     def BHV_FindFood(self):
         direction = 0
