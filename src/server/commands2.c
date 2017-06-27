@@ -1,11 +1,11 @@
 /*
 ** commands2.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy/src/server
-** 
+**
 ** Made by Thomas HENON
 ** Login   <thomas.henon@epitech.eu>
-** 
+**
 ** Started on  Fri Jun 23 15:00:46 2017 Thomas HENON
-** Last update Fri Jun 23 15:00:47 2017 Thomas HENON
+** Last update Tue Jun 27 11:30:33 2017 arsene
 */
 
 #define _GNU_SOURCE
@@ -58,7 +58,7 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
     (void)server;
     if (client->orientation == ORIENT_WEST)
         client->pos.x--;
-    if (client->orientation == ORIENT_EST)
+    if (client->orientation == ORIENT_EAST)
         client->pos.x++;
     if (client->orientation == ORIENT_NORTH)
         client->pos.y--;
@@ -84,10 +84,10 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
     (void)packet;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_NORTH;
-    else if (client->orientation == ORIENT_EST)
+    else if (client->orientation == ORIENT_EAST)
         client->orientation = ORIENT_SOUTH;
     else if (client->orientation == ORIENT_NORTH)
-        client->orientation = ORIENT_EST;
+        client->orientation = ORIENT_EAST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_WEST;
     packet_send(client->socket_fd, "ok\n");

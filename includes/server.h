@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sun Jun  4 12:04:38 2017 Thomas HENON
-** Last update Mon Jun 26 16:41:58 2017 arsene
+** Last update Tue Jun 27 11:35:12 2017 arsene
 */
 
 #ifndef PROJETS_SERVER_H
@@ -49,7 +49,7 @@
 
 # define ORIENT_NORTH 1
 # define ORIENT_SOUTH 2
-# define ORIENT_EST 3
+# define ORIENT_EAST 3
 # define ORIENT_WEST 4
 
 #include <sys/time.h>
@@ -73,7 +73,7 @@ typedef struct s_network_commands
     unsigned int cycles;
     char flags;
 } t_network_commands;
-extern t_network_commands g_network_commands[N_NETWORK_COMMANDS];
+// extern t_network_commands g_network_commands[N_NETWORK_COMMANDS];
 
 # define NBR_LEVELS 7
 typedef struct s_incantation
@@ -157,8 +157,8 @@ char on_new_client(t_server *server);
 void close_client_connection(t_client *client);
 
 // command.c
-char    onPreIncantationPacket(t_server *server, t_client *client, char *packet);
-char    onPostIncantationPacket(t_server *server, t_client *client, char *packet);
+char    onPreIncantPacket(t_server *server, t_client *client, char *packet);
+char    onPostIncantPacket(t_server *server, t_client *client, char *packet);
 char    onSetObjectPacket(t_server *server, t_client *client, char *packet);
 char    onTakeObjectPacket(t_server *server, t_client *client, char *packet);
 char    onEjectPacket(t_server *server, t_client *client, char *packet);

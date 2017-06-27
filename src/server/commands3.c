@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Fri Jun 23 15:00:53 2017 Thomas HENON
-** Last update Sun Jun 25 16:09:41 2017 arsene
+** Last update Tue Jun 27 11:31:17 2017 arsene
 */
 
 #include "server.h"
@@ -16,12 +16,12 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
     (void)packet;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_SOUTH;
-    else if (client->orientation == ORIENT_EST)
+    else if (client->orientation == ORIENT_EAST)
         client->orientation = ORIENT_NORTH;
     else if (client->orientation == ORIENT_NORTH)
         client->orientation = ORIENT_WEST;
     else if (client->orientation == ORIENT_SOUTH)
-        client->orientation = ORIENT_EST;
+        client->orientation = ORIENT_EAST;
     packet_send(client->socket_fd, "ok\n");
     send_client_pos(server, client);
     return 1;

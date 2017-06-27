@@ -5,7 +5,7 @@
 ** Login   <arsene@arsene-HP-EliteBook-840-G2>
 **
 ** Started on  Tue Jun 27 11:19:54 2017 arsene
-** Last update Tue Jun 27 11:26:45 2017 arsene
+** Last update Tue Jun 27 11:32:15 2017 arsene
 */
 
 #include "server.h"
@@ -23,7 +23,7 @@ t_food				*get_g_foods()
       { "linemate", TYPE_LINEMATE },
       { "food", TYPE_PLAYER },
       { "egg", TYPE_EGG }
-    }
+    };
   return (g_foods);
 }
 
@@ -38,7 +38,7 @@ t_incantation			*get_g_incantations()
       { 4, { 0, 1, 2, 1, 3, 0, 0 } },
       { 6, { 0, 1, 2, 3, 0, 1, 0 } },
       { 6, { 0, 2, 2, 2, 2, 2, 1 } }
-    }
+    };
   return (g_incantations);
 }
 
@@ -58,6 +58,6 @@ t_network_commands		*g_network_commands()
       { "Take", NULL, onTakeObjectPacket, 7, FLAG_NONE },
       { "Set", NULL, onSetObjectPacket, 7, FLAG_NONE },
       { "Incantation", onPreIncantPacket, onPostIncantPacket, 300, FLAG_NONE }
-    }
+    };
   return (g_network_commands);
 }
