@@ -51,14 +51,22 @@ class AI:
 
         #  TEST ZONE
         nbCell = (2 ** (distance + 1) - ((distance + 1) % 2)) - (2 ** (distance) - (distance % 2))
-        index = (2 ** (distance) - (distance % 2))
-        middle = (int)((nbCell + 1) / 2)
+        index = ((2 ** distance) - (distance % 2)) + 1
+        middle = (int)((nbCell / 2) + (nbCell % 2))
         print("[AI] (DEBUG) << Nb of cells in the line: " + str(nbCell))
         print("[AI] (DEBUG) << On line index: " + str(index))
         print("[AI] (DEBUG) << Middle cell on line: " + str(middle))
 
-        
+        if index == middle:
+            return 0
 
+        self.ai_interface.turnLeftAction() if index < middle else self.ai_interface.turnRightAction()
+        print("         [AI] (DEBUG) << Turn: " + "Left" if index < middle else "Right")
+        distance = (index - middle) if index > middle else (middle - index)
+        print("         [AI] (DEBUG) << Move: " + str(distance))
+        for i in range(0, distance):
+            self.ai_interface.moveForwardAction()
+        return 0
         # !TEST ZONE
 
 
