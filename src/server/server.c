@@ -30,6 +30,7 @@ void init_server(t_server *server)
     server->client_lastnum = 1;
     init_map(&server->map);
     server->clients_per_team = DEFAULT_CLIENTS_PER_TEAM;
+    memset(&server->eggs, 0, sizeof(server->eggs));
 }
 
 char listen_server(t_server *server)
@@ -52,7 +53,7 @@ char update(t_server *server, struct timeval *last_tick)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
-            if (client->socket_fd == -1)
+            if (client->socket_fd == -1 || client->is_gui)
                 continue;
             client->life_cycles--;
             if ((client->life_cycles % 126) == 0)

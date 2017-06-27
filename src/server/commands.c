@@ -19,7 +19,7 @@ t_network_commands g_network_commands[N_NETWORK_COMMANDS] =
     { "Inventory", NULL, onInventoryPacket, 1, FLAG_NONE },
     { "Broadcast", NULL, onBroadcastPacket, 7, FLAG_NONE },
     { "Connect_nbr", NULL, onConnectNbrPacket, 0, FLAG_NONE },
-    { "Fork", NULL, onForkPacket, 42, FLAG_NONE },
+    { "Fork", onPreForkPacket, onPostForkPacket, 42, FLAG_NONE },
     { "Eject", NULL, onEjectPacket, 7, FLAG_NONE },
     { "Take", NULL, onTakeObjectPacket, 7, FLAG_NONE },
     { "Set", NULL, onSetObjectPacket, 7, FLAG_NONE },
@@ -77,6 +77,7 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
     return packet_send(client->socket_fd, "ko\n");
 }
 
+
 char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
 {
     int i;
@@ -112,10 +113,17 @@ char    onEjectPacket(t_server *server, t_client *client, char *packet)
     return 1;
 }
 
-char    onForkPacket(t_server *server, t_client *client, char *packet)
+char    onPreForkPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
-    if (!init_egg(server, client))
+    send_gui_packet(server, "pfk %d\n", client->num);
+    return 1;
+}
+
+char    onPostForkPacket(t_server *server, t_client *client, char *packet)
+{
+    (void)packet;
+    if (!lay_egg(server, client))
         return packet_send(client->socket_fd, "ko\n");
     return packet_send(client->socket_fd, "ok\n");
 }

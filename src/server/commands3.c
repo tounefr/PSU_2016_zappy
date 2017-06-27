@@ -49,9 +49,12 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
         client->num = server->client_lastnum++;
         if (!client_assign_team(server, client, packet))
             return packet_send(client->socket_fd, "ko\n");
-        if (client->team->slots - 1 < 0)
-            return packet_send(client->socket_fd, "ko\n");
-        client->team->slots--;
+        if (!egg_pending_client(server, client)) {
+            if (client->team->slots - 1 < 0)
+                return packet_send(client->socket_fd, "ko\n");
+            else
+                client->team->slots--;
+        }
         packet_send(client->socket_fd, "%d\n", client->team->slots);
         packet_send(client->socket_fd, "%d %d\n",
                 server->map.width, server->map.height);

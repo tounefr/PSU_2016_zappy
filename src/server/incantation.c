@@ -46,7 +46,9 @@ char    onPreIncantationPacket(t_server *server,
     return packet_send(client->socket_fd, "Elevation underway\n");
 }
 
-static char decrease_resources_on_map(t_server *server, t_pos *pos, t_incantation *incantation)
+static char decrease_resources_on_map(t_server *server,
+                                      t_pos *pos,
+                                      t_incantation *incantation)
 {
     int i;
     int p;

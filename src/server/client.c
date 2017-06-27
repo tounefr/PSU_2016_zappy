@@ -35,8 +35,6 @@ void init_client(t_client *client)
         client->inventory[i] = 0;
     client->inventory[TYPE_FOOD] = PLAYER_LIFE_UNITS;
     client->life_cycles = client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT;
-    for (i = 0; i < MAX_EGGS_PER_CLIENT; i++)
-        memset(&client->eggs[i], 0, sizeof(t_egg));
 }
 
 char on_exit_client(t_server *server, t_client *client)

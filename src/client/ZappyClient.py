@@ -27,6 +27,7 @@ class ZappyClient:
         print("\tport    is the port number")
         print("\tname    is the name of the team")
         print("\tmachine is the name of the machine; localhost by default")
+        return 1
 
     def optparser(self):
         for i, arg in enumerate(sys.argv):
@@ -50,34 +51,33 @@ class ZappyClient:
     def __init__(self):
         self.fork_cond = Event()
         self.running = True
-        while self.running:
-            try:
-                pid = os.fork()
-            except:
-                break
-            if pid == 0:
-                if not ZappyClient.g_instance is None:
-                    return
-                ZappyClient.g_instance = self
+        try:
+            pid = os.fork()
+        except:
+            sys.exit(1)
+        if pid == 0:
+            if not ZappyClient.g_instance is None:
+                return
+            ZappyClient.g_instance = self
 
-                self.map_size = ()
-                self.player_pos = ()
-                self.server_hostname = "localhost"
-                self.server_port = None
-                self.team_name = None
-                self.client_num = -1
-                self.gui = GUI()
-                self.ai = AI()
-                self.graphical = False
-                self.network = Network()
-                self.packet_parser = PacketParser()
-                self.packet_router = PacketRouter()
-                self.optparser()
-                self.start()
+            self.map_size = ()
+            self.player_pos = ()
+            self.server_hostname = "localhost"
+            self.server_port = None
+            self.team_name = None
+            self.client_num = -1
+            self.gui = GUI()
+            self.ai = AI()
+            self.graphical = False
+            self.network = Network()
+            self.packet_parser = PacketParser()
+            self.packet_router = PacketRouter()
+            self.optparser()
+            self.start()
 
-            else:
-                self.fork_cond.wait()
-                self.fork_cond.clear()
+        else:
+            self.fork_cond.wait()
+            self.fork_cond.clear()
 
     def start(self):
         self.network.connect_server()

@@ -26,7 +26,7 @@
 # define MAX_PENDING_PACKETS 10
 # define MAX_PACKET_SIZE 100
 # define MAX_LEVEL 8
-# define MAX_EGGS_PER_CLIENT 20
+# define MAX_EGGS 100
 
 # define DEFAULT_FREQUENCY 100
 # define DEFAULT_MAP_SIZE 30
@@ -45,7 +45,6 @@
 # define TYPE_THYSTAME 6
 # define TYPE_PLAYER 7
 # define TYPE_EGG 8
-
 
 # define ORIENT_NORTH 1
 # define ORIENT_SOUTH 2
@@ -105,8 +104,11 @@ typedef struct s_map
 
 typedef struct s_egg
 {
-    int pos;
+    t_pos pos;
+    int num;
     int remain_cycles;
+    char pending_client;
+    t_client *master;
 } t_egg;
 
 typedef struct s_team
@@ -122,7 +124,6 @@ typedef struct s_client
     unsigned int cur_cycle;
     char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
     char *cur_packet;
-    t_egg eggs[MAX_EGGS_PER_CLIENT];
     t_team *team;
     int remain_cycles;
     int life_cycles;
@@ -139,6 +140,7 @@ typedef struct s_server
 {
     t_team teams[MAX_TEAMS];
 	t_client clients[MAX_CLIENTS];
+    t_egg eggs[MAX_EGGS];
     int client_lastnum;
     t_client *gui_client;
     int server_fd;
@@ -164,7 +166,8 @@ char    onPostIncantationPacket(t_server *server, t_client *client, char *packet
 char    onSetObjectPacket(t_server *server, t_client *client, char *packet);
 char    onTakeObjectPacket(t_server *server, t_client *client, char *packet);
 char    onEjectPacket(t_server *server, t_client *client, char *packet);
-char    onForkPacket(t_server *server, t_client *client, char *packet);
+char    onPreForkPacket(t_server *server, t_client *client, char *packet);
+char    onPostForkPacket(t_server *server, t_client *client, char *packet);
 char    onConnectNbrPacket(t_server *server, t_client *client, char *packet);
 char    onBroadcastPacket(t_server *server, t_client *client, char *packet);
 char    onInventoryPacket(t_server *server, t_client *client, char *packet);
@@ -229,7 +232,8 @@ char gui_send_teams(t_server *server, t_client *client);
 char send_gui_packet(t_server *server, char *packet, ...);
 
 // egg.c
-char init_egg(t_server *server, t_client *client);
+char egg_pending_client(t_server *server, t_client *client);
+char lay_egg(t_server *server, t_client *client);
 char hatch_eggs(t_server *server, t_client *client);
 
 // player.c

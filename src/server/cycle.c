@@ -44,10 +44,10 @@ char packet_pre_cycle(t_server *server, t_client *client)
 //            printf("Precycle %s\n", client->cur_packet);
             if (!(net_cmd = get_network_command(client->cur_packet)))
                 continue;
-           /* if (net_cmd->pre_callback) {
+            if (net_cmd->pre_callback) {
                 if (!net_cmd->pre_callback(server, client, client->cur_packet))
                     return 0;
-            }*/
+            }
             client->remain_cycles = net_cmd->cycles;
             return 1;
         }
