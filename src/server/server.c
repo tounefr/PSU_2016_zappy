@@ -58,8 +58,8 @@ char update(t_server *server, struct timeval *last_tick)
             client->life_cycles--;
             if ((client->life_cycles % 126) == 0)
                 client->inventory[TYPE_FOOD]--;
-            if (check_player_dead(server, client))
-                continue;
+            /*if (check_player_dead(server, client))
+                continue;*/
             hatch_eggs(server, client);
             if (client->remain_cycles == -1)
                 packet_pre_cycle(server, client);

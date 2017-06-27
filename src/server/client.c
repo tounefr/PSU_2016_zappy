@@ -39,7 +39,8 @@ void init_client(t_client *client)
 
 char on_exit_client(t_server *server, t_client *client)
 {
-    client->team->slots++;
+    if (client->team)
+        client->team->slots++;
     init_client(client);
     printf("on_exit_client\n");
 }
