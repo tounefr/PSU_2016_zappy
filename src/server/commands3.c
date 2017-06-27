@@ -23,7 +23,8 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_EAST;
     packet_send(client->socket_fd, "ok\n");
-    send_client_pos(server, client);
+    send_gui_packet(server, "ppo %d %d %d %d\n",
+                    client->num, client->pos.x, client->pos.y, client->orientation);
     return 1;
 }
 
