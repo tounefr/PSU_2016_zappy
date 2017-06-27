@@ -1,11 +1,16 @@
 from ctypes import *
 import queue
 import threading
+import sys
 
 class Network:
     def __init__(self):
         from ZappyClient import ZappyClient
-        self.libnetwork = cdll.LoadLibrary("./libnetwork.so")
+        try:
+            self.libnetwork = cdll.LoadLibrary("./libnetwork.so")
+        except OSError as m:
+            print("{}".format(m))
+            sys.exit(1)
         self.fd = self.libnetwork.socket_init()
         self.zappy = ZappyClient.instance()
 

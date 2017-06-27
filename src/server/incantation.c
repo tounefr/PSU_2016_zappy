@@ -30,17 +30,30 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
     return 1;
 }
 
-char    onPreIncantationPacket(t_server *server, t_client *client, char *packet)
+char    onPreIncantationPacket(t_server *server,
+                               t_client *client,
+                               char *packet)
 {
-    if (!checkIncantationPacket(server, client, packet))
+    if (!checkIncantationPacket(server, client, packet)) {
+        send_gui_packet(server, "pie %d %d %d\n",
+                        client->pos.x, client->pos.y, 0);
         return packet_send(client->socket_fd, "ko\n");
+    }
     return packet_send(client->socket_fd, "Elevation underway\n");
 }
 
-char    onPostIncantationPacket(t_server *server, t_client *client, char *packet)
+char    onPostIncantationPacket(t_server *server,
+                                t_client *client,
+                                char *packet)
 {
-    if (!checkIncantationPacket(server, client, packet))
+    if (!checkIncantationPacket(server, client, packet)) {
+        send_gui_packet(server, "pie %d %d %d\n",
+                        client->pos.x, client->pos.y, 0);
         return packet_send(client->socket_fd, "ko\n");
+    }
     client->level++;
+    send_gui_packet(server, "plv %d %d\n", client->num, client->level);
+    send_gui_packet(server, "pie %d %d %d\n",
+                    client->pos.x, client->pos.y, 1);
     return packet_send(client->socket_fd, "Current level: %d\n", client->level);
 }

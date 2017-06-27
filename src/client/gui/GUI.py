@@ -1,19 +1,36 @@
 #!/usr/bin/python3
 
 from GUIInterface import *
+from constantes import *
+from random import *
 
 class GUI:
     def __init__(self):
         from ZappyClient import ZappyClient
         self.zappy = ZappyClient.instance()
         self.gui_interface = GUIInterface()
+        self.texture = 0
+        self.map = 0
+        self.window = 0
+        self.playerList = PlayerList()
 
     def onGameStart(self):
-        print("gui")
+        pygame.init()
+        #pygame.display.set_caption(titre_fenetre)
 
     #msz
     # size=(width, height)
     def onMapSize(self, size):
+        self.map = Map("src/client/gui/n1")
+        self.map.sprite_width = size[0] * 48 + 96
+        self.map.sprite_height = size[1] * 48 + 96
+        pygame.init()
+        pygame.display.set_caption(titre_fenetre)
+        self.window = pygame.display.set_mode((self.map.sprite_width, self.map.sprite_height))
+        self.texture = Texture()
+        self.map.create(self.window)
+        self.map.read(self.window)
+        pygame.display.flip()
         print("onMapSize size={}".format(size))
 
     #bct
@@ -27,18 +44,42 @@ class GUI:
 
     #pnw
     def onPlayerConnect(self, player_num, pos, orientation, level, team_name):
+        link = Perso(player_num, team_name, 0, self.map)
+        link.assign_model()
+        link.set_direction(orientation)
+        link.x = 48 + pos[0] * 48
+        link.y = 48 + pos[1] * 48
+
+        self.playerList.add_player(link)
+        self.map.read(self.window)
+        self.window.blit(link.direction, (link.x, link.y))
+        pygame.display.flip()
         print("onPlayerConnect player_num={} pos={} orien={} level={} team_name={}".format(
             player_num, pos, orientation, level, team_name
         ))
 
     #ppo
     def onPlayerPos(self, player_num, pos, orientation):
+        index = self.playerList.get_player(player_num)
+        if index == -1:
+            print("index = -1")
+        player = self.playerList.list[index]
+        player.set_direction(orientation)
+        player.x = 48 + pos[0] * 48
+        player.y = 48 + pos[1] * 48
+
+        self.map.read(self.window)
+        self.window.blit(player.direction, (player.x, player.y))
+        pygame.display.flip()
         print("onPlayerPos player_num={} pos={} orien={}".format(
             player_num, pos, orientation
         ))
 
     #plv
     def onPlayerLevel(self, player_num, level):
+        index = self.playerList.get_player(player_num)
+        player = self.playerList.list[index]
+        player.level += 1
         print("onPlayerLevel player_num={} level={}".format(player_num, level))
 
     #pin

@@ -1,11 +1,11 @@
 /*
 ** server.h for  in /home/toune/Documents/Epitech/projets/PSU_2016_myirc
-** 
+**
 ** Made by Thomas HENON
 ** Login   <thomas.henon@epitech.eu>
-** 
+**
 ** Started on  Sun Jun  4 12:04:38 2017 Thomas HENON
-** Last update Sun Jun  4 12:04:39 2017 Thomas HENON
+** Last update Mon Jun 26 16:41:58 2017 arsene
 */
 
 #ifndef PROJETS_SERVER_H
@@ -33,20 +33,24 @@
 # define DEFAULT_CLIENTS_PER_TEAM 10
 # define DEFAULT_LISTEN_PORT 4242
 
-# define TYPE_PLAYER 0
+# define PLAYER_LIFE_UNITS 10
+# define CYCLES_PER_LIFE_UNIT 126
+
+# define TYPE_FOOD 0
 # define TYPE_LINEMATE 1
 # define TYPE_DERAUMERE 2
 # define TYPE_SIBUR 3
 # define TYPE_MENDIANE 4
 # define TYPE_PHIRAS 5
 # define TYPE_THYSTAME 6
-# define TYPE_FOOD 7
+# define TYPE_PLAYER 7
 # define TYPE_EGG 8
+
 
 # define ORIENT_NORTH 1
 # define ORIENT_SOUTH 2
 # define ORIENT_EST 3
-# define ORIENT_OUEST 4
+# define ORIENT_WEST 4
 
 #include <sys/time.h>
 #include <sys/types.h>
@@ -120,15 +124,11 @@ typedef struct s_client
     char *cur_packet;
     t_egg eggs[MAX_EGGS_PER_CLIENT];
     t_team *team;
-
-//    t_network_commands *cur_packet;
-//    t_network_commands *pending_packets[MAX_PENDING_PACKETS];
     int remain_cycles;
+    int life_cycles;
     int recv_packet_i;
-
     int level;
-//	int team_i;
-	int client_num;
+	int num;
 	t_pos pos;
 	char is_gui;
     char orientation;
@@ -137,9 +137,9 @@ typedef struct s_client
 
 typedef struct s_server
 {
-//	char teams_name[MAX_TEAMS][TEAM_NAME_MAX_LEN];
     t_team teams[MAX_TEAMS];
 	t_client clients[MAX_CLIENTS];
+    t_client *gui_client;
     int server_fd;
 	float freq;
 	unsigned short listen_port;
@@ -222,11 +222,15 @@ char    onPostIncantationPacket(t_server *server, t_client *client, char *packet
 
 // gui.c
 char gui_send_map_content(t_server *server, t_client *client);
+char send_client_pos(t_server *server, t_client *client);
 char gui_send_teams(t_server *server, t_client *client);
-char send_gui_packet(t_server *server);
+char send_gui_packet(t_server *server, char *packet, ...);
 
 // egg.c
 char init_egg(t_server *server, t_client *client);
 char hatch_eggs(t_server *server, t_client *client);
+
+// player.c
+char check_player_dead(t_server *server, t_client *client);
 
 #endif //PROJETS_SERVER_H

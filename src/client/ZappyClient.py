@@ -5,6 +5,9 @@ import sys
 from Threading import *
 from PacketRouter import *
 from PacketParser import *
+import os
+from multiprocessing import Event
+import time
 
 class ZappyClient:
     g_instance = None
@@ -45,31 +48,39 @@ class ZappyClient:
             sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
-        if not ZappyClient.g_instance is None:
-            return
-        ZappyClient.g_instance = self
-
-        self.map_size = ()
-        self.player_pos = ()
-        self.server_hostname = "localhost"
-        self.server_port = None
-        self.team_name = None
-        self.client_num = -1
-        self.gui = GUI()
-        self.ai = AI()
-        self.graphical = False
-        self.network = Network()
-        self.packet_parser = PacketParser()
-        self.packet_router = PacketRouter()
+        self.fork_cond = Event()
         self.running = True
+        while self.running:
+            try:
+                pid = os.fork()
+            except:
+                break
+            if pid == 0:
+                if not ZappyClient.g_instance is None:
+                    return
+                ZappyClient.g_instance = self
 
-        self.optparser()
-        self.start()
+                self.map_size = ()
+                self.player_pos = ()
+                self.server_hostname = "localhost"
+                self.server_port = None
+                self.team_name = None
+                self.client_num = -1
+                self.gui = GUI()
+                self.ai = AI()
+                self.graphical = False
+                self.network = Network()
+                self.packet_parser = PacketParser()
+                self.packet_router = PacketRouter()
+                self.optparser()
+                self.start()
+
+            else:
+                self.fork_cond.wait()
+                self.fork_cond.clear()
 
     def start(self):
-        self.optparser()
         self.network.connect_server()
-
         tp = ThreadPool(10)
         while self.running:
             try:
@@ -82,3 +93,4 @@ class ZappyClient:
             except KeyboardInterrupt:
                 sys.exit(1)
         tp.wait_completion()
+        sys.exit(1)

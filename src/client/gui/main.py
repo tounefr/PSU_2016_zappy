@@ -7,7 +7,6 @@ from classes import *
 from constantes import *
 from GUI import *
 
-
 def splash_screen(loop):
     while loop.quitter_menu != True:
         pygame.time.Clock().tick(30)
@@ -23,6 +22,7 @@ def splash_screen(loop):
 
 def main_loop(loop, fenetre, carte, link):
     texture = Texture()
+    gui = GUI()
     while loop.quitter_jeu != True:
         pygame.time.Clock().tick(30)
         #son = pygame.mixer.Sound("src/client/gui/assets/main_theme.wav")
@@ -31,18 +31,19 @@ def main_loop(loop, fenetre, carte, link):
             if event.type == QUIT:
                 loop.quitter_jeu = True
                 loop.continuer = False
-            elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    loop.quitter_jeu = True
-                    loop.continuer = False
-                elif event.key == K_RIGHT:
-                    link.move("droite")
-                elif event.key == K_LEFT:
-                    link.move("gauche")
-                elif event.key == K_UP:
-                    link.move("haut")
-                elif event.key == K_DOWN:
-                    link.move("bas")
+            gui.onPlayerConnect(0, 8, 0, 0, "ok")
+            # elif event.type == KEYDOWN:
+            #     if event.key == K_ESCAPE:
+            #         loop.quitter_jeu = True
+            #         loop.continuer = False
+            #     elif event.key == K_RIGHT:
+            #         link.move("droite")
+            #     elif event.key == K_LEFT:
+            #         link.move("gauche")
+            #     elif event.key == K_UP:
+            #         link.move("haut")
+            #     elif event.key == K_DOWN:
+            #         link.move("bas")
         fenetre.blit(texture.herbe_haute, (0,0))
         carte.afficher(fenetre)
         fenetre.blit(link.direction, (link.x, link.y))
