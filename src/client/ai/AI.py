@@ -18,8 +18,9 @@ class AI:
         client = self.team_.list_cli_[0]
 
         client.setInventory(inventory)
+        print("Hey")
         while 1:
-
+            print("Hey")
             if inventory['food'] < 4:
                 self.BHV_FindFood()
                 """
