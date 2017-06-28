@@ -84,7 +84,7 @@ class Broadcast:
         for key, val in client.getInventory().items():
             text += ''.join(' {} {}'.format(key, val))
 
-        #text = self.stream_cipher(text)
+        text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
 
     def brd_snd_eat_on(self):
