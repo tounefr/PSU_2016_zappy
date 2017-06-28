@@ -18,7 +18,7 @@ class AI:
         client = self.team_.list_cli_[0]
 
         client.setInventory(inventory)
-        while client.getInventory['food'] > 0:
+        while True:
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
