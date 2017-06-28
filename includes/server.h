@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sun Jun  4 12:04:38 2017 Thomas HENON
-** Last update Tue Jun 27 11:35:12 2017 arsene
+** Last update Wed Jun 28 11:48:41 2017 arsene
 */
 
 #ifndef PROJETS_SERVER_H
@@ -81,14 +81,14 @@ typedef struct s_incantation
     int nb_players;
     int type[RESOURCES_NBR_TYPES];
 } t_incantation;
-extern t_incantation g_incantations[NBR_LEVELS];
+//extern t_incantation g_incantations[NBR_LEVELS];
 
 typedef struct s_food
 {
     char *s;
     int type;
 } t_food;
-extern t_food g_foods[RESOURCES_NBR_TYPES];
+//extern t_food g_foods[RESOURCES_NBR_TYPES];
 
 typedef struct s_pos
 {
