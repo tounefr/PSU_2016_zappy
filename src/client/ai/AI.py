@@ -1,16 +1,26 @@
 from AIInterface import *
-import time
+from Broadcast import *
+from Team import *
+
 
 class AI:
+
     def __init__(self):
         self.ai_interface = AIInterface()
         self.level = 1
+        self.team_ = Team()
+        self.broadcast_ = Broadcast(self.team_, self.ai_interface)
+
 
     def onGameStart(self):
         print("Game start")
-        while (1):
-            inventory = self.ai_interface.inventoryAction() # 1pt
-            if (inventory['food'] < 4):
+        inventory = self.ai_interface.inventoryAction()  # 1pt
+        client = self.team_.list_cli_[0]
+
+        client.setInventory(inventory)
+        while client.getInventory["food"] > 0:
+
+            if inventory['food'] < 4:
                 self.BHV_FindFood()
                 """
             elif NbMessage() > 0:
@@ -21,28 +31,33 @@ class AI:
 
     def BHV_FindFood(self):
         direction = 0
-        KOcount = 0
-        while (1):
+        ko_count = 0
+        client = self.team_.list_cli_[0]
+
+        while True:
             visible = self.ai_interface.lookAroundAction() # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
-                if KOcount == 0:
+                if ko_count == 0:
                     self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
                 else:
                     direction = (direction + 1) % 2
                     for x in range(0, self.level):
                         self.ai_interface.moveForwardAction()
-                KOcount = (KOcount + 1) % 2
+                ko_count = (ko_count + 1) % 2
             else:
                 self.ACT_MovToObject(visible, "food")
-                while (self.ai_interface.takeObjectAction("food") == "ok"):
+                while self.ai_interface.takeObjectAction("food") == "ok":
                     print("[AI] ~ Got some food")
+                    client.getInventory()["food"] += 1
                 return 0
+
 
     def TST_SeeObject(self, visible, obj):
         for indexVisible in range(0, len(visible)):
-            if (obj in visible[indexVisible]):
+            if obj in visible[indexVisible]:
                 return 1
         return 0
+
 
     def ACT_MovToObject(self, visible, obj): # Ouai c'est dégueu... Mais c'est pas facile ca ^^'
         if obj in visible[0]:
@@ -83,6 +98,7 @@ class AI:
             distance = distance + 1
         return 0
 
+
     def ACT_GetClosestObject(self, visible, obj):
         index = 0
         for cell in visible:
@@ -91,11 +107,14 @@ class AI:
             index = index + 1
         return 0
 
+
     def onPlayerEject(self, res):
         print("onPlayerEject res={}".format(res))
 
+
     def onPlayerDead(self, status):
         print("onPlayerDead")
+
 
     def onIncantation(self, status):
         if type(status) is int:
@@ -105,11 +124,14 @@ class AI:
         elif status == "ko":
             print("Incantation failed")
 
+
     def onMessage(self, player_num, message):
         print("onMessage: player_num={} message={}".format(player_num,  message))
 
+
     def onLevelUp(self, level):
         print("onLevelUp level={}".format(level))
+
 
     def onNbrOfTeamSlotsUnused(self, count):
         print(count)

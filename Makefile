@@ -5,12 +5,10 @@
 ## Login   <thomas.henon@epitech.eu>
 ## 
 ## Started on  Thu May 18 10:29:51 2017 Thomas HENON
-## Last update Tue Jun 20 11:12:06 2017 arsene
+## Last update Tue Jun 27 18:42:38 2017 
 ##
 
 CC = gcc
-
-RM = rm -f
 
 LDFLAGS+= -W -Wall -g
 CFLAGS+= -I./includes -W -Wall -fPIC -g
