@@ -126,7 +126,7 @@ class AI:
 
 
     def onMessage(self, player_num, message):
-        self.broadcast_.addMail(text)
+        self.broadcast_.addMail(message)
         print("onMessage: player_num={} message={}".format(player_num,  message))
 
 
