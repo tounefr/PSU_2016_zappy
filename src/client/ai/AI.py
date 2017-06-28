@@ -18,7 +18,7 @@ class AI:
         client = self.team_.list_cli_[0]
 
         client.setInventory(inventory)
-        while True:
+        while 1:
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
@@ -34,7 +34,7 @@ class AI:
         ko_count = 0
         client = self.team_.list_cli_[0]
 
-        while True:
+        while 1:
             visible = self.ai_interface.lookAroundAction() # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
                 if ko_count == 0:
