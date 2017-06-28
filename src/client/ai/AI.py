@@ -10,7 +10,6 @@ class AI:
         self.level = 1
         self.team_ = Team()
         self.broadcast_ = Broadcast(self.team_, self.ai_interface)
-        self.mailBox = []
 
 
     def onGameStart(self):
@@ -20,8 +19,8 @@ class AI:
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
             self.broadcast_.brd_snd_inventory()
-            if len(self.broadcast_) > 0:
-                print(self.broadcast_[0])
+            if len(self.mailBox) > 0:
+                print(self.mailBox[0])
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
@@ -127,7 +126,7 @@ class AI:
 
 
     def onMessage(self, player_num, message):
-        self.mailBox.append(message)
+        self.broadcast_.addMail(text)
         print("onMessage: player_num={} message={}".format(player_num,  message))
 
 

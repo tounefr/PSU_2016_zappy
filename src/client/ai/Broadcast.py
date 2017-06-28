@@ -23,6 +23,7 @@ class Broadcast:
         self.number_ = 0
         self.lastpid_ = ""
         self.key_ = 0
+        self.mailBox = list()
         for char in self.interface.getTeamName():
             self.key_ += ord(char)
 
@@ -30,11 +31,17 @@ class Broadcast:
     def getNumber(self):
         return self.number_
 
+    def getMailBox(self):
+        return self.mailBox
+
     # setter
     def setNumber(self, value):
         self.number_ = value
 
     # Methods
+    def addMail(self, text):
+        self.mailBox.append(text)
+
     def shift(self, current_position, distance, direction: (0, 1)):
         direction = 1 if direction else -1
         return current_position + direction * distance
