@@ -5,7 +5,7 @@
 ** Login   <arsene@arsene-HP-EliteBook-840-G2>
 **
 ** Started on  Mon Jun 26 14:18:29 2017 arsene
-** Last update Wed Jun 28 15:55:42 2017 arsene
+** Last update Wed Jun 28 16:57:02 2017 arsene
 */
 
 #include "server.h"
@@ -14,7 +14,9 @@ char		*get_tiles_infos(int pos, t_server *server)
 {
   int		i;
 
-  printf("%s\n", server->map.cases[pos][get_g_foods()[i].s]);
+  /* for (i = 0; i < RESOURCES_NBR_TYPES; i++) */
+  /*   printf("%s\n", get_g_foods()[i].s); */
+  /* printf("%s\n", server->map.cases[pos][get_g_foods()[i].s]); */
   /* char		*buffer; */
   /* int		i; */
   /* int		count_buffer; */
@@ -48,41 +50,55 @@ char		*look(t_client *client, t_server *server)
   if (client->orientation == ORIENT_NORTH ||
       client->orientation == ORIENT_SOUTH)
     {
-      while (i < client->level)
+      while (i <= client->level)
 	{
 	  if (client->orientation == ORIENT_NORTH)
-	    front = server->map.cases[curr_pos - (i * server->map.width)];
+	    {
+	      front = curr_pos - (i * server->map.width);
+	      printf("FRONT NORTH IS : %d\n", front);
+	    }
 	  if (client->orientation == ORIENT_SOUTH)
-	    front = server->map.cases[curr_pos + (i * server->map.width)];
+	    {
+	      sleep(2);
+	      printf("CLIENT LEVEL : %d\n", client->level);
+	      front = curr_pos + (i * server->map.width) + 1;
+	      printf("FRONT SOUTH IS : %d\n", front);
+	    }
 	  get_tiles_infos(front, server);
-	  while (j < client->level)
+	  while (j <= client->level)
 	    {
 	      get_tiles_infos(front + j, server);
 	      get_tiles_infos(front - j, server);
 	      j++;
 	    }
 	  j = 0;
+	  i++;
 	}
-      i++;
     }
   else if (client->orientation == ORIENT_EAST ||
 	   client->orientation == ORIENT_WEST)
     {
-      while (i < client->level)
+      while (i <= client->level)
 	{
 	  if (client->orientation == ORIENT_EAST)
-	    front = server->map.cases[curr_pos + i];
+	    {
+	      front = curr_pos + i;
+	      printf("FRONT EAST IS : %d\n", front);
+	    }
 	  if (client->orientation == ORIENT_WEST)
-	    front = server->map.cases[curr_pos - i];
+	    {
+	      front = curr_pos - i;
+	      printf("FRONT WEST IS : %d\n", front);
+	    }
 	  get_tiles_infos(front, server);
-	  while (j < client->level)
+	  while (j <= client->level)
 	    {
 	      get_tiles_infos(front + (j * server->map.width), server);
 	      get_tiles_infos(front - (j * server->map.width), server);
 	      j++;
 	    }
 	  j = 0;
+	  i++;
 	}
-      i++;
     }
 }
