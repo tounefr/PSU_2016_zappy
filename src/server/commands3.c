@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Fri Jun 23 15:00:53 2017 Thomas HENON
-** Last update Tue Jun 27 11:31:17 2017 arsene
+** Last update Wed Jun 28 14:04:24 2017 arsene
 */
 
 #include "server.h"
@@ -30,10 +30,8 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
 
 char    onLookPacket(t_server *server, t_client *client, char *packet)
 {
-  (void)server;
-  (void)client;
   (void)packet;
-
+  look(client, server);
   return 1;
 }
 

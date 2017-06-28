@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sat Jun 24 16:09:57 2017 Thomas HENON
-** Last update Mon Jun 26 14:32:34 2017 arsene
+** Last update Wed Jun 28 11:53:56 2017 arsene
 */
 
 #include <stdio.h>
@@ -25,21 +25,21 @@ void	rand_ressource(t_server *server, int p)
   int	item;
 
   item = (rand() % (100 - 0) + 0);
-  if (item <= 56)
+  if (item <= 60)
     return;
-  else if (item <= 57 && item > 56)
+  else if (item <= 61 && item > 60)
     server->map.cases[p][TYPE_THYSTAME]++;
-  else if (item <= 61 && item > 57)
+  else if (item <= 63 && item > 61)
     server->map.cases[p][TYPE_MENDIANE]++;
-  else if (item <= 66 && item > 61)
+  else if (item <= 66 && item > 63)
     server->map.cases[p][TYPE_PHIRAS]++;
-  else if (item <= 73 && item > 66)
+  else if (item <= 69 && item > 66)
     server->map.cases[p][TYPE_SIBUR]++;
-  else if (item <= 80 && item > 73)
+  else if (item <= 71 && item > 69)
     server->map.cases[p][TYPE_DERAUMERE]++;
-  else if (item <= 90 && item > 80)
+  else if (item <= 81 && item > 71)
     server->map.cases[p][TYPE_LINEMATE]++;
-  else if (item <= 100 && item > 90)
+  else if (item <= 100 && item > 81)
     server->map.cases[p][TYPE_FOOD]++;
 }
 
