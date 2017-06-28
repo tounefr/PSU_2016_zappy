@@ -18,9 +18,9 @@ class AI:
         client = self.team_.list_cli_[0]
 
         client.setInventory(inventory)
-        print("Hey")
+        print("Hey 1")
         while 1:
-            print("Hey")
+            print("Hey 2")
             if inventory['food'] < 4:
                 self.BHV_FindFood()
                 """
@@ -34,7 +34,7 @@ class AI:
         direction = 0
         ko_count = 0
         client = self.team_.list_cli_[0]
-
+        print("Hey food")
         while 1:
             visible = self.ai_interface.lookAroundAction() # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
@@ -46,6 +46,7 @@ class AI:
                         self.ai_interface.moveForwardAction()
                 ko_count = (ko_count + 1) % 2
             else:
+                print("Hey go to food")
                 self.ACT_MovToObject(visible, "food")
                 while self.ai_interface.takeObjectAction("food") == "ok":
                     print("[AI] ~ Got some food")
