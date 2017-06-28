@@ -54,7 +54,7 @@ class Broadcast:
     # snd
     def brd_snd_pid(self):
         client = self.team_.list_cli_[0]
-        text = str(self.number) + " PID "
+        text = str(self.number_) + " PID "
         text += str(client.getPid())
 
         text = self.stream_cipher(text)
@@ -64,7 +64,7 @@ class Broadcast:
         if str(self.lastpid_) == "":
             return
         client = self.team_.list_cli_[0]
-        text = str(self.number) + " WELCOME "
+        text = str(self.number_) + " WELCOME "
         text += str(client.getPid()) + " " + str(self.lastpid_)
 
         text = self.stream_cipher(text)
@@ -72,7 +72,7 @@ class Broadcast:
 
     def brd_snd_inventory(self):
         client = self.team_.list_cli_[0]
-        text = str(self.number) + " INVENTORY "
+        text = str(self.number_) + " INVENTORY "
         text += str(client.getPid()) + " " + str(client.getLvl())
         for key, val in client.getInventory().items():
             text += ''.join(' {} {}'.format(key, val))
