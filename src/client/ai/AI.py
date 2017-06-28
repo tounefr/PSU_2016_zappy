@@ -19,8 +19,8 @@ class AI:
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
             self.broadcast_.brd_snd_inventory()
-            if len(self.mailBox) > 0:
-                print(self.mailBox[0])
+            if len(self.broadcast_.getMailBox()) > 0:
+                print(self.broadcast_.getMailBox()[0])
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
