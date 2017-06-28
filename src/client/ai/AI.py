@@ -127,7 +127,7 @@ class AI:
 
     def onMessage(self, player_num, message):
         message = self.broadcast_.stream_cipher(message, False)
-        self.broadcast_.addMail(message)
+        self.broadcast_.addMail(player_num + " | " + message)
         print("onMessage: player_num={} message={}".format(player_num,  message))
 
 
