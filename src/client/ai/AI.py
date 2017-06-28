@@ -10,16 +10,19 @@ class AI:
         self.level = 1
         self.team_ = Team()
         self.broadcast_ = Broadcast(self.team_, self.ai_interface)
+        self.mailBox = []
 
 
     def onGameStart(self):
         print("Game start")
         client = self.team_.list_cli_[0]
-        print("Hey 1")
         while 1:
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
-            print("Hey 2")
+            self.broadcast_.brd_snd_inventory()
+            if len(self.broadcast_) > 0:
+                print(self.broadcast_[0])
+
             if inventory['food'] < 4:
                 self.BHV_FindFood()
                 """
@@ -33,7 +36,6 @@ class AI:
         direction = 0
         ko_count = 0
         client = self.team_.list_cli_[0]
-        print("Hey food")
         while 1:
             visible = self.ai_interface.lookAroundAction() # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
@@ -45,7 +47,6 @@ class AI:
                         self.ai_interface.moveForwardAction()
                 ko_count = (ko_count + 1) % 2
             else:
-                print("Hey go to food")
                 self.ACT_MovToObject(visible, "food")
                 while self.ai_interface.takeObjectAction("food") == "ok":
                     print("[AI] ~ Got some food")
@@ -126,6 +127,7 @@ class AI:
 
 
     def onMessage(self, player_num, message):
+        self.mailBox.append(message)
         print("onMessage: player_num={} message={}".format(player_num,  message))
 
 
