@@ -14,12 +14,11 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-        inventory = self.ai_interface.inventoryAction()  # 1pt
         client = self.team_.list_cli_[0]
-
-        client.setInventory(inventory)
         print("Hey 1")
         while 1:
+            inventory = self.ai_interface.inventoryAction()  # 1pt
+            client.setInventory(inventory)
             print("Hey 2")
             if inventory['food'] < 4:
                 self.BHV_FindFood()
