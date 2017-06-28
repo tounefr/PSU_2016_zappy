@@ -161,22 +161,43 @@ class Map:
         self.stone = Stone()
 
         color = Color()
+        GroundTexture = SpriteSheet("src/client/gui/assets/terrain.png")
+        img_ground0 = GroundTexture.get_image(0, 0, 16, 16, color.BLACK)
+        img_ground1 = GroundTexture.get_image(16, 0, 16, 16, color.BLACK)
+        img_ground2 = GroundTexture.get_image(32, 0, 16, 16, color.BLACK)
+        img_ground3 = GroundTexture.get_image(48, 0, 16, 16, color.BLACK)
+        img_ground4 = GroundTexture.get_image(64, 0, 16, 16, color.BLACK)
+        img_ground5 = GroundTexture.get_image(80, 0, 16, 16, color.BLACK)
+        img_ground6 = GroundTexture.get_image(96, 0, 16, 16, color.BLACK)
+
+        self.Ground = []
+        self.Ground.append(pygame.transform.scale(img_ground0, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground1, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground2, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground3, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground4, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground5, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground6, (48, 48)))
+
+        """
         herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
         image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
         image_herbe_haute = herbe.get_image(270, 57, 16, 16, color.BLACK)
         self.herbe_basse = pygame.transform.scale(image_herbe_basse, (48, 48))
         self.herbe_haute = pygame.transform.scale(image_herbe_haute, (48, 48))
+        """
 
 
     def create(self, window):
-        cell = {'texture':self.herbe_haute, 'food':0}
+        cell = {'texture':self.Ground[0], 'food':0}
         self.map = [[{} for x in range(self.width)] for y in range(self.height)]
 
         coordStone = CoordStone(-1, -1, -1)
         for y in range(self.height):
             for x in range(self.width):
+                index = 0 if random.randint(0, 100) <= 75 else random.randint(1, len(self.Ground) - 1)
                 cell = {
-                    'texture':  self.herbe_haute,
+                    'texture':  self.Ground[index],
                     'food':     y * self.width + x,
                     'linemate': coordStone,
                     'deraumere': coordStone,
@@ -294,6 +315,34 @@ class Perso:
     def assign_model(self):
         color = Color()
         if self.model == 0:
+            character = SpriteSheet("src/client/gui/assets/character.png")
+            img_droite = character.get_image(0, 0, 16, 16, color.WHITE)
+            img_haut = character.get_image(32, 0, 16, 16, color.WHITE)
+            img_gauche = character.get_image(64, 0, 16, 16, color.WHITE)
+            img_bas = character.get_image(96, 0, 16, 16, color.WHITE)
+            img_take = character.get_image(0, 16, 16, 16, color.WHITE)
+
+            img_death = character.get_image(0, 112, 16, 16, color.WHITE)
+            img_layEgg = character.get_image(16, 32, 16, 16, color.WHITE)
+            img_egg = character.get_image(0, 48, 16, 16, color.WHITE)
+            img_hatch = character.get_image(0, 64, 16, 16, color.WHITE)
+            img_incant = character.get_image(0, 80, 16, 16, color.WHITE)
+            img_lvlUp = character.get_image(0, 96, 16, 16, color.WHITE)
+
+            self.droite = pygame.transform.scale(img_droite, (48, 48))
+            self.haut = pygame.transform.scale(img_haut, (48, 48))
+            self.gauche = pygame.transform.scale(img_gauche, (48, 48))
+            self.bas = pygame.transform.scale(img_bas, (48, 48))
+            self.take = pygame.transform.scale(img_take, (48, 48))
+
+            self.death = pygame.transform.scale(img_death, (48, 48))
+            self.layEgg = pygame.transform.scale(img_layEgg, (48, 48))
+            self.egg = pygame.transform.scale(img_egg, (48, 48))
+            self.hatch = pygame.transform.scale(img_hatch, (48, 48))
+            self.incant = pygame.transform.scale(img_incant, (48, 48))
+            self.lvlUp = pygame.transform.scale(img_lvlUp, (48, 48))
+
+            """
             linkvert = SpriteSheet("src/client/gui/assets/persos.png")
             bas = linkvert.get_image(222, 485, 25, 25, color.BLACK)
             droite = linkvert.get_image(197, 453, 25, 25, color.BLACK)
@@ -303,6 +352,7 @@ class Perso:
             self.droite = pygame.transform.scale(droite, (48, 48))
             self.gauche = pygame.transform.scale(gauche, (48, 48))
             self.haut = pygame.transform.scale(haut, (48, 48))
+            """
 
     def set_direction(self, orientation):
         if orientation == 1:
