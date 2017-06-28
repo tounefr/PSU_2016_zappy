@@ -48,7 +48,6 @@ class AI:
                 self.ACT_MovToObject(visible, "food")
                 while self.ai_interface.takeObjectAction("food") == "ok":
                     print("[AI] ~ Got some food")
-                    client.getInventory()["food"] += 1
                 return 0
 
 
