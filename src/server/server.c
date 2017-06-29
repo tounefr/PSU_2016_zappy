@@ -48,7 +48,7 @@ char update(t_server *server, struct timeval *last_tick)
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-        printf("cycle %d\n", server->cur_cycle);
+//        printf("cycle %d\n", server->cur_cycle);
         if (server->cur_cycle == 1 || (server->cur_cycle % 1200) == 0)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {

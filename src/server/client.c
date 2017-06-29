@@ -34,6 +34,7 @@ void init_client(t_client *client)
     client->life_cycles = client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT;
     client->write_packets = NULL;
     client->read_packets = NULL;
+    client->buffer = NULL;
 }
 
 void free_client(t_client *client)
@@ -55,6 +56,12 @@ void free_client(t_client *client)
         free(client->buffer);
         client->buffer = NULL;
     }
+}
+
+void generate_position(t_server *server, t_client *client)
+{
+    client->pos.x = my_rand(0, server->map.width - 1);
+    client->pos.y = my_rand(0, server->map.height - 1);
 }
 
 char on_exit_client(t_server *server, t_client *client)

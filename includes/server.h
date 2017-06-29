@@ -172,6 +172,7 @@ int clients_in_team(t_server *server, t_team *team);
 char on_new_client(t_server *server);
 void close_client_connection(t_client *client);
 char on_exit_client(t_server *server, t_client *client);
+void generate_position(t_server *server, t_client *client);
 
 // command.c
 char    onPreIncantPacket(t_server *server, t_client *client, char *packet);

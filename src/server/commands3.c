@@ -55,6 +55,7 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
             else
                 client->team->slots--;
         }
+        generate_position(server, client);
         packet_send(client, "%d\n", client->team->slots);
         packet_send(client, "%d %d\n",
                 server->map.width, server->map.height);
