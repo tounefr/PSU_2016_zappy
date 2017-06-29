@@ -12,7 +12,7 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-        self.broadcast_ = Broadcast(self.team_, self.ai_interface)
+        self.team_ = Team()
         client = self.team_.list_cli_[0]
         self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
         while 1:
