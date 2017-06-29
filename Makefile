@@ -10,7 +10,7 @@
 
 CC = gcc
 
-LDFLAGS+= -W -Wall -g
+LDFLAGS+= -g
 CFLAGS+= -I./includes -W -Wall -fPIC -g
 
 SERVER_NAME = zappy_server

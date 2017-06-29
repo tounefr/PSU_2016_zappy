@@ -45,7 +45,7 @@ class ZappyClient:
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
         if not self.graphical:
-            if self.server_port is None or self.team_name is None:
+            if self.team_name is None:
                 sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
@@ -54,7 +54,7 @@ class ZappyClient:
         self.map_size = ()
         self.player_pos = ()
         self.server_hostname = "localhost"
-        self.server_port = None
+        self.server_port = 4242
         self.team_name = None
         self.client_num = -1
         self.graphical = False
@@ -85,14 +85,25 @@ class ZappyClient:
             self.fork_cond.clear()
         """
 
-    def start(self):
+    def startGUI(self):
+        print("GRAPHIC")
+        tp = ThreadPool(1)
+        tp.add_task(self.gui.update)
+        while self.running:
+            try:
+                try:
+                    raw = self.network.recv_packet()
+                except RuntimeError as msg:
+                    print("Socket error : {}".format(msg))
+                    sys.exit(1)
+                self.packet_router.route(raw)
+            except KeyboardInterrupt:
+                sys.exit(1)
+        tp.wait_completion()
+        sys.exit(1)
 
-        try:
-            self.network.connect_server()
-        except RuntimeError:
-            print("Failed to connect to {}:{}".format(self.server_hostname, self.server_port))
-            sys.exit(1)
-
+    def startAI(self):
+        print("AI")
         tp = ThreadPool(10)
         while self.running:
             try:
@@ -101,11 +112,17 @@ class ZappyClient:
                 except RuntimeError as msg:
                     print("Socket error : {}".format(msg))
                     sys.exit(1)
-                if self.graphical:
-                    self.packet_router.route(raw)
-                else:
-                    tp.add_task(self.packet_router.route, raw)
+                tp.add_task(self.packet_router.route, raw)
             except KeyboardInterrupt:
                 sys.exit(1)
         tp.wait_completion()
         sys.exit(1)
+
+    def start(self):
+        try:
+            self.network.connect_server()
+        except RuntimeError:
+            sys.exit(1)
+        if self.graphical:
+            return self.startGUI()
+        return self.startAI()

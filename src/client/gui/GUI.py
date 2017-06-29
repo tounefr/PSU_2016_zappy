@@ -4,6 +4,7 @@ from GUIInterface import *
 from constantes import *
 from random import *
 from sys import *
+import time
 
 class GUI:
     def __init__(self):
@@ -14,6 +15,11 @@ class GUI:
         self.map = 0
         self.window = 0
         self.playerList = PlayerList()
+
+    def update(self):
+        while True:
+            print("UPDATE")
+            time.sleep(1)
 
     def onGameStart(self):
         pygame.init()

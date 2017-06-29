@@ -21,6 +21,7 @@ void select_init(t_server *server, int *nfds,
 
     *nfds = server->server_fd + 1;
     FD_ZERO(read_fds);
+    FD_ZERO(write_fds);
     FD_SET(server->server_fd, read_fds);
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1)

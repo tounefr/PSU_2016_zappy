@@ -53,7 +53,8 @@ char send_gui_packet(t_server *server, char *packet, ...)
 
     va_start(args, packet);
     if (!server->gui_client)
-        return exit_error(0, "no gui client connected\n");
+        return 0;
+//        return exit_error(0, "no gui client connected\n");
     vdprintf(server->gui_client->socket_fd, packet, args);
     va_end(args);
     return 1;
