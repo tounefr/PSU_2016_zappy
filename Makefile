@@ -32,7 +32,7 @@ libnetwork: $(LIBNETWORK_OBJS)
 	$(CC) -fPIC -shared -o $(LIBNETWORK_NAME) $(LIBNETWORK_OBJS)
 
 zappy_ai:
-	pip3 install -r requirements.txt
+	sudo pip3 install -r requirements.txt
 	sudo pyinstaller -y --distpath ./ -n zappy_ai -F ./src/client/ZappyClient.py
 
 zappy_server: $(SERVER_OBJS)
