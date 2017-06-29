@@ -1,6 +1,6 @@
-from AIInterface import *
-from Broadcast import *
-from Team import *
+from core.AIInterface import *
+from ai.Broadcast import *
+from ai.Team import *
 
 
 class AI:
@@ -11,7 +11,6 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-        self.team_ = Team()
         self.broadcast_ = Broadcast(self.team_, self.ai_interface)
         client = self.team_.list_cli_[0]
         while 1:

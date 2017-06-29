@@ -3,7 +3,7 @@
 import sys
 import pygame
 from pygame.locals import *
-from constantes import *
+from gui.constantes import *
 import random
 
 

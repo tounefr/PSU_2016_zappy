@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from GUIInterface import *
-from constantes import *
+from core.GUIInterface import *
+from gui.constantes import *
 from random import *
 from sys import *
 import time

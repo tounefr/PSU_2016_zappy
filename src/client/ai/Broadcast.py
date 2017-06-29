@@ -1,8 +1,8 @@
 import random
 import string
-from Client import *
-from Team import *
-from AIInterface import *
+from ai.Client import *
+from ai.Team import *
+from core.AIInterface import *
 
 class Broadcast:
     def __init__(self, team, ai_interface):

@@ -1,5 +1,5 @@
 import sys
-from Util import *
+from core.Util import *
 
 class PacketParser:
 
