@@ -50,6 +50,8 @@ static char split_buffer(t_server *server, t_client *client)
             start = i + 1;
         }
     }
+    if (client->buffer)
+        free(client->buffer);
     if (!(client->buffer = strdup(&client->buffer[start])))
         return exit_error(0, "malloc error\n");
     return 1;

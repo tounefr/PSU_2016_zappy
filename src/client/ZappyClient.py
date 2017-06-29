@@ -45,7 +45,7 @@ class ZappyClient:
             except IndexError:
                 sys.exit(ZappyClient.print_usage())
         if not self.graphical:
-            if self.server_port is None or self.team_name is None:
+            if self.team_name is None:
                 sys.exit(ZappyClient.print_usage())
 
     def __init__(self):
@@ -54,7 +54,7 @@ class ZappyClient:
         self.map_size = ()
         self.player_pos = ()
         self.server_hostname = "localhost"
-        self.server_port = None
+        self.server_port = 4242
         self.team_name = None
         self.client_num = -1
         self.graphical = False

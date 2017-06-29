@@ -33,6 +33,28 @@ void init_client(t_client *client)
     client->inventory[TYPE_FOOD] = PLAYER_LIFE_UNITS;
     client->life_cycles = client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT;
     client->write_packets = NULL;
+    client->read_packets = NULL;
+}
+
+void free_client(t_client *client)
+{
+    if (client->cur_packet) {
+        free_packet(client->cur_packet);
+        free(client->cur_packet);
+        client->cur_packet = NULL;
+    }
+    if (client->read_packets) {
+        generic_list_destroy(&client->read_packets, free);
+        client->read_packets = NULL;
+    }
+    if (client->write_packets) {
+        generic_list_destroy(&client->write_packets, free);
+        client->write_packets = NULL;
+    }
+    if (client->buffer) {
+        free(client->buffer);
+        client->buffer = NULL;
+    }
 }
 
 char on_exit_client(t_server *server, t_client *client)

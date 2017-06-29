@@ -16,6 +16,11 @@
 #include <sys/socket.h>
 #include "server.h"
 
+void free_packet(t_packet *packet)
+{
+    free(packet->raw);
+}
+
 char packet_send(t_client *client, char *format, ...)
 {
     char *buffer;
