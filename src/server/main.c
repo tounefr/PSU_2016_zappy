@@ -18,7 +18,7 @@ static t_server *get_server()
 
     if (!server) {
         if (((server = malloc(sizeof(t_server))) == NULL))
-            return exit_error(0, "malloc error\n");
+            return exit_error(NULL, "malloc error\n");
         init_server(server);
     }
     return server;

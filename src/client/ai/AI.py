@@ -8,12 +8,11 @@ class AI:
     def __init__(self):
         self.ai_interface = AIInterface()
         self.level = 1
-        self.team_ = Team()
-        self.broadcast_ = Broadcast(self.team_, self.ai_interface)
-
 
     def onGameStart(self):
         print("Game start")
+        self.team_ = Team()
+        self.broadcast_ = Broadcast(self.team_, self.ai_interface)
         client = self.team_.list_cli_[0]
         while 1:
             inventory = self.ai_interface.inventoryAction()  # 1pt
