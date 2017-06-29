@@ -81,7 +81,15 @@ class Texture(object):
                 self.bord = pygame.transform.scale(bord, (48, 48))
 
 
-class Stone:
+class Resource:
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if Resource.g_instance is None:
+            Resource.g_instance = Resource()
+        return Resource.g_instance
+
     def __init__(self):
         color = Color()
 
@@ -92,36 +100,37 @@ class Stone:
         image_rubis_rouge = rubis.get_image(251, 363, 30, 48, color.WHITE)
         image_rubis_violet = rubis.get_image(278, 363, 30, 48, color.WHITE)
         image_rubis_orange = rubis.get_image(305, 363, 30, 48, color.WHITE)
-        self.rubis_vert = pygame.transform.scale(image_rubis_vert, (12, 24))
-        self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (12, 24))
-        self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (12, 24))
-        self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (12, 24))
-        self.rubis_violet = pygame.transform.scale(image_rubis_violet, (12, 24))
-        self.rubis_orange = pygame.transform.scale(image_rubis_orange, (12, 24))
+        self.rubis_vert = pygame.transform.scale(image_rubis_vert, (8, 16))
+        self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (8, 16))
+        self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (8, 16))
+        self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (8, 16))
+        self.rubis_violet = pygame.transform.scale(image_rubis_violet, (8, 16))
+        self.rubis_orange = pygame.transform.scale(image_rubis_orange, (8, 16))
 
     def display_linemate(self, window, coordLinemate):
-        for coord in coordLinemate.tab_coord:
-            window.blit(self.rubis_vert, (coord.x, coord.y))
+        if coordLinemate.nb_resource > 0:
+            window.blit(self.rubis_vert, (coordLinemate.case_x, coordLinemate.case_y))
 
     def display_deraumere(self, window, coordDeraumere):
-        for coord in coordDeraumere.tab_coord:
-            window.blit(self.rubis_bleu, (coord.x, coord.y))
+        if coordDeraumere.nb_resource > 0:
+            window.blit(self.rubis_bleu, (coordDeraumere.case_x, coordDeraumere.case_y))
 
     def display_sibur(self, window, coordSibur):
-        for coord in coordSibur.tab_coord:
-            window.blit(self.rubis_jaune, (coord.x, coord.y))
+        if coordSibur.nb_resource > 0:
+            window.blit(self.rubis_jaune, (coordSibur.case_x, coordSibur.case_y))
 
     def display_mendiane(self, window, coordMendiane):
-        for coord in coordMendiane.tab_coord:
-            window.blit(self.rubis_rouge, (coord.x, coord.y))
+        if coordMendiane.nb_resource > 0:
+            window.blit(self.rubis_rouge, (coordMendiane.case_x, coordMendiane.case_y))
 
     def display_phiras(self, window, coordPhiras):
-        for coord in coordPhiras.tab_coord:
-            window.blit(self.rubis_violet, (coord.x, coord.y))
+        if coordPhiras.nb_resource > 0:
+            window.blit(self.rubis_violet, (coordPhiras.case_x, coordPhiras.case_y))
 
     def display_thystame(self, window, coordThystame):
-        for coord in coordThystame.tab_coord:
-            window.blit(self.rubis_orange, (coord.x, coord.y))
+        if coordThystame.nb_resource > 0:
+            window.blit(self.rubis_orange, (coordThystame.case_x, coordThystame.case_y))
+
 
 class Coord:
     def __init__(self, x, y):
@@ -129,26 +138,17 @@ class Coord:
         self.y = y
 
 
-class CoordStone:
-    def __init__(self, nb_stone, x, y):
+class CoordResource:
+    def __init__(self, nb_resource, x, y):
         self.x = x
         self.y = y
-        self.nb_stone = nb_stone
-        self.tab_coord = []
+        self.nb_resource = nb_resource
+        self.case_x = random.randint(0, 36) + self.x * 48
+        self.case_y = random.randint(0, 24) + self.y * 48
 
-    def set_coord_stone(self):
-        for i in range(self.nb_stone):
-            coord = Coord(random.randint(0, 36) + self.x * 48, random.randint(0, 24) + self.y * 48)
-            self.tab_coord.append(coord)
+    def set_nb_resource(self, nb_resource):
+        self.nb_resource = nb_resource
 
-    def add(self, nb):
-        for i in range(nb):
-            coord = Coord(random.randint(0, 36) + self.x * 48, random.randint(0, 24) + self.y * 48)
-            self.tab_coord.append(coord)
-
-    def remove(self, nb):
-        for i in range(nb):
-            del self.tab_coord[i]
 
 class Map:
     def __init__(self, sprite_width, sprite_height):
@@ -158,7 +158,7 @@ class Map:
         self.sprite_height = sprite_height
         self.width = sprite_width // 48
         self.height = sprite_height // 48
-        self.stone = Stone()
+        self.resource = Resource.instance()
 
         color = Color()
         GroundTexture = SpriteSheet("src/client/gui/assets/terrain.png")
@@ -178,7 +178,6 @@ class Map:
         self.Ground.append(pygame.transform.scale(img_ground4, (48, 48)))
         self.Ground.append(pygame.transform.scale(img_ground5, (48, 48)))
         self.Ground.append(pygame.transform.scale(img_ground6, (48, 48)))
-
         """
         herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
         image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
@@ -192,74 +191,53 @@ class Map:
         cell = {'texture':self.Ground[0], 'food':0}
         self.map = [[{} for x in range(self.width)] for y in range(self.height)]
 
-        coordStone = CoordStone(-1, -1, -1)
+        coordResource = CoordResource(-1, -1, -1)
         for y in range(self.height):
             for x in range(self.width):
                 index = 0 if random.randint(0, 100) <= 75 else random.randint(1, len(self.Ground) - 1)
                 cell = {
                     'texture':  self.Ground[index],
-                    'food':     y * self.width + x,
-                    'linemate': coordStone,
-                    'deraumere': coordStone,
-                    'sibur': coordStone,
-                    'mendiane': coordStone,
-                    'phiras': coordStone,
-                    'thystame': coordStone
+                    'food':     coordResource,
+                    'linemate': coordResource,
+                    'deraumere': coordResource,
+                    'sibur': coordResource,
+                    'mendiane': coordResource,
+                    'phiras': coordResource,
+                    'thystame': coordResource
                 }
                 self.map[y][x] = cell
         print("onEggHatch egg_num={}".format(self.map))
 
-    def compare_stone(self, coordPrec, coordNext):
-        print("\n" + str(coordPrec.nb_stone) + " - " + str(coordNext.nb_stone) + "\n")
-        if coordPrec.nb_stone == -1:
-            #print("\n\n\n\n----------\n\n\n\n")
-            return coordNext
-        elif coordPrec.nb_stone == coordNext.nb_stone:
-            #print("\n\n\n\n====\n\n\n\n")
-            coordNext = coordPrec
-        elif coordPrec.nb_stone > coordNext.nb_stone:
-            #print("\n\n\n\n>>>>\n\n\n\n")
-            nb_stone = coordNext.nb_stone
-            coordNext = coordPrec
-            coordNext.remove(CoordPrec.nb_stone - nb_stone)
-        elif coordPrec.nb_stone < coordNext.nb_stone:
-            #print("\n\n\n\n<<<<<<\n\n\n\n")
-            nb_stone = coordNext.nb_stone
-            coordNext = coordPrec
-            coordNext.nb_stone = nb_stone
-            coordNext.add(nb_stone - coordPrec.nb_stone)
-        return coordNext
-
+    def check_if_resource_exist(self, coord_precedent, coord_next):
+        if coord_precedent.nb_resource > -1:
+            coord_precedent.set_nb_resource(coord_next.nb_resource)
+        else:
+            return coord_next
+        return coord_precedent
 
     def add_case_content(self, x, y, resources):
-        coordLinemate = CoordStone(resources['linemate'], x, y)
-        coordLinemate.set_coord_stone()
-        self.map[y][x]['linemate'] = self.compare_stone(self.map[y][x]['linemate'], coordLinemate)
-        coordDeraumere = CoordStone(resources['deraumere'], x, y)
-        coordDeraumere.set_coord_stone()
-        self.map[y][x]['deraumere'] = self.compare_stone(self.map[y][x]['deraumere'], coordDeraumere)
-        coordSibur = CoordStone(resources['sibur'], x, y)
-        coordSibur.set_coord_stone()
-        self.map[y][x]['sibur'] = self.compare_stone(self.map[y][x]['sibur'], coordSibur)
-        coordMendiane = CoordStone(resources['mendiane'], x, y)
-        coordMendiane.set_coord_stone()
-        self.map[y][x]['mendiane'] = self.compare_stone(self.map[y][x]['mendiane'], coordMendiane)
-        coordPhiras = CoordStone(resources['phiras'], x, y)
-        coordPhiras.set_coord_stone()
-        self.map[y][x]['phiras'] = self.compare_stone(self.map[y][x]['phiras'], coordPhiras)
-        coordThystame = CoordStone(resources['thystame'], x, y)
-        coordThystame.set_coord_stone()
-        self.map[y][x]['thystame'] = self.compare_stone(self.map[y][x]['thystame'], coordThystame)
+        coordLinemate = CoordResource(resources['linemate'], x, y)
+        self.map[y][x]['linemate'] = self.check_if_resource_exist(self.map[y][x]['linemate'], coordLinemate)
+        coordDeraumere = CoordResource(resources['deraumere'], x, y)
+        self.map[y][x]['deraumere'] = self.check_if_resource_exist(self.map[y][x]['deraumere'], coordDeraumere)
+        coordSibur = CoordResource(resources['sibur'], x, y)
+        self.map[y][x]['sibur'] = self.check_if_resource_exist(self.map[y][x]['sibur'], coordSibur)
+        coordMendiane = CoordResource(resources['mendiane'], x, y)
+        self.map[y][x]['mendiane'] = self.check_if_resource_exist(self.map[y][x]['mendiane'], coordMendiane)
+        coordPhiras = CoordResource(resources['phiras'], x, y)
+        self.map[y][x]['phiras'] = self.check_if_resource_exist(self.map[y][x]['phiras'], coordPhiras)
+        coordThystame = CoordResource(resources['thystame'], x, y)
+        self.map[y][x]['thystame'] = self.check_if_resource_exist(self.map[y][x]['thystame'], coordThystame)
 
     def display_content(self, window):
         for i in range(self.height):
             for j in range(self.width):
-                self.stone.display_linemate(window, self.map[i][j]['linemate'])
-                self.stone.display_deraumere(window, self.map[i][j]['deraumere'])
-                self.stone.display_sibur(window, self.map[i][j]['sibur'])
-                self.stone.display_mendiane(window, self.map[i][j]['mendiane'])
-                self.stone.display_phiras(window, self.map[i][j]['phiras'])
-                self.stone.display_thystame(window, self.map[i][j]['thystame'])
+                self.resource.display_linemate(window, self.map[i][j]['linemate'])
+                self.resource.display_deraumere(window, self.map[i][j]['deraumere'])
+                self.resource.display_sibur(window, self.map[i][j]['sibur'])
+                self.resource.display_mendiane(window, self.map[i][j]['mendiane'])
+                self.resource.display_phiras(window, self.map[i][j]['phiras'])
+                self.resource.display_thystame(window, self.map[i][j]['thystame'])
 
     def read(self, window):
         for x in range(self.width):

@@ -19,7 +19,8 @@ class GUI:
     def update(self):
         while True:
             print("UPDATE")
-            time.sleep(1)
+            pygame.display.flip()
+            #time.sleep(1)
 
     def onGameStart(self):
         pygame.init()
@@ -29,7 +30,8 @@ class GUI:
     # size=(width, height)
     def onMapSize(self, size):
         self.window = pygame.display.set_mode((size[0] * 48, size[1] * 48))
-        self.map = Map(size[0] * 48 , size[1] * 48)
+
+        self.map = Map(size[0] * 48, size[1] * 48)
         self.map.create(self.window)
         self.map.read(self.window)
         pygame.display.flip()
