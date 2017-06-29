@@ -37,4 +37,4 @@ class Team:
 
     #Methods
     def getClientByPid(self, value):
-        return self.list_cli_[value]
+        return self.list_cli_.get(value)
