@@ -18,7 +18,7 @@ class AI:
         while 1:
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
-            self.broadcast_.brd_snd_inventory() # 7pts
+            #self.broadcast_.brd_snd_inventory() # 7pts
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
