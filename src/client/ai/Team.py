@@ -1,5 +1,5 @@
 import os
-from Client import *
+from ai.Client import *
 
 class Team:
     ressource_by_lvl_ = [{"player": 1, "linemate": 1, "deraumere": 0, "sibur": 0, "mendiane": 0, "phiras": 0, "thystame": 0},
@@ -37,4 +37,4 @@ class Team:
 
     #Methods
     def getClientByPid(self, value):
-        return self.list_cli_[value]
+        return self.list_cli_.get(value)

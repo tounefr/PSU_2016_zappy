@@ -1,6 +1,6 @@
-from AIInterface import *
-from Broadcast import *
-from Team import *
+from core.AIInterface import *
+from ai.Broadcast import *
+from ai.Team import *
 
 
 class AI:
@@ -8,18 +8,17 @@ class AI:
     def __init__(self):
         self.ai_interface = AIInterface()
         self.level = 1
+        self.team_ = Team()
 
     def onGameStart(self):
         print("Game start")
         self.team_ = Team()
-        self.broadcast_ = Broadcast(self.team_, self.ai_interface)
         client = self.team_.list_cli_[0]
+        self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
         while 1:
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
-            self.broadcast_.brd_snd_inventory()
-            if len(self.broadcast_.getMailBox()) > 0:
-                print(self.broadcast_.getMailBox()[0])
+            #self.broadcast_.brd_snd_inventory() # 7pts
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
@@ -124,10 +123,9 @@ class AI:
             print("Incantation failed")
 
 
-    def onMessage(self, player_num, message):
-        message = self.broadcast_.stream_cipher(message, False)
-        self.broadcast_.addMail(str(player_num) + " | " + message)
-        print("onMessage: player_num={} message={}".format(player_num,  message))
+    def onMessage(self, direction, message):
+        self.broadcast_.addMail(str(direction), message)
+        print("onMessage: player_num={} message={}".format(direction,  message))
 
 
     def onLevelUp(self, level):

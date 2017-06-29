@@ -1,10 +1,10 @@
-from Network import *
+from core.Network import *
 from ai.AI import *
 from gui.GUI import *
 import sys
-from Threading import *
-from PacketRouter import *
-from PacketParser import *
+from core.Threading import *
+from core.PacketRouter import *
+from core.PacketParser import *
 import os
 from multiprocessing import Event
 import time
@@ -126,3 +126,6 @@ class ZappyClient:
         if self.graphical:
             return self.startGUI()
         return self.startAI()
+
+if __name__ == "__main__":
+    zappy = ZappyClient()

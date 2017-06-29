@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from GUIInterface import *
-from constantes import *
+from core.GUIInterface import *
+from gui.constantes import *
 from random import *
 from sys import *
 import time
@@ -49,12 +49,13 @@ class GUI:
 
     #tna
     def onTeamName(self, team_name):
+        Teams.instance().addTeam(team_name)
         print("onTeamName team_name={}".format(team_name))
 
     #pnw
     def onPlayerConnect(self, player_num, pos, orientation, level, team_name):
         link = Perso(player_num, team_name, 0, self.map)
-        link.assign_model()
+        #link.assign_model()
         link.set_direction(orientation)
         link.x = pos[0] * 48
         link.y = pos[1] * 48
@@ -86,6 +87,14 @@ class GUI:
 
     #plv
     def onPlayerLevel(self, player_num, level):
+        index = self.playerList.get_player(int(player_num))
+        player = self.playerList.list[index]
+        player.action = player.spriteSheet['lvlUp']
+
+        self.map.read(self.window)
+        self.map.display_content(self.window)
+        self.playerList.display_players(self.window)
+        pygame.display.flip()
         index = self.playerList.get_player(player_num)
         player = self.playerList.list[index]
         player.level += 1
@@ -109,6 +118,14 @@ class GUI:
 
     #pic
     def onFirstPlayerTriggerSpell(self, pos, level, players_num):
+        index = self.playerList.get_player(int(player_num))
+        player = self.playerList.list[index]
+        player.action = player.spriteSheet['incant']
+
+        self.map.read(self.window)
+        self.map.display_content(self.window)
+        self.playerList.display_players(self.window)
+        pygame.display.flip()
         print("onFirstPlayerTriggerSpell pos={} level={} players_num={}".format(
             pos, level, players_num
         ))
@@ -119,6 +136,14 @@ class GUI:
 
     #pfk
     def onPlayerLayEgg(self, player_num):
+        index = self.playerList.get_player(int(player_num))
+        player = self.playerList.list[index]
+        player.action = player.spriteSheet['layEgg']
+
+        self.map.read(self.window)
+        self.map.display_content(self.window)
+        self.playerList.display_players(self.window)
+        pygame.display.flip()
         print("onPlayerLayEgg player_num={}".format(player_num))
 
     #pdr
@@ -129,27 +154,46 @@ class GUI:
 
     #pgt
     def onPlayerTakeResource(self, player_num, resource):
+        index = self.playerList.get_player(int(player_num))
+        player = self.playerList.list[index]
+        player.action = player.spriteSheet['take']
+
+        # TODO rm resource
+
+        self.map.read(self.window)
+        self.map.display_content(self.window)
+        self.playerList.display_players(self.window)
+        pygame.display.flip()
         print("onPlayerTakeResource player_num={} resource={}".format(
             player_num, resource
         ))
 
     #pdi
     def onPlayerDieOfHunger(self, player_num):
-        self.playerList.remove_player(player_num)
+        index = self.playerList.get_player(int(player_num))
+        player = self.playerList.list[index]
+        player.action = player.spriteSheet['death']
+
         self.map.read(self.window)
         self.map.display_content(self.window)
         self.playerList.display_players(self.window)
         pygame.display.flip()
+        self.playerList.remove_player(player_num)
         print("onPlayerDieOfHunger player_num={}".format(player_num))
 
     #enw
     def onPlayerLaid(self, egg_num, player_num, pos):
+        # TODO Spawn egg?
+
         print("onPlayerLaid egg_num={} player_num={} pos={}".format(
             egg_num, player_num, pos
         ))
 
     #eht
     def onEggHatch(self, egg_num):
+        # TODO rm egg
+        # TODO spawn player ???
+
         print("onEggHatch egg_num={}".format(egg_num))
 
     def onPlayerConnectedAfterHatch(self, egg_num):
