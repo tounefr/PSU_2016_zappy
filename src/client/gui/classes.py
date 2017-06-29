@@ -12,11 +12,6 @@ class Window:
         self.width = width
         self.height = height
 
-class Loop:
-    def __init__(self):
-        self.quitter_jeu = False
-        self.quitter_menu = False
-        self.continuer = True
 
 class Teams:
     g_instance = None
@@ -87,6 +82,7 @@ class Teams:
         }
         return sprites
 
+
 class Color(object):
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -109,46 +105,6 @@ class SpriteSheet:
                 return image
 
 
-class Texture(object):
-        def __init__(self):
-                color = Color()
-
-                herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
-                image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
-                image_herbe_haute = herbe.get_image(270, 57, 16, 16, color.BLACK)
-                self.herbe_basse = pygame.transform.scale(image_herbe_basse, (48, 48))
-                self.herbe_haute = pygame.transform.scale(image_herbe_haute, (48, 48))
-
-                rubis = SpriteSheet("src/client/gui/assets/tileset_rubis.png")
-                image_rubis_vert = rubis.get_image(167, 363, 30, 48, color.WHITE)
-                image_rubis_bleu = rubis.get_image(195, 363, 30, 48, color.WHITE)
-                image_rubis_jaune = rubis.get_image(223, 363, 30, 48, color.WHITE)
-                image_rubis_rouge = rubis.get_image(251, 363, 30, 48, color.WHITE)
-                image_rubis_violet = rubis.get_image(278, 363, 30, 48, color.WHITE)
-                image_rubis_orange = rubis.get_image(305, 363, 30, 48, color.WHITE)
-                self.rubis_vert = pygame.transform.scale(image_rubis_vert, (12, 24))
-                self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (12, 24))
-                self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (12, 24))
-                self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (12, 24))
-
-                self.rubis_violet = pygame.transform.scale(image_rubis_violet, (12, 24))
-                self.rubis_orange = pygame.transform.scale(image_rubis_orange, (12, 24))
-
-                linkvert = SpriteSheet("src/client/gui/assets/persos.png")
-                bas = linkvert.get_image(222, 485, 25, 25, color.BLACK)
-                droite = linkvert.get_image(197, 453, 25, 25, color.BLACK)
-                gauche = linkvert.get_image(10, 453, 25, 25, color.BLACK)
-                haut = linkvert.get_image(10, 486, 25, 25, color.BLACK)
-                self.bas = pygame.transform.scale(bas, (48, 48))
-                self.droite = pygame.transform.scale(droite, (48, 48))
-                self.gauche = pygame.transform.scale(gauche, (48, 48))
-                self.haut = pygame.transform.scale(haut, (48, 48))
-
-                eau = SpriteSheet("src/client/gui/assets/eau.png")
-                bord = eau.get_image(303, 863, 15, 15, color.BLACK)
-                self.bord = pygame.transform.scale(bord, (48, 48))
-
-
 class Resource:
     g_instance = None
 
@@ -162,18 +118,23 @@ class Resource:
         color = Color()
 
         rubis = SpriteSheet("src/client/gui/assets/tileset_rubis.png")
+        food = SpriteSheet("src/client/gui/assets/coeur.png")
+
         image_rubis_vert = rubis.get_image(167, 363, 30, 48, color.WHITE)
         image_rubis_bleu = rubis.get_image(195, 363, 30, 48, color.WHITE)
         image_rubis_jaune = rubis.get_image(223, 363, 30, 48, color.WHITE)
         image_rubis_rouge = rubis.get_image(251, 363, 30, 48, color.WHITE)
         image_rubis_violet = rubis.get_image(278, 363, 30, 48, color.WHITE)
         image_rubis_orange = rubis.get_image(305, 363, 30, 48, color.WHITE)
+        image_coeur = food.get_image(0, 0, 48, 48, color.BLACK)
+
         self.rubis_vert = pygame.transform.scale(image_rubis_vert, (8, 16))
         self.rubis_bleu = pygame.transform.scale(image_rubis_bleu, (8, 16))
         self.rubis_jaune = pygame.transform.scale(image_rubis_jaune, (8, 16))
         self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (8, 16))
         self.rubis_violet = pygame.transform.scale(image_rubis_violet, (8, 16))
         self.rubis_orange = pygame.transform.scale(image_rubis_orange, (8, 16))
+        self.food = pygame.transform.scale(image_coeur, (16, 16))
 
     def display_linemate(self, window, coordLinemate):
         if coordLinemate.nb_resource > 0:
@@ -199,11 +160,10 @@ class Resource:
         if coordThystame.nb_resource > 0:
             window.blit(self.rubis_orange, (coordThystame.case_x, coordThystame.case_y))
 
-
-class Coord:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def display_food(self, window, coordFood):
+        if coordFood.nb_resource > 0:
+            print("\n\n\nfood\n\n\n")
+            window.blit(self.food, (coordFood.case_x, coordFood.case_y))
 
 
 class CoordResource:
@@ -211,8 +171,8 @@ class CoordResource:
         self.x = x
         self.y = y
         self.nb_resource = nb_resource
-        self.case_x = random.randint(0, 36) + self.x * 48
-        self.case_y = random.randint(0, 24) + self.y * 48
+        self.case_x = random.randint(0, 32) + self.x * 48
+        self.case_y = random.randint(0, 32) + self.y * 48
 
     def set_nb_resource(self, nb_resource):
         self.nb_resource = nb_resource
@@ -271,10 +231,10 @@ class Map:
                     'sibur': coordResource,
                     'mendiane': coordResource,
                     'phiras': coordResource,
-                    'thystame': coordResource
+                    'thystame': coordResource,
                 }
                 self.map[y][x] = cell
-        print("onEggHatch egg_num={}".format(self.map))
+        #print("onEggHatch egg_num={}".format(self.map))
 
     def check_if_resource_exist(self, coord_precedent, coord_next):
         if coord_precedent.nb_resource > -1:
@@ -296,6 +256,8 @@ class Map:
         self.map[y][x]['phiras'] = self.check_if_resource_exist(self.map[y][x]['phiras'], coordPhiras)
         coordThystame = CoordResource(resources['thystame'], x, y)
         self.map[y][x]['thystame'] = self.check_if_resource_exist(self.map[y][x]['thystame'], coordThystame)
+        coordFood = CoordResource(resources['food'], x, y)
+        self.map[y][x]['food'] = self.check_if_resource_exist(self.map[y][x]['food'], coordFood)
 
     def display_content(self, window):
         for i in range(self.height):
@@ -306,6 +268,7 @@ class Map:
                 self.resource.display_mendiane(window, self.map[i][j]['mendiane'])
                 self.resource.display_phiras(window, self.map[i][j]['phiras'])
                 self.resource.display_thystame(window, self.map[i][j]['thystame'])
+                self.resource.display_food(window, self.map[i][j]['food'])
 
     def read(self, window):
         for x in range(self.width):
@@ -419,42 +382,3 @@ class Perso:
         elif orientation == 3:
             self.direction = self.haut
             self.action = self.spriteSheet['haut']
-
-    def move(self, direction):
-        self.action = self.spriteSheet[direction]
-
-        if direction == 'droite':
-            if self.case_x < (nombre_sprite_cote - 1):
-                self.case_x += 1
-                self.x = self.case_x * taille_sprite
-            if self.case_x == (nombre_sprite_cote - 1):
-                self.case_x = 1
-                self.x = self.case_x * taille_sprite
-            self.direction = self.droite
-
-        if direction == 'gauche':
-            if self.case_x > 0:
-                self.case_x -= 1
-                self.x = self.case_x * taille_sprite
-            if self.case_x == 0:
-                self.case_x = nombre_sprite_cote - 2
-                self.x = self.case_x * taille_sprite
-            self.direction = self.gauche
-
-        if direction == 'haut':
-            if self.case_y > 0:
-                self.case_y -= 1
-                self.y = self.case_y * taille_sprite
-            if self.case_y == 0:
-                self.case_y = nombre_sprite_cote - 2
-                self.y = self.case_y * taille_sprite
-            self.direction = self.haut
-
-        if direction == 'bas':
-            if self.case_y < (nombre_sprite_cote - 1):
-                self.case_y += 1
-                self.y = self.case_y * taille_sprite
-            if self.case_y == (nombre_sprite_cote - 1):
-                self.case_y = 1
-                self.y = self.case_y * taille_sprite
-            self.direction = self.bas

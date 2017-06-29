@@ -19,7 +19,7 @@ class GUI:
     def update(self):
         while True:
             print("UPDATE")
-            pygame.display.flip()
+            #pygame.display.flip()
             #time.sleep(1)
 
     def onGameStart(self):
