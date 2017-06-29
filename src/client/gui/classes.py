@@ -18,6 +18,74 @@ class Loop:
         self.quitter_menu = False
         self.continuer = True
 
+class Teams:
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if Teams.g_instance is None:
+            Teams.g_instance = Teams()
+        return Teams.g_instance
+
+    def __init__(self):
+        self.list = []
+        self.spriteSheet = SpriteSheet("src/client/gui/assets/character.png")
+        self.tileDimension = (48, 48)
+        self.tileSize = 16
+
+    def getTeam(self, teamName):
+        for tmp in self.list:
+            if tmp['name'] == teamName:
+                return tmp['id']
+        return -1
+
+    def addTeam(self, teamName):
+        if self.getTeam(teamName) == -1:
+            print("Loading new team assets for team " + teamName + "...")
+            tmp = {
+                'name': teamName,
+                'id': len(self.list),
+                'sprites': self.createTeamSprites(len(self.list)),
+            }
+            self.list.append(tmp)
+            print("Assets loaded with success")
+
+    def getTeamSprites(self, teamName):
+        for tmp in self.list:
+            if tmp['name'] == teamName:
+                return tmp['sprites']
+        return 0
+
+    def createTeamSprites(self, teamId):
+        color = Color()
+        teamYOffset = teamId * 3 * self.tileSize
+
+        img_bas = self.spriteSheet.get_image(6 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_haut = self.spriteSheet.get_image(2 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_gauche = self.spriteSheet.get_image(4 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_droite = self.spriteSheet.get_image(0 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_take = self.spriteSheet.get_image(0 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_layEgg = self.spriteSheet.get_image(2 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_egg = self.spriteSheet.get_image(2 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_hatch = self.spriteSheet.get_image(4 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_incant = self.spriteSheet.get_image(6 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_lvlUp = self.spriteSheet.get_image(0 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_death = self.spriteSheet.get_image(1 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+
+        sprites = {
+            'haut':     pygame.transform.scale(img_haut, self.tileDimension),
+            'bas':      pygame.transform.scale(img_bas, self.tileDimension),
+            'gauche':   pygame.transform.scale(img_gauche, self.tileDimension),
+            'droite':   pygame.transform.scale(img_droite, self.tileDimension),
+            'take':     pygame.transform.scale(img_take, self.tileDimension),
+            'layEgg':   pygame.transform.scale(img_layEgg, self.tileDimension),
+            'egg':      pygame.transform.scale(img_egg, self.tileDimension),
+            'hatch':    pygame.transform.scale(img_hatch, self.tileDimension),
+            'incant':   pygame.transform.scale(img_incant, self.tileDimension),
+            'lvlUp':    pygame.transform.scale(img_lvlUp, self.tileDimension),
+            'death':    pygame.transform.scale(img_death, self.tileDimension),
+        }
+        return sprites
 
 class Color(object):
     BLACK = (0, 0, 0)
@@ -79,7 +147,6 @@ class Texture(object):
                 eau = SpriteSheet("src/client/gui/assets/eau.png")
                 bord = eau.get_image(303, 863, 15, 15, color.BLACK)
                 self.bord = pygame.transform.scale(bord, (48, 48))
-
 
 class Stone:
     def __init__(self):
@@ -161,7 +228,7 @@ class Map:
         self.stone = Stone()
 
         color = Color()
-        GroundTexture = SpriteSheet("src/client/gui/assets/terrain.png")
+        GroundTexture = SpriteSheet("src/client/gui/assets/terrain1.png")
         img_ground0 = GroundTexture.get_image(0, 0, 16, 16, color.BLACK)
         img_ground1 = GroundTexture.get_image(16, 0, 16, 16, color.BLACK)
         img_ground2 = GroundTexture.get_image(32, 0, 16, 16, color.BLACK)
@@ -274,7 +341,7 @@ class PlayerList:
     def display_players(self, window):
         for i in range(len(self.list)):
             player = self.list[i]
-            window.blit(player.direction, (player.x, player.y))
+            window.blit(player.action, (player.x, player.y))
 
     def get_player(self, player_num):
         i = 0
@@ -300,6 +367,9 @@ class Perso:
         self.team = team
         self.player_num = player_num
         self.level = 1
+        self.spriteSheet = Teams.instance().getTeamSprites(team)
+        self.action = 0
+
         self.model = model
         self.case_x = 1
         self.case_y = 1
@@ -313,6 +383,8 @@ class Perso:
         self.map = map
 
     def assign_model(self):
+        pass
+        """
         color = Color()
         if self.model == 0:
             character = SpriteSheet("src/client/gui/assets/character.png")
@@ -341,8 +413,9 @@ class Perso:
             self.hatch = pygame.transform.scale(img_hatch, (48, 48))
             self.incant = pygame.transform.scale(img_incant, (48, 48))
             self.lvlUp = pygame.transform.scale(img_lvlUp, (48, 48))
+        """
 
-            """
+        """
             linkvert = SpriteSheet("src/client/gui/assets/persos.png")
             bas = linkvert.get_image(222, 485, 25, 25, color.BLACK)
             droite = linkvert.get_image(197, 453, 25, 25, color.BLACK)
@@ -352,19 +425,24 @@ class Perso:
             self.droite = pygame.transform.scale(droite, (48, 48))
             self.gauche = pygame.transform.scale(gauche, (48, 48))
             self.haut = pygame.transform.scale(haut, (48, 48))
-            """
+        """
 
     def set_direction(self, orientation):
         if orientation == 1:
             self.direction = self.bas
+            self.action = self.spriteSheet['bas']
         elif orientation == 2:
             self.direction = self.droite
+            self.action = self.spriteSheet['droite']
         elif orientation == 4:
             self.direction = self.gauche
+            self.action = self.spriteSheet['gauche']
         elif orientation == 3:
             self.direction = self.haut
+            self.action = self.spriteSheet['haut']
 
     def move(self, direction):
+        self.action = self.spriteSheet[direction]
 
         if direction == 'droite':
             if self.case_x < (nombre_sprite_cote - 1):
