@@ -1,5 +1,5 @@
-from Packet import *
-from PacketParser import *
+from core.Packet import *
+from core.PacketParser import *
 from ai.AI import *
 import queue
 import threading

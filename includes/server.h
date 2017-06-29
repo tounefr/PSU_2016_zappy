@@ -13,8 +13,8 @@
 
 # define N_NETWORK_COMMANDS 12
 
-# define MAX_MAP_WIDTH 30
-# define MAX_MAP_HEIGHT 30
+# define MAX_MAP_WIDTH 10
+# define MAX_MAP_HEIGHT 10
 # define RESOURCE_MAX_LENGTH 50
 # define RESOURCES_NBR_TYPES 9
 # define TIME_EGG_HATCHING 600
@@ -172,6 +172,7 @@ int clients_in_team(t_server *server, t_team *team);
 char on_new_client(t_server *server);
 void close_client_connection(t_client *client);
 char on_exit_client(t_server *server, t_client *client);
+void generate_position(t_server *server, t_client *client);
 
 // command.c
 char    onPreIncantPacket(t_server *server, t_client *client, char *packet);
@@ -266,6 +267,11 @@ char on_game_win(t_server *server);
 t_food				*get_g_foods();
 t_incantation			*get_g_incantations();
 t_network_commands		*g_network_commands();
+
+// opts.c
+char check_opts_values(t_server *server);
+char parse_opts(t_server *server, int ac, char **av);
+char usage();
 
 //
 void handle_sigint(int signum);

@@ -1,5 +1,5 @@
-from classes import *
-from GUI import *
+from gui.classes import *
+from gui.GUI import *
 
 nombre_sprite_cote = 0
 taille_sprite = 48

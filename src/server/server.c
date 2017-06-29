@@ -42,37 +42,41 @@ char listen_server(t_server *server)
     return 1;
 }
 
+char update_client(t_server *server, t_client *client)
+{
+    if (client->socket_fd == -1 || client->is_gui)
+        return 0;
+    if (!client->cur_packet) {
+        if (!handle_pre_packet(server, client)) {
+            on_exit_client(server, client);
+            return 0;
+        }
+    }
+    client->life_cycles--;
+    if ((client->life_cycles % 126) == 0)
+        client->inventory[TYPE_FOOD]--;
+    /*if (check_player_dead(server, client))
+        continue;*/
+    hatch_eggs(server, client);
+    if (!handle_post_packet(server, client)) {
+        on_exit_client(server, client);
+        return 0;
+    }
+    return 1;
+}
+
 char update(t_server *server, struct timeval *last_tick)
 {
     int i;
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-        printf("cycle %d\n", server->cur_cycle);
+//        printf("cycle %d\n", server->cur_cycle);
         if (server->cur_cycle == 1 || (server->cur_cycle % 1200) == 0)
             generate_resources(server);
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
-            if (client->socket_fd == -1)
-                continue;
-            /*if (client->is_gui)
-                continue;*/
-            if (!client->cur_packet) {
-                if (!handle_pre_packet(server, client)) {
-                    on_exit_client(server, client);
-                    continue;
-                }
-            }
-            client->life_cycles--;
-            if ((client->life_cycles % 126) == 0)
-                client->inventory[TYPE_FOOD]--;
-            /*if (check_player_dead(server, client))
-                continue;*/
-            hatch_eggs(server, client);
-            if (!handle_post_packet(server, client)) {
-                on_exit_client(server, client);
-                continue;
-            }
+            update_client(server, client);
         }
     }
     return 1;

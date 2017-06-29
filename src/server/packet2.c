@@ -52,8 +52,11 @@ static char split_buffer(t_server *server, t_client *client)
     }
     if (client->buffer)
         free(client->buffer);
-    if (!(client->buffer = strdup(&client->buffer[start])))
-        return exit_error(0, "malloc error\n");
+    if (i + 1 < len) {
+        if (!(client->buffer = strdup(&client->buffer[start])))
+            return exit_error(0, "malloc error\n");
+    } else
+        client->buffer = NULL;
     return 1;
 }
 
@@ -80,6 +83,5 @@ char on_available_data(t_server *server, t_client *client)
         on_exit_client(server, client);
         return 0;
     }
-    free(buffer);
     return 1;
 }

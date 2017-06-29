@@ -10,7 +10,7 @@
 
 CC = gcc
 
-LDFLAGS+= -W -Wall -g
+LDFLAGS+= -g
 CFLAGS+= -I./includes -W -Wall -fPIC -g
 
 SERVER_NAME = zappy_server
@@ -24,13 +24,16 @@ LIBNETWORK_SRCS = $(wildcard src/common/*.c \
 		          $(wildcard src/libnetwork/*.c))
 LIBNETWORK_OBJS = $(LIBNETWORK_SRCS:.c=.o)
 
+AI_NAME = zappy_ai
+
 all: libnetwork zappy_server zappy_ai
 
 libnetwork: $(LIBNETWORK_OBJS)
 	$(CC) -fPIC -shared -o $(LIBNETWORK_NAME) $(LIBNETWORK_OBJS)
 
 zappy_ai:
-	pip3 install -r requirements.txt
+	sudo pip3 install -r requirements.txt
+	sudo pyinstaller -y --distpath ./ -n zappy_ai -F ./src/client/ZappyClient.py
 
 zappy_server: $(SERVER_OBJS)
 	$(CC) -o $(SERVER_NAME) $(SERVER_OBJS) $(LDFLAGS)
@@ -42,6 +45,7 @@ clean:
 fclean: clean
 	$(RM) $(SERVER_NAME)
 	$(RM) $(LIBNETWORK_NAME)
+	$(RM) $(AI_NAME)
 
 re: fclean all
 
