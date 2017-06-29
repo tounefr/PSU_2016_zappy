@@ -12,28 +12,37 @@ class AI:
 
     def onGameStart(self):
         print("Game start")
-        self.team_ = Team()
-        client = self.team_.list_cli_[0]
         self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
+        client = self.team_.list_cli_[0]
+
         while 1:
+            print("boucle 1")
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
-            #self.broadcast_.brd_snd_inventory() # 7pts
 
             if inventory['food'] < 4:
                 self.BHV_FindFood()
-                """
-            elif NbMessage() > 0:
-                self.HandleMessages():
+                continue
             else:
-                self.FindStone()
-                """
+                if self.broadcast_.readMail():
+                    continue
+                if self.TST_TooMuchClient():
+                    self.broadcast_.brd_snd_inventory() # 7pts
+                    if self.TST_RitualCondi(client):
+                        continue
+                    else:
+                        #find stone
+                        continue
+                else:
+                    self.BHV_fork()
+                    continue
 
     def BHV_FindFood(self):
+        self.broadcast_.brd_snd_eat_on()
         direction = 0
         ko_count = 0
         client = self.team_.list_cli_[0]
-        while 1:
+        while client.getInventory()['food'] < 10:
             visible = self.ai_interface.lookAroundAction() # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
                 if ko_count == 0:
@@ -47,8 +56,47 @@ class AI:
                 self.ACT_MovToObject(visible, "food")
                 while self.ai_interface.takeObjectAction("food") == "ok":
                     print("[AI] ~ Got some food")
-                return 0
+                    client.getInventory()['food'] += 1
+        self.broadcast_.brd_snd_eat_off()
 
+    def BHV_fork(self):
+        self.broadcast_.brd_snd_fork()
+        self.ai_interface.forkAction()
+
+    def TST_RitualCondi(self, client):
+        res = False
+
+        if client.getLvl() == 1:
+            res = True
+            if self.TST_TooManyRessources(self.team_.getRessouceByLvl()[client.getLvl() - 1],
+                                          client.getInventory()):
+                self.broadcast_.brd_snd_str_ritual()
+                self.ai_interface.setObjectDownAction("linemate")
+                client.getInventory()["linemate"] -= 1
+                if self.ai_interface.startIncantationAction() != "ko":
+                    client.setLvl(client.getLvl() + 1)
+                self.broadcast_.brd_snd_end_ritual()
+        return res
+
+    def TST_TooManyRessources(self, lvl_ress, inventory):
+        res = True
+
+        for key in inventory:
+            if key not in "food":
+                if lvl_ress[key] > inventory[key]:
+                    res = False
+        return res
+
+    def TST_TooMuchClient(self):
+        count = self.ai_interface.numberOfTeamSlotsUnusedAction()
+        count += self.team_.getAttendClient()
+
+        needed = self.team_.getRessouceByLvl()[(self.team_.getMaxLvl() - 1)].get('player')
+        if needed is None:
+            return False
+        if count >= needed:
+            return True
+        return False
 
     def TST_SeeObject(self, visible, obj):
         for indexVisible in range(0, len(visible)):
