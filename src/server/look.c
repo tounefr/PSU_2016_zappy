@@ -20,7 +20,7 @@ typedef struct	s_cell
 
 typedef struct	s_look
 {
-  t_cell	cell[64]
+  t_cell	cell[64];
 }		t_look;
 
 int	coordsToIndex(t_server *server, t_pos pos)
@@ -296,7 +296,7 @@ void	convertView(t_client *c, t_look *see)
     }
   buffer = myAppend(buffer, "]");
   printf("### [LOOK] Goind to send: \"%s\"\n", buffer);
-  packet_send(c, "%s", buffer);
+  packet_send(c, "%s\n", buffer);
 }
 
 void	debug_countRessourcesOnMapCauzMauryCantGenAProperMapToWorkWIth(t_server *s)

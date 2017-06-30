@@ -66,6 +66,7 @@ char on_exit_client(t_server *server, t_client *client)
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     socket_close(client->socket_fd);
     init_client(client);
+    gui_send_map_content(server);
     printf("on_exit_client\n");
     return 1;
 }
@@ -78,15 +79,15 @@ char on_new_client(t_server *server)
 
     i = 0;
     for (i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].socket_fd == -1) {
-            server->clients[i].socket_fd = socket_accept(server->server_fd);
-            fd = server->clients[i].socket_fd;
-            flags = fcntl(fd, F_GETFL, 0);
-            if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
-                return exit_error(0, "fcntl error : %s\n", strerror(errno));
-            packet_send(&server->clients[i], "BIENVENUE\n");
-            return 1;
-        }
+        if (server->clients[i].socket_fd != -1)
+            continue;
+        server->clients[i].socket_fd = socket_accept(server->server_fd);
+        fd = server->clients[i].socket_fd;
+        flags = fcntl(fd, F_GETFL, 0);
+        if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
+            return exit_error(0, "fcntl error : %s\n", strerror(errno));
+        packet_send(&server->clients[i], "BIENVENUE\n");
+        return 1;
     }
     return exit_error(0, "error : no slots available\n");
 }

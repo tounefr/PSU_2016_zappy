@@ -13,8 +13,8 @@
 
 # define N_NETWORK_COMMANDS 12
 
-# define MAX_MAP_WIDTH 10
-# define MAX_MAP_HEIGHT 10
+# define MAX_MAP_WIDTH 30
+# define MAX_MAP_HEIGHT 30
 # define RESOURCE_MAX_LENGTH 50
 # define RESOURCES_NBR_TYPES 9
 # define TIME_EGG_HATCHING 600
@@ -255,7 +255,7 @@ char    onPostIncantPacket(t_server *server, t_client *client, char *packet);
 // gui.c
 char gui_send_map_content(t_server *server);
 char send_client_pos(t_server *server, t_client *client);
-char gui_send_teams(t_server *server, t_client *client);
+char gui_send_teams(t_server *server);
 char send_gui_packet(t_server *server, char *packet, ...);
 char send_gui_players_connected(t_server *server);
 

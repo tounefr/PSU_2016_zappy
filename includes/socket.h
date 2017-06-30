@@ -37,5 +37,6 @@ char socket_listen(int server_fd,
                    unsigned short *listen_port);
 char
 socket_nbsend(int fd, char *buffer);
+char *last_error();
 
 #endif //PROJETS_SOCKET_H

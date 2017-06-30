@@ -31,6 +31,7 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
                             client->num, get_g_foods()[i].type);
             if (get_g_foods()[i].type == TYPE_FOOD)
                 client->life_cycles -= CYCLES_PER_LIFE_UNIT;
+            gui_send_map_case(server, client->pos.x, client->pos.y);
             return packet_send(client, "ok\n");
         }
     }
@@ -59,6 +60,7 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
                             client->num, get_g_foods()[i].type);
             if (get_g_foods()[i].type == TYPE_FOOD)
                 client->life_cycles += CYCLES_PER_LIFE_UNIT;
+            gui_send_map_case(server, client->pos.x, client->pos.y);
             return packet_send(client, "ok\n");
         }
     }
