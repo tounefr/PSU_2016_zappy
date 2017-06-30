@@ -38,8 +38,6 @@ class GUI:
         self.window = pygame.display.set_mode((size[0] * 48, size[1] * 48))
         self.map = Map(size[0] * 48, size[1] * 48)
         self.map.create(self.window)
-        self.map.read(self.window)
-        pygame.display.flip()
         print("onMapSize size={}".format(size))
         with self.wait_start:
             self.wait_start.notify()
@@ -68,10 +66,6 @@ class GUI:
         link.y = pos[1] * 48
 
         self.playerList.add_player(link)
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         print("onPlayerConnect player_num={} pos={} orien={} level={} team_name={}".format(
             player_num, pos, orientation, level, team_name
         ))
@@ -84,10 +78,6 @@ class GUI:
         player.x = pos[0] * 48
         player.y = pos[1] * 48
 
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         print("onPlayerPos player_num={} pos={} orien={}".format(
             player_num, pos, orientation
         ))
@@ -98,13 +88,8 @@ class GUI:
         player = self.playerList.list[index]
         player.action = player.spriteSheet['lvlUp']
 
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         index = self.playerList.get_player(player_num)
         player = self.playerList.list[index]
-        player.level += 1
         print("onPlayerLevel player_num={} level={}".format(player_num, level))
 
     #pin
@@ -128,11 +113,6 @@ class GUI:
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
         player.action = player.spriteSheet['incant']
-
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         print("onFirstPlayerTriggerSpell pos={} level={} players_num={}".format(
             pos, level, players_num
         ))
@@ -146,11 +126,6 @@ class GUI:
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
         player.action = player.spriteSheet['layEgg']
-
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         print("onPlayerLayEgg player_num={}".format(player_num))
 
     #pdr
@@ -165,12 +140,6 @@ class GUI:
         player = self.playerList.list[index]
         player.action = player.spriteSheet['take']
 
-        # TODO rm resource
-
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         print("onPlayerTakeResource player_num={} resource={}".format(
             player_num, resource
         ))
@@ -181,10 +150,6 @@ class GUI:
         player = self.playerList.list[index]
         player.action = player.spriteSheet['death']
 
-        self.map.read(self.window)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
         self.playerList.remove_player(player_num)
         print("onPlayerDieOfHunger player_num={}".format(player_num))
 
