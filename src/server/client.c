@@ -25,7 +25,6 @@ void init_client(t_client *client)
     client->recv_packet_i = 0;
     client->is_gui = 0;
     client->orientation = ORIENT_SOUTH;
-    client->cur_packet = NULL;
     client->level = 1;
     client->team = NULL;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
@@ -35,15 +34,11 @@ void init_client(t_client *client)
     client->write_packets = NULL;
     client->read_packets = NULL;
     client->buffer = NULL;
+    client->callbacks = NULL;
 }
 
 void free_client(t_client *client)
 {
-    if (client->cur_packet) {
-        free_packet(client->cur_packet);
-        free(client->cur_packet);
-        client->cur_packet = NULL;
-    }
     if (client->read_packets) {
         generic_list_destroy(&client->read_packets, free);
         client->read_packets = NULL;

@@ -125,7 +125,8 @@ typedef struct s_packet
 
 typedef struct s_callback
 {
-
+    char *packet;
+    int remain_cycles;
 } t_callback;
 
 typedef struct s_client
@@ -136,7 +137,8 @@ typedef struct s_client
     unsigned int cur_cycle;
 //    char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
 
-    t_packet *cur_packet;
+//    t_packet *cur_packet;
+    t_callback *callbacks;
 
     t_team *team;
     int life_cycles;
