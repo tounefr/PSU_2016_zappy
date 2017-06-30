@@ -18,7 +18,7 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
 
     memset((char*)&food, 0, sizeof(food));
     strncpy((char*)&food, packet + 5, sizeof(food) - 1);
-    client_pos = client->pos.x + client->pos.y * server->map.height;
+    client_pos = client->pos.x + client->pos.y * server->map.width;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++) {
         if (!is_stone(i) && strcmp((char*)&food, "food"))
             continue;
@@ -46,7 +46,7 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
 
     memset(&food, 0, sizeof(food));
     strncpy((char*)&food, packet + 5, sizeof(food) - 1);
-    client_pos = client->pos.x + client->pos.y * server->map.height;
+    client_pos = client->pos.x + client->pos.y * server->map.width;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++) {
         if (!is_stone(i) && strcmp((char*)&food, "food"))
             continue;

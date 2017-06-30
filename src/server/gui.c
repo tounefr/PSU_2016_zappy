@@ -19,7 +19,7 @@ char gui_send_map_content(t_server *server)
 
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
-            pos = x + y * server->map.height;
+            pos = x + y * server->map.width;
             send_gui_packet(server, "bct %d %d %d %d %d %d %d %d %d\n",
                     x, y,
                     server->map.cases[pos][TYPE_FOOD],

@@ -40,5 +40,5 @@ int my_rand(int a, int b)
 
 int get_pos(t_server *server, t_pos *pos)
 {
-    return pos->y * server->map.height + pos->x;
+    return pos->y * server->map.width + pos->x;
 }

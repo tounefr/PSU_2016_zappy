@@ -30,6 +30,7 @@ void handle_sigint(int signum)
     t_client *client;
     t_server *server;
 
+    return;
     if (!(server = get_server()))
         return;
     for (i = 0; i < MAX_CLIENTS; i++) {

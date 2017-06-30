@@ -21,7 +21,7 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
     (void)packet;
     if (client->level > 7)
         return 0;
-    pos = client->pos.x + client->pos.y * server->map.height;
+    pos = client->pos.x + client->pos.y * server->map.width;
     incantation = &get_g_incantations()[client->level - 1];
     if (get_nb_players_lvl(server, client->level) != incantation->nb_players)
         return exit_error(0, "no enought players with same level to levelup\n");

@@ -49,7 +49,7 @@ char lay_egg(t_server *server, t_client *client)
         egg->pending_client = 0;
         egg->remain_cycles = TIME_EGG_HATCHING;
         egg->master = client;
-        p = egg->pos.x + egg->pos.y * server->map.height;
+        p = egg->pos.x + egg->pos.y * server->map.width;
         server->map.cases[p][TYPE_EGG]++;
         printf("oeuf pondu\n");
         send_gui_packet(server, "enw %d %d %d %d\n",
