@@ -63,6 +63,7 @@ char parse_opts(t_server *server, int ac, char **av)
                 parse_team_names(server, &i, ac, av);
         }
     }
+    server->cycle_time = cpt_cycle_time(server);
     return check_opts_values(server);
 }
 

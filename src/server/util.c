@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "server.h"
 
 char is_legal_network_char(char c)
 {
@@ -35,4 +36,9 @@ char is_numeric(char *s)
 int my_rand(int a, int b)
 {
     return rand() % (b - a) + a;
+}
+
+int get_pos(t_server *server, t_pos *pos)
+{
+    return pos->y * server->map.height + pos->x;
 }

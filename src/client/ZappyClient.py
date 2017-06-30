@@ -1,13 +1,9 @@
 from core.Network import *
-from ai.AI import *
-from gui.GUI import *
 import sys
 from core.Threading import *
 from core.PacketRouter import *
 from core.PacketParser import *
-import os
 from multiprocessing import Event
-import time
 
 class ZappyClient:
     g_instance = None

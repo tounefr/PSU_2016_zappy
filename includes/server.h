@@ -199,6 +199,7 @@ char on_select_read_data(t_server *server, fd_set *fds);
 char on_select_write_data(t_server *server, fd_set *fds);
 
 // server.c
+float cpt_cycle_time(t_server *server);
 void init_server(t_server *server);
 char listen_server(t_server *server);
 char update(t_server *server, struct timeval *last_tick);
@@ -212,6 +213,7 @@ int clients_in_team(t_server *server, t_team *team);
 char is_legal_network_char(char c);
 char is_numeric(char *s);
 int my_rand(int a, int b);
+int get_pos(t_server *server, t_pos *pos);
 
 // packet.c
 void free_packet(t_packet *packet);
@@ -272,6 +274,11 @@ t_network_commands		*g_network_commands();
 char check_opts_values(t_server *server);
 char parse_opts(t_server *server, int ac, char **av);
 char usage();
+
+// update.c
+char update_client(t_server *server, t_client *client);
+char update(t_server *server, struct timeval *last_tick);
+char main_loop(t_server *server);
 
 //
 void handle_sigint(int signum);

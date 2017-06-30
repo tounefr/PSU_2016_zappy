@@ -17,10 +17,11 @@ class GUI:
         self.playerList = PlayerList()
 
     def update(self):
+        return
         while True:
             print("UPDATE")
-            pygame.display.flip()
-            #time.sleep(1)
+            #pygame.display.flip()
+            time.sleep(1)
 
     def onGameStart(self):
         pygame.init()

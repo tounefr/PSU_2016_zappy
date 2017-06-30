@@ -47,16 +47,27 @@ char gui_send_teams(t_server *server, t_client *client)
     return 1;
 }
 
-char send_gui_packet(t_server *server, char *packet, ...)
+char send_gui_packet(t_server *server, char *format, ...)
 {
     va_list args;
+    char *buffer;
+    t_client *client;
 
-    va_start(args, packet);
     if (!server->gui_client)
         return 0;
-//        return exit_error(0, "no gui client connected\n");
-    vdprintf(server->gui_client->socket_fd, packet, args);
+    client = server->gui_client;
+    va_start(args, format);
+    printf("Send>> ");
+    vprintf(format, args);
     va_end(args);
+    va_start(args, format);
+    if (vasprintf(&buffer, format, args) == -1) {
+        va_end(args);
+        return exit_error(0, "malloc error\n");
+    }
+    va_end(args);
+    if (!generic_list_append(&client->write_packets, buffer))
+        return exit_error(0, "malloc error\n");
     return 1;
 }
 

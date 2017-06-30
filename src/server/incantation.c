@@ -46,9 +46,9 @@ char    onPreIncantPacket(t_server *server,
     return packet_send(client, "Elevation underway\n");
 }
 
-static char decrease_resources_on_map(t_server *server,
-                                      t_pos *pos,
-                                      t_incantation *incantation)
+static char decreaseResourcesOnMap(t_server *server,
+                                   t_pos *pos,
+                                   t_incantation *incantation)
 {
     int i;
     int p;
@@ -61,7 +61,7 @@ static char decrease_resources_on_map(t_server *server,
     }
 }
 
-static char on_level_up(t_server *server, t_client *client)
+static char onLevelUp(t_server *server, t_client *client)
 {
     t_incantation *incantation;
 
@@ -71,7 +71,7 @@ static char on_level_up(t_server *server, t_client *client)
     send_gui_packet(server, "pie %d %d %d\n",
                     client->pos.x, client->pos.y, 1);
     packet_send(client, "Current level: %d\n", client->level);
-    decrease_resources_on_map(server, &client->pos, incantation);
+    decreaseResourcesOnMap(server, &client->pos, incantation);
     if (client->level == 8)
         return on_game_win(server);
     return 1;
@@ -86,5 +86,5 @@ char    onPostIncantPacket(t_server *server,
                         client->pos.x, client->pos.y, 0);
         return packet_send(client, "ko\n");
     }
-    return on_level_up(server, client);
+    return onLevelUp(server, client);
 }

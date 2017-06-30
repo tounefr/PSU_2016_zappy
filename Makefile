@@ -26,14 +26,17 @@ LIBNETWORK_OBJS = $(LIBNETWORK_SRCS:.c=.o)
 
 AI_NAME = zappy_ai
 
-all: libnetwork zappy_server zappy_ai
+all: libnetwork zappy_server zappy_ai_package
 
 libnetwork: $(LIBNETWORK_OBJS)
 	$(CC) -fPIC -shared -o $(LIBNETWORK_NAME) $(LIBNETWORK_OBJS)
 
-zappy_ai:
-	sudo pip3 install -r requirements.txt
+zappy_ai_package: zappy_ai
 	sudo pyinstaller -y --distpath ./ -n zappy_ai -F ./src/client/ZappyClient.py
+
+zappy_ai:
+	sudo apt-get install python3 python3-pip python3-dev -y
+	sudo pip3 install -r requirements.txt
 
 zappy_server: $(SERVER_OBJS)
 	$(CC) -o $(SERVER_NAME) $(SERVER_OBJS) $(LDFLAGS)
