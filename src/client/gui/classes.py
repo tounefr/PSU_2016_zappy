@@ -67,6 +67,14 @@ class Teams:
         img_lvlUp = self.spriteSheet.get_image(0 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
         img_death = self.spriteSheet.get_image(1 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
 
+        img_bas2 = self.spriteSheet.get_image(7 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_haut2 = self.spriteSheet.get_image(3 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_gauche2 = self.spriteSheet.get_image(5 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_droite2 = self.spriteSheet.get_image(1 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_take2 = self.spriteSheet.get_image(1 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_layEgg2 = self.spriteSheet.get_image(3 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_hatch2 = self.spriteSheet.get_image(5 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+
         sprites = {
             'haut':     pygame.transform.scale(img_haut, self.tileDimension),
             'bas':      pygame.transform.scale(img_bas, self.tileDimension),
@@ -74,6 +82,15 @@ class Teams:
             'droite':   pygame.transform.scale(img_droite, self.tileDimension),
             'take':     pygame.transform.scale(img_take, self.tileDimension),
             'layEgg':   pygame.transform.scale(img_layEgg, self.tileDimension),
+
+            'haut2':    pygame.transform.scale(img_haut2, self.tileDimension),
+            'bas2':     pygame.transform.scale(img_bas2, self.tileDimension),
+            'gauche2':  pygame.transform.scale(img_gauche2, self.tileDimension),
+            'droite2':  pygame.transform.scale(img_droite2, self.tileDimension),
+            'take2':    pygame.transform.scale(img_take2, self.tileDimension),
+            'layEgg2':  pygame.transform.scale(img_layEgg2, self.tileDimension),
+            'hatch2':    pygame.transform.scale(img_hatch2, self.tileDimension),
+
             'egg':      pygame.transform.scale(img_egg, self.tileDimension),
             'hatch':    pygame.transform.scale(img_hatch, self.tileDimension),
             'incant':   pygame.transform.scale(img_incant, self.tileDimension),
@@ -134,7 +151,7 @@ class Resource:
         self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (8, 16))
         self.rubis_violet = pygame.transform.scale(image_rubis_violet, (8, 16))
         self.rubis_orange = pygame.transform.scale(image_rubis_orange, (8, 16))
-        self.food = pygame.transform.scale(image_coeur, (16, 16))
+        self.food = pygame.transform.scale(image_coeur, (12, 12))
 
     def display_linemate(self, window, coordLinemate):
         if coordLinemate.nb_resource > 0:
@@ -284,7 +301,7 @@ class PlayerList:
     def display_players(self, window):
         for i in range(len(self.list)):
             player = self.list[i]
-            window.blit(player.action, (player.x, player.y))
+            player.update_animation()
 
     def get_player(self, player_num):
         i = 0
@@ -311,6 +328,7 @@ class Perso:
         self.player_num = player_num
         self.level = 1
         self.spriteSheet = Teams.instance().getTeamSprites(team)
+        self.action_previous = 0
         self.action = 0
 
         self.model = model
@@ -324,6 +342,9 @@ class Perso:
         self.bas = 0
         self.haut = 0
         self.map = map
+
+        self.animation_timer = 10
+        self.animation_delay = 10
 
     def assign_model(self):
         pass
@@ -383,3 +404,48 @@ class Perso:
         elif orientation == 3:
             self.direction = self.haut
             self.action = self.spriteSheet['haut']
+
+    def update_animation(self, window):
+        self.animation_timer -= 1
+        if self.animation_timer == 0:
+            self.get_next_animation()
+            self.animation_timer = self.animation_delay
+        window.blit(self.action, (self.x, self.y))
+
+    def get_next_animation(self):
+        if self.action == 'haut':
+            self.action = 'haut2'
+        elif self.action == 'haut2':
+            self.action = 'haut'
+        elif self.action == 'bas':
+            self.action = 'bas2'
+        elif self.action == 'bas2':
+            self.action = 'bas'
+        elif self.action == 'droite':
+            self.action = 'droite2'
+        elif self.action == 'droite2':
+            self.action = 'droite'
+        elif self.action == 'gauche':
+            self.action = 'gauche2'
+        elif self.action == 'gauche2':
+            self.action = 'gauche'
+        elif self.action == 'take':
+            self.action = 'take2'
+        elif self.action == 'take2':
+            self.action = 'take'
+        elif self.action == 'layEgg':
+            self.action = 'layEgg2'
+        elif self.action == 'layEgg2':
+            self.action = 'layEgg'
+        elif self.action == 'egg':
+            pass
+        elif self.action == 'hatch':
+            self.action = 'hatch2'
+        elif self.action == 'hatch2':
+            self.action = 'hatch'
+        elif self.action == 'incant':
+            pass
+        elif self.action == 'lvlUp':
+            pass
+        elif self.action == 'death':
+            pass
