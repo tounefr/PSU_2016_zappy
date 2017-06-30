@@ -62,7 +62,7 @@ char main_loop(t_server *server)
     while (1) {
         select_init(server, &nfds, &read_fds, &write_fds);
         timeout.tv_sec = 0;
-        timeout.tv_usec = 1000 * 10; // 10ms
+        timeout.tv_usec = server->cycle_time; // 10ms
         if ((selectrv = select(nfds, &read_fds,
                                &write_fds, NULL, &timeout)) == -1)
             return exit_error(0, "select error : %s\n", strerror(errno));

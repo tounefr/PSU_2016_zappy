@@ -89,7 +89,7 @@ class Teams:
             'droite2':  pygame.transform.scale(img_droite2, self.tileDimension),
             'take2':    pygame.transform.scale(img_take2, self.tileDimension),
             'layEgg2':  pygame.transform.scale(img_layEgg2, self.tileDimension),
-            'hatch2':    pygame.transform.scale(img_hatch2, self.tileDimension),
+            'hatch2':   pygame.transform.scale(img_hatch2, self.tileDimension),
 
             'egg':      pygame.transform.scale(img_egg, self.tileDimension),
             'hatch':    pygame.transform.scale(img_hatch, self.tileDimension),
@@ -179,7 +179,6 @@ class Resource:
 
     def display_food(self, window, coordFood):
         if coordFood.nb_resource > 0:
-            print("\n\n\nfood\n\n\n")
             window.blit(self.food, (coordFood.case_x, coordFood.case_y))
 
 
@@ -223,14 +222,6 @@ class Map:
         self.Ground.append(pygame.transform.scale(img_ground4, (48, 48)))
         self.Ground.append(pygame.transform.scale(img_ground5, (48, 48)))
         self.Ground.append(pygame.transform.scale(img_ground6, (48, 48)))
-        """
-        herbe = SpriteSheet("src/client/gui/assets/tileset_world.png")
-        image_herbe_basse = herbe.get_image(253, 57, 16, 16, color.BLACK)
-        image_herbe_haute = herbe.get_image(270, 57, 16, 16, color.BLACK)
-        self.herbe_basse = pygame.transform.scale(image_herbe_basse, (48, 48))
-        self.herbe_haute = pygame.transform.scale(image_herbe_haute, (48, 48))
-        """
-
 
     def create(self, window):
         cell = {'texture':self.Ground[0], 'food':0}
@@ -298,10 +289,10 @@ class PlayerList:
     def __init__(self):
         self.list = []
 
-    def display_players(self, window):
+    def display_players(self, window, t1, is_displayed):
         for i in range(len(self.list)):
             player = self.list[i]
-            player.update_animation()
+            player.update_animation(window, t1, is_displayed)
 
     def get_player(self, player_num):
         i = 0
@@ -343,53 +334,12 @@ class Perso:
         self.haut = 0
         self.map = map
 
+        self.t = 0
         self.animation_timer = 10
         self.animation_delay = 10
 
     def assign_model(self):
         pass
-        """
-        color = Color()
-        if self.model == 0:
-            character = SpriteSheet("src/client/gui/assets/character.png")
-            img_droite = character.get_image(0, 0, 16, 16, color.WHITE)
-            img_haut = character.get_image(32, 0, 16, 16, color.WHITE)
-            img_gauche = character.get_image(64, 0, 16, 16, color.WHITE)
-            img_bas = character.get_image(96, 0, 16, 16, color.WHITE)
-            img_take = character.get_image(0, 16, 16, 16, color.WHITE)
-
-            img_death = character.get_image(0, 112, 16, 16, color.WHITE)
-            img_layEgg = character.get_image(16, 32, 16, 16, color.WHITE)
-            img_egg = character.get_image(0, 48, 16, 16, color.WHITE)
-            img_hatch = character.get_image(0, 64, 16, 16, color.WHITE)
-            img_incant = character.get_image(0, 80, 16, 16, color.WHITE)
-            img_lvlUp = character.get_image(0, 96, 16, 16, color.WHITE)
-
-            self.droite = pygame.transform.scale(img_droite, (48, 48))
-            self.haut = pygame.transform.scale(img_haut, (48, 48))
-            self.gauche = pygame.transform.scale(img_gauche, (48, 48))
-            self.bas = pygame.transform.scale(img_bas, (48, 48))
-            self.take = pygame.transform.scale(img_take, (48, 48))
-
-            self.death = pygame.transform.scale(img_death, (48, 48))
-            self.layEgg = pygame.transform.scale(img_layEgg, (48, 48))
-            self.egg = pygame.transform.scale(img_egg, (48, 48))
-            self.hatch = pygame.transform.scale(img_hatch, (48, 48))
-            self.incant = pygame.transform.scale(img_incant, (48, 48))
-            self.lvlUp = pygame.transform.scale(img_lvlUp, (48, 48))
-        """
-
-        """
-            linkvert = SpriteSheet("src/client/gui/assets/persos.png")
-            bas = linkvert.get_image(222, 485, 25, 25, color.BLACK)
-            droite = linkvert.get_image(197, 453, 25, 25, color.BLACK)
-            gauche = linkvert.get_image(10, 453, 25, 25, color.BLACK)
-            haut = linkvert.get_image(10, 486, 25, 25, color.BLACK)
-            self.bas = pygame.transform.scale(bas, (48, 48))
-            self.droite = pygame.transform.scale(droite, (48, 48))
-            self.gauche = pygame.transform.scale(gauche, (48, 48))
-            self.haut = pygame.transform.scale(haut, (48, 48))
-        """
 
     def set_direction(self, orientation):
         if orientation == 1:
@@ -405,11 +355,10 @@ class Perso:
             self.direction = self.haut
             self.action = self.spriteSheet['haut']
 
-    def update_animation(self, window):
-        self.animation_timer -= 1
-        if self.animation_timer == 0:
+    def update_animation(self, window, t1, is_displayed):
+        if self.t != t1 and is_displayed == True:
             self.get_next_animation()
-            self.animation_timer = self.animation_delay
+            self.t = t1
         print(self.action)
         window.blit(self.action, (self.x, self.y))
 
@@ -433,20 +382,12 @@ class Perso:
         elif self.action == self.spriteSheet['take']:
             self.action = self.spriteSheet['take2']
         elif self.action == self.spriteSheet['take2']:
-            self.action = self.spriteSheet['take']
+            self.action = self.action_previous
         elif self.action == self.spriteSheet['layEgg']:
             self.action = self.spriteSheet['layEgg2']
         elif self.action == self.spriteSheet['layEgg2']:
-            self.action = self.spriteSheet['layEgg']
-        elif self.action == self.spriteSheet['egg']:
-            pass
+            self.action = self.action_previous
         elif self.action == self.spriteSheet['hatch']:
             self.action = self.spriteSheet['hatch2']
         elif self.action == self.spriteSheet['hatch2']:
-            self.action = self.spriteSheet['hatch']
-        elif self.action == self.spriteSheet['incant']:
-            pass
-        elif self.action == self.spriteSheet['lvlUp']:
-            pass
-        elif self.action == self.spriteSheet['death']:
-            pass
+            self.action = self.action_previous

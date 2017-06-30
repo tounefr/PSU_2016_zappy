@@ -26,8 +26,8 @@ class PacketParser:
 
     def parseLookPacket(self, packet, raw):
         try:
-            raw = raw.replace("[ ", "")
-            raw = raw.replace(" ]", "")
+            raw = raw.replace("[", "")
+            raw = raw.replace("]", "")
             data_splitted = raw.split(",")
             if len(data_splitted) < 2:
                 raise RuntimeError()
@@ -44,11 +44,11 @@ class PacketParser:
             data_splitted = raw.split(", ")
             if len(data_splitted) < 2:
                 raise RuntimeError()
-            data_splitted[0] = data_splitted[0].replace("[ ", "")
-            data_splitted[-1] = data_splitted[-1].replace(" ]", "")
+            data_splitted[0] = data_splitted[0].replace("[", "")
+            data_splitted[-1] = data_splitted[-1].replace("]", "")
             inventory = {}
             for resource_count in data_splitted:
-                resource_count_splitted = resource_count.split(" ")
+                resource_count_splitted = resource_count.strip(" ").split(" ")
                 if len(resource_count_splitted) != 2:
                     raise RuntimeError()
                 inventory[resource_count_splitted[0]] = int(resource_count_splitted[1])

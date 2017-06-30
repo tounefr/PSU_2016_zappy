@@ -14,7 +14,6 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
     (void)packet;
-    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_SOUTH;
     else if (client->orientation == ORIENT_EAST)
@@ -23,7 +22,6 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_WEST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_EAST;
-    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     packet_send(client, "ok\n");
     send_gui_packet(server, "ppo %d %d %d %d\n",
                     client->num, client->pos.x, client->pos.y, client->orientation);
@@ -56,7 +54,7 @@ char on_welcome(t_server *server, t_client *client, char *packet) {
                     server->map.width, server->map.height);
         send_gui_packet(server, "sgt %d\n", (int) server->freq);
         gui_send_map_content(server);
-        gui_send_teams(server, client);
+        gui_send_teams(server);
         send_gui_players_connected(server);
     } else {
         client->num = server->client_lastnum++;

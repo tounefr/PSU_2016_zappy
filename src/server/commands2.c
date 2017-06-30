@@ -98,7 +98,6 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
 {
     (void)server;
     (void)packet;
-    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_NORTH;
     else if (client->orientation == ORIENT_EAST)
@@ -107,7 +106,6 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_EAST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_WEST;
-    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     packet_send(client, "ok\n");
     send_gui_packet(server, "ppo %d %d %d %d\n",
                     client->num, client->pos.x, client->pos.y, client->orientation);

@@ -87,13 +87,10 @@ char handle_pre_packet(t_server *server, t_client *client)
 char handle_post_packet(t_server *server, t_client *client)
 {
     t_network_commands *net_cmd;
-    t_generic_list *callbacks;
     t_callback *callback;
 
-    if (!client->callbacks)
-        return 1;
-    callbacks = client->callbacks;
-    while ((callback = generic_list_foreach(callbacks))) {
+    while ((callback = generic_list_foreach(client->callbacks)))
+    {
         callback->remain_cycles--;
         if (callback->remain_cycles <= 0) {
             if (!(net_cmd = get_network_command(callback->packet)))
