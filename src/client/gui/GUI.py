@@ -23,7 +23,6 @@ class GUI:
         with self.wait_start:
             self.wait_start.wait()
         while True:
-            print("Hey")
             self.map.display_content(self.window)
             self.playerList.display_players(self.window)
             pygame.display.flip()
@@ -86,6 +85,7 @@ class GUI:
     def onPlayerLevel(self, player_num, level):
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
+        player.action_previous = player.action
         player.action = player.spriteSheet['lvlUp']
 
         index = self.playerList.get_player(player_num)
@@ -104,6 +104,9 @@ class GUI:
 
     #pbc
     def onPlayerBroadcast(self, player_num, message):
+
+        return # Cauz spam (Debug reasons)
+
         print("onPlayerBroadcast player_num={} message={}".format(
             player_num, message
         ))
@@ -112,6 +115,7 @@ class GUI:
     def onFirstPlayerTriggerSpell(self, pos, level, players_num):
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
+        player.action_previous = player.action
         player.action = player.spriteSheet['incant']
         print("onFirstPlayerTriggerSpell pos={} level={} players_num={}".format(
             pos, level, players_num
@@ -119,12 +123,14 @@ class GUI:
 
     #pie
     def onEndSpell(self, pos, result):
+        player.action = player.action_previous
         print("onEndSpell pos={} result={}".format(pos, result))
 
     #pfk
     def onPlayerLayEgg(self, player_num):
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
+        player.action_previous = player.action
         player.action = player.spriteSheet['layEgg']
         print("onPlayerLayEgg player_num={}".format(player_num))
 
@@ -138,6 +144,7 @@ class GUI:
     def onPlayerTakeResource(self, player_num, resource):
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
+        player.action_previous = player.action
         player.action = player.spriteSheet['take']
 
         print("onPlayerTakeResource player_num={} resource={}".format(
@@ -148,6 +155,7 @@ class GUI:
     def onPlayerDieOfHunger(self, player_num):
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
+        player.action_previous = player.action
         player.action = player.spriteSheet['death']
 
         self.playerList.remove_player(player_num)
@@ -156,6 +164,7 @@ class GUI:
     #enw
     def onPlayerLaid(self, egg_num, player_num, pos):
         # TODO Spawn egg?
+        # keep player team in egg
 
         print("onPlayerLaid egg_num={} player_num={} pos={}".format(
             egg_num, player_num, pos
