@@ -262,6 +262,7 @@ class Map:
     def display_content(self, window):
         for i in range(self.height):
             for j in range(self.width):
+                window.blit(self.map[i][j]['texture'], (j * 48, i * 48))
                 self.resource.display_linemate(window, self.map[i][j]['linemate'])
                 self.resource.display_deraumere(window, self.map[i][j]['deraumere'])
                 self.resource.display_sibur(window, self.map[i][j]['sibur'])

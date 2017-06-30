@@ -5,6 +5,7 @@ from gui.constantes import *
 from random import *
 from sys import *
 import time
+import threading
 
 class GUI:
     def __init__(self):
@@ -15,37 +16,42 @@ class GUI:
         self.map = 0
         self.window = 0
         self.playerList = PlayerList()
+        self.wait_start = threading.Condition(threading.Lock())
+        print("init")
 
     def update(self):
-        return
+        with self.wait_start:
+            self.wait_start.wait()
         while True:
-            print("UPDATE")
-            #pygame.display.flip()
-            time.sleep(1)
+            print("Hey")
+            self.map.display_content(self.window)
+            self.playerList.display_players(self.window)
+            pygame.display.flip()
 
     def onGameStart(self):
         pygame.init()
-        pygame.display.set_caption(titre_fenetre)
+        pygame.display.set_caption("hello")
 
     #msz
     # size=(width, height)
     def onMapSize(self, size):
         self.window = pygame.display.set_mode((size[0] * 48, size[1] * 48))
-
         self.map = Map(size[0] * 48, size[1] * 48)
         self.map.create(self.window)
         self.map.read(self.window)
         pygame.display.flip()
         print("onMapSize size={}".format(size))
+        with self.wait_start:
+            self.wait_start.notify()
 
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
     def onMapCaseContent(self, pos, resources):
-        self.map.read(self.window)
+        #self.map.read(self.window)
         self.map.add_case_content(pos[0], pos[1], resources)
-        self.map.display_content(self.window)
-        self.playerList.display_players(self.window)
-        pygame.display.flip()
+        #self.map.display_content(self.window)
+        #self.playerList.display_players(self.window)
+        #pygame.display.flip()
         print("onMapCaseContent pos={} resources={}".format(pos, resources))
 
     #tna
