@@ -32,7 +32,7 @@ class GUI:
             self.map.display_content(self.window)
             self.playerList.display_players(self.window, t0, is_displayed)
             pygame.display.flip()
-            ok = False
+            is_displayed = False
 
     def onGameStart(self):
         pygame.init()
