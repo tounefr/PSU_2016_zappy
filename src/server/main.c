@@ -12,7 +12,7 @@
 #include <signal.h>
 #include "server.h"
 
-static t_server *get_server()
+t_server *get_server()
 {
     static t_server *server = NULL;
 

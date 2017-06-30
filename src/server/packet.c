@@ -73,9 +73,9 @@ char handle_pre_packet(t_server *server, t_client *client)
         return exit_error(0, "Unknown packet\n");
     }
     callback->packet = packet;
-    callback->remain_cycles = net_cmd->cycles;
+    callback->cycles = net_cmd->cycles;
     callback->func = net_cmd->post_callback;
-    printf("precycle %s\n", net_cmd->cmd);
+//    printf("precycle %s\n", net_cmd->cmd);
     generic_list_append(&client->callbacks, callback);
     return 1;
 }
@@ -90,9 +90,9 @@ char handle_post_packet(t_server *server, t_client *client)
     while (node)
     {
         callback = node->data;
-        callback->remain_cycles--;
-        if (callback->remain_cycles <= 0) {
-            printf("postcycle %s\n", callback->packet);
+        callback->cycles--;
+        if (callback->cycles <= 0) {
+//            printf("postcycle\n", callback->packet);
             callback->func(server, client, callback->packet);
             node = node->next;
             generic_list_remove(&client->callbacks, callback, free);

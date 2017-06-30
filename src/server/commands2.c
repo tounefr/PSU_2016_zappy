@@ -58,9 +58,12 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
     packet_send(client, "%s", buffer);
     send_gui_packet(server, "pin %d %d %d %d %d %d %d %d %d %d\n",
         client->num, client->pos.x, client->pos.y,
-                    client->inventory[TYPE_FOOD], client->inventory[TYPE_LINEMATE],
-                    client->inventory[TYPE_DERAUMERE], client->inventory[TYPE_SIBUR],
-                    client->inventory[TYPE_MENDIANE], client->inventory[TYPE_PHIRAS],
+                    client->inventory[TYPE_FOOD],
+                    client->inventory[TYPE_LINEMATE],
+                    client->inventory[TYPE_DERAUMERE],
+                    client->inventory[TYPE_SIBUR],
+                    client->inventory[TYPE_MENDIANE],
+                    client->inventory[TYPE_PHIRAS],
                     client->inventory[TYPE_THYSTAME]);
     free(buffer);
     return 1;
@@ -88,7 +91,8 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
         client->pos.x = 0;
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     send_gui_packet(server, "ppo %d %d %d %d\n",
-                    client->num, client->pos.x, client->pos.y, client->orientation);
+                    client->num, client->pos.x,
+                    client->pos.y, client->orientation);
     return packet_send(client, "ok\n");
 }
 
@@ -105,6 +109,7 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_WEST;
     packet_send(client, "ok\n");
     send_gui_packet(server, "ppo %d %d %d %d\n",
-                    client->num, client->pos.x, client->pos.y, client->orientation);
+                    client->num, client->pos.x,
+                    client->pos.y, client->orientation);
     return 1;
 }

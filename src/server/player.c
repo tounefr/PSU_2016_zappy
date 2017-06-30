@@ -10,17 +10,12 @@
 
 #include "server.h"
 
-char check_player_dead(t_server *server, t_client *client)
+char onPlayerDead(t_server *server, t_client *client, char *packet)
 {
-    if (client->life_cycles <= 0) {
-        printf("client killed\n");
-        packet_send(client, "dead\n");
-        send_gui_packet(server, "pdi %d\n", client->num);
-        socket_close(client->socket_fd);
-        init_client(client);
-        return 1;
-    }
-    return 0;
+    packet_send(client, "dead\n");
+    send_gui_packet(server, "pdi %d\n", client->num);
+    on_exit_client(server, client);
+    return 1;
 }
 
 int get_nb_players_lvl(t_server *server, int level)

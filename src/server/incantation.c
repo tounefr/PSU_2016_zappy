@@ -19,8 +19,8 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
     t_incantation *incantation;
 
     (void)packet;
-    if (client->level > 7)
-        return 0;
+    if (client->level >= 8)
+        return exit_error(0, "incantation failed cause > level 8\n");
     pos = client->pos.x + client->pos.y * server->map.width;
     incantation = &get_g_incantations()[client->level - 1];
     if (get_nb_players_lvl(server, client->level) != incantation->nb_players)
@@ -33,7 +33,7 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
             return exit_error(0, "not enough ressources\n");
     }
     if (client->level + 1 > MAX_LEVEL)
-        return 0;
+        return exit_error(0, "incantation failed cause > level 8\n");
     return 1;
 }
 
@@ -50,6 +50,7 @@ static char decreaseResourcesOnMap(t_server *server,
         p = pos->y * server->map.height + pos->x;
         server->map.cases[p][i] -= incantation->type[i];
     }
+    return 1;
 }
 
 char incantationElevation(t_server *server, t_client *client, char *packet)
@@ -76,7 +77,7 @@ char incantationElevation(t_server *server, t_client *client, char *packet)
 
 char    onPostIncantPacket(t_server *server,
                                 t_client *client,
-                                char *packet)
+                                 char *packet)
 {
     if (!checkIncantationPacket(server, client, packet)) {
         send_gui_packet(server, "pie %d %d %d\n",

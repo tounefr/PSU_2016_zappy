@@ -12,7 +12,6 @@
 
 char    onLeftPacket(t_server *server, t_client *client, char *packet)
 {
-    (void)server;
     (void)packet;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_SOUTH;
@@ -24,7 +23,8 @@ char    onLeftPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_EAST;
     packet_send(client, "ok\n");
     send_gui_packet(server, "ppo %d %d %d %d\n",
-                    client->num, client->pos.x, client->pos.y, client->orientation);
+                    client->num, client->pos.x,
+                    client->pos.y, client->orientation);
     return 1;
 }
 
@@ -35,51 +35,47 @@ char    onLookPacket(t_server *server, t_client *client, char *packet)
   return 1;
 }
 
-char add_callback(t_client *client,
-                  char (*func)(t_server*, t_client*, char*),
-                  int cycles,
-                  char *packet)
+static char on_graphic_welcome(t_server *server,
+                               t_client *client,
+                               char *packet)
 {
-    t_callback *callback;
+    client->is_gui = 1;
+    server->gui_client = client;
+    send_gui_packet(server, "msz %d %d\n",
+                    server->map.width, server->map.height);
+    send_gui_packet(server, "sgt %d\n", (int) server->freq);
+    gui_send_map_content(server);
+    gui_send_teams(server);
+    send_gui_players_connected(server);
+    return 1;
+}
 
-    if (!(callback = malloc(sizeof(t_callback))) ||
-        !(callback->packet = strdup(packet)))
-        return exit_error(0, "malloc error\n");
-    callback->remain_cycles = cycles;
-    callback->func = func;
-    generic_list_append(&client->callbacks, callback);
+static char on_client_welcome(t_server *server,
+                              t_client *client,
+                              char *packet)
+{
+    client->num = server->client_lastnum++;
+    if (!client_assign_team(server, client, packet))
+        return packet_send(client, "ko\n");
+    if (client->team->slots - 1 < 0)
+            return packet_send(client, "ko\n");
+        else
+            client->team->slots--;
+    generate_position(server, client);
+    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
+    packet_send(client, "%d\n", client->team->slots);
+    packet_send(client, "%d %d\n",
+                server->map.width, server->map.height);
+    send_gui_packet(server, "pnw %d %d %d %d %d %s\n",
+                    client->num, client->pos.x,
+                    client->pos.y, client->orientation,
+                    client->level, client->team->name);
     return 1;
 }
 
 char on_welcome(t_server *server, t_client *client, char *packet) {
-    if (!strcmp(packet, "GRAPHIC")) {
-        client->is_gui = 1;
-        server->gui_client = client;
-        send_gui_packet(server, "msz %d %d\n",
-                    server->map.width, server->map.height);
-        send_gui_packet(server, "sgt %d\n", (int) server->freq);
-        gui_send_map_content(server);
-        gui_send_teams(server);
-        send_gui_players_connected(server);
-    } else {
-        client->num = server->client_lastnum++;
-        if (!client_assign_team(server, client, packet))
-            return packet_send(client, "ko\n");
-        if (!egg_pending_client(server, client)) {
-            if (client->team->slots - 1 < 0)
-                return packet_send(client, "ko\n");
-            else
-                client->team->slots--;
-        }
-        generate_position(server, client);
-        server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
-        packet_send(client, "%d\n", client->team->slots);
-        packet_send(client, "%d %d\n",
-                server->map.width, server->map.height);
-        send_gui_packet(server, "pnw %d %d %d %d %d %s\n",
-                        client->num, client->pos.x,
-                        client->pos.y, client->orientation,
-                        client->level, client->team->name);
-    }
-    return 1;
+    if (!strcmp(packet, "GRAPHIC"))
+        return on_graphic_welcome(server, client, packet);
+    else
+        return on_client_welcome(server, client, packet);
 }

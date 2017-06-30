@@ -33,7 +33,7 @@
 # define DEFAULT_LISTEN_PORT 4242
 
 # define PLAYER_LIFE_UNITS 10
-# define CYCLES_PER_LIFE_UNIT 126
+# define CYCLES_PER_LIFE_UNIT 12600
 
 # define TYPE_FOOD 0
 # define TYPE_LINEMATE 1
@@ -103,9 +103,7 @@ typedef struct s_egg
 {
     t_pos pos;
     int num;
-    int remain_cycles;
-    char pending_client;
-    t_client *master;
+    int cycles;
 } t_egg;
 
 typedef struct s_team
@@ -123,7 +121,7 @@ typedef struct s_packet
 typedef struct s_callback
 {
     char *packet;
-    int remain_cycles;
+    int cycles;
 	char (*func)(t_server*, t_client*, char*);
 } t_callback;
 
@@ -133,8 +131,8 @@ typedef struct s_client
     char *buffer;
     unsigned int cur_cycle;
     t_generic_list *callbacks;
+    t_generic_list *eggs;
     t_team *team;
-    int life_cycles;
     int recv_packet_i;
     int level;
 	int num;
@@ -150,7 +148,6 @@ typedef struct s_server
 {
     t_team teams[MAX_TEAMS];
 	t_client clients[MAX_CLIENTS];
-    t_egg eggs[MAX_EGGS];
     int client_lastnum;
     t_client *gui_client;
     int server_fd;
@@ -194,6 +191,9 @@ void select_init(t_server *server, int *nfds,
                  fd_set *fds, fd_set *);
 char on_select_read_data(t_server *server, fd_set *fds);
 char on_select_write_data(t_server *server, fd_set *fds);
+
+// main.c
+t_server *get_server();
 
 // server.c
 float cpt_cycle_time(t_server *server);
@@ -253,10 +253,10 @@ char send_gui_players_connected(t_server *server);
 // egg.c
 char egg_pending_client(t_server *server, t_client *client);
 char lay_egg(t_server *server, t_client *client);
-char hatch_eggs(t_server *server, t_client *client);
+char hatch_egg(t_server *server, t_client *client, char *packet);
 
 // player.c
-char check_player_dead(t_server *server, t_client *client);
+char onPlayerDead(t_server *server, t_client *client, char *packet);
 int get_nb_players_lvl(t_server *server, int level);
 
 // game.c
@@ -281,6 +281,8 @@ char main_loop(t_server *server);
 void handle_sigint(int signum);
 
 //
+t_callback *get_callback(t_client *client,
+                         char (*func)(t_server*, t_client*, char*));
 char add_callback(t_client *client,
                   char (*func)(t_server*, t_client*, char*),
                   int cycles,

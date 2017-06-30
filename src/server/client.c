@@ -27,10 +27,10 @@ void init_client(t_client *client)
     client->orientation = ORIENT_SOUTH;
     client->level = 1;
     client->team = NULL;
+    client->eggs = NULL;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
     client->inventory[TYPE_FOOD] = PLAYER_LIFE_UNITS;
-    client->life_cycles = client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT;
     client->write_packets = NULL;
     client->read_packets = NULL;
     client->buffer = NULL;
@@ -39,6 +39,10 @@ void init_client(t_client *client)
 
 void free_client(t_client *client)
 {
+    if (client->eggs) {
+        generic_list_destroy(&client->eggs, free);
+        client->eggs = NULL;
+    }
     if (client->read_packets) {
         generic_list_destroy(&client->read_packets, free);
         client->read_packets = NULL;
@@ -76,17 +80,24 @@ char on_new_client(t_server *server)
     int i;
     int flags;
     int fd;
+    t_client *client;
 
     i = 0;
     for (i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].socket_fd != -1)
+        client = &server->clients[i];
+        if (client->socket_fd != -1)
             continue;
-        server->clients[i].socket_fd = socket_accept(server->server_fd);
-        fd = server->clients[i].socket_fd;
+        client->socket_fd = socket_accept(server->server_fd);
+        if (!add_callback(client, onPlayerDead,
+             client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT, NULL)) {
+            on_exit_client(server, client);
+            return 0;
+        }
+        fd = client->socket_fd;
         flags = fcntl(fd, F_GETFL, 0);
         if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
             return exit_error(0, "fcntl error : %s\n", strerror(errno));
-        packet_send(&server->clients[i], "BIENVENUE\n");
+        packet_send(client, "BIENVENUE\n");
         return 1;
     }
     return exit_error(0, "error : no slots available\n");
