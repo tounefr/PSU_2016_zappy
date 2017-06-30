@@ -36,8 +36,6 @@ char add_callback(t_client *client,
 
     if (!(callback = malloc(sizeof(t_callback))))
         return exit_error(0, "malloc error\n");
-    /*if (packet && !(callback->packet = strdup(packet)))
-        return exit_error(0, "malloc error\n");*/
     callback->packet = packet;
     callback->cycles = cycles;
     callback->func = func;

@@ -23,7 +23,7 @@ char lay_egg(t_server *server, t_client *client)
         return 0;
     egg->pos = client->pos;
     egg->num = 0;
-    egg->cycles = TIME_EGG_HATCHING;
+    egg->pending_client = 0;
     p = egg->pos.x + egg->pos.y * server->map.width;
     server->map.cases[p][TYPE_EGG]++;
     printf("egg layed\n");
@@ -38,8 +38,35 @@ char hatch_egg(t_server *server, t_client *client, char *packet)
     t_egg *egg;
 
     egg = (t_egg*)packet;
+    egg->pending_client = 1;
     client->team->slots++;
     printf("hatch egg\n");
     send_gui_packet(server, "eht %d\n", egg->num);
     return 1;
+}
+
+char remove_hatched_egg(t_server *server, t_client *join_client)
+{
+    t_generic_list *node;
+    t_egg *egg;
+    t_client *client;
+    int i;
+
+    for (i = 0; i < MAX_CLIENTS; i++) {
+        client = &server->clients[i];
+        if (client->socket_fd == -1 || client->is_gui)
+            continue;
+        node = client->eggs;
+        while (node) {
+            egg = node->data;
+            if (egg->pending_client) {
+                generic_list_remove(&client->eggs, egg, default_free);
+                printf("USING EGG SLOT\n");
+                send_gui_packet(server, "ebo %d\n", egg->num);
+                return 1;
+            }
+            node = node->next;
+        }
+    }
+    return 0;
 }

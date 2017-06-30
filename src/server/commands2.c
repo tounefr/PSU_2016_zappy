@@ -31,6 +31,7 @@ char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
     if (strlen(packet) + 1 < strlen("Broadcast "))
         return packet_send(client, "ko\n");
     msg = packet + strlen("Broadcast ");
+    send_gui_packet(server, "pbc %d %s\n", client->num, msg);
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1)
             continue;

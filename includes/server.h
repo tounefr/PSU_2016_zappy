@@ -35,7 +35,7 @@
 # define DEFAULT_MAP_HEIGHT 10
 
 # define PLAYER_LIFE_UNITS 10
-# define CYCLES_PER_LIFE_UNIT 12600
+# define CYCLES_PER_LIFE_UNIT 126
 
 # define TYPE_FOOD 0
 # define TYPE_LINEMATE 1
@@ -105,7 +105,7 @@ typedef struct s_egg
 {
     t_pos pos;
     int num;
-    int cycles;
+    char pending_client;
 } t_egg;
 
 typedef struct s_team
@@ -214,6 +214,7 @@ char is_numeric(char *s);
 int my_rand(int a, int b);
 int get_pos(t_server *server, t_pos *pos);
 char default_free(void *data);
+void free_null(void **data);
 
 // packet.c
 void free_packet(t_packet *packet);
@@ -255,6 +256,7 @@ char send_gui_packet(t_server *server, char *packet, ...);
 char send_gui_players_connected(t_server *server);
 
 // egg.c
+char remove_hatched_egg(t_server *server, t_client *client);
 char egg_pending_client(t_server *server, t_client *client);
 char lay_egg(t_server *server, t_client *client);
 char hatch_egg(t_server *server, t_client *client, char *packet);

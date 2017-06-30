@@ -39,22 +39,11 @@ void init_client(t_client *client)
 
 void free_client(t_client *client)
 {
-    if (client->eggs) {
-        generic_list_destroy(&client->eggs, default_free);
-        client->eggs = NULL;
-    }
-    if (client->read_packets) {
-        generic_list_destroy(&client->read_packets, default_free);
-        client->read_packets = NULL;
-    }
-    if (client->write_packets) {
-        generic_list_destroy(&client->write_packets, default_free);
-        client->write_packets = NULL;
-    }
-    if (client->buffer) {
-        free(client->buffer);
-        client->buffer = NULL;
-    }
+    generic_list_destroy(&client->eggs, default_free);
+    generic_list_destroy(&client->read_packets, default_free);
+    generic_list_destroy(&client->write_packets, default_free);
+    generic_list_destroy(&client->callbacks, default_free);
+    free_null((void**)&client->buffer);
 }
 
 void generate_position(t_server *server, t_client *client)
@@ -70,7 +59,7 @@ char on_exit_client(t_server *server, t_client *client)
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     socket_close(client->socket_fd);
     init_client(client);
-    gui_send_map_content(server);
+//    gui_send_map_content(server);
     printf("on_exit_client\n");
     return 1;
 }

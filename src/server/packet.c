@@ -70,7 +70,7 @@ char handle_pre_packet(t_server *server, t_client *client)
     callback->packet = packet;
     callback->cycles = net_cmd->cycles;
     callback->func = net_cmd->post_callback;
-//    printf("precycle %s\n", net_cmd->cmd);
+    printf("precycle %s\n", net_cmd->cmd);
     generic_list_append(&client->callbacks, callback);
     return 1;
 }
@@ -86,7 +86,7 @@ char handle_post_packet(t_server *server, t_client *client)
         callback = node->data;
         callback->cycles--;
         if (callback->cycles <= 0) {
-//            printf("postcycle\n", callback->packet);
+            printf("postcycle\n");
             callback->func(server, client, callback->packet);
             node = node->next;
             generic_list_remove(&client->callbacks,

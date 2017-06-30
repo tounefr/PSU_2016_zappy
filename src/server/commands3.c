@@ -62,6 +62,7 @@ static char on_client_welcome(t_server *server,
             return packet_send(client, "ko\n");
         else
             client->team->slots--;
+    remove_hatched_egg(server, client);
     generate_position(server, client);
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     packet_send(client, "%d\n", client->team->slots);

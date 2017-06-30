@@ -18,14 +18,14 @@ char gui_send_map_case(t_server *server, int x, int y)
 
     pos = x + y * server->map.width;
     send_gui_packet(server, "bct %d %d %d %d %d %d %d %d %d\n",
-                    x, y,
-                    server->map.cases[pos][TYPE_FOOD],
-                    server->map.cases[pos][TYPE_LINEMATE],
-                    server->map.cases[pos][TYPE_DERAUMERE],
-                    server->map.cases[pos][TYPE_SIBUR],
-                    server->map.cases[pos][TYPE_MENDIANE],
-                    server->map.cases[pos][TYPE_PHIRAS],
-                    server->map.cases[pos][TYPE_THYSTAME]
+        x, y,
+        server->map.cases[pos][TYPE_FOOD],
+        server->map.cases[pos][TYPE_LINEMATE],
+        server->map.cases[pos][TYPE_DERAUMERE],
+        server->map.cases[pos][TYPE_SIBUR],
+        server->map.cases[pos][TYPE_MENDIANE],
+        server->map.cases[pos][TYPE_PHIRAS],
+        server->map.cases[pos][TYPE_THYSTAME]
     );
     return 1;
 }
