@@ -14,6 +14,7 @@ class AI:
     def onGameStart(self):
         print("Game start")
         self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
+        self.broadcast_.brd_snd_pid()
         client = self.team_.list_cli_[0]
 
         while 1:
@@ -224,8 +225,8 @@ class AI:
 
 
     def onMessage(self, player_num, message):
-        self.broadcast_.addMail(str(direction), message)
-        print("onMessage: player_num={} message={}".format(direction,  message))
+        self.broadcast_.addMail(str(player_num), message)
+        print("onMessage: player_num={} message={}".format(player_num,  message))
 
 
     def onLevelUp(self, level):
