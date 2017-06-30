@@ -151,7 +151,7 @@ class Resource:
         self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (8, 16))
         self.rubis_violet = pygame.transform.scale(image_rubis_violet, (8, 16))
         self.rubis_orange = pygame.transform.scale(image_rubis_orange, (8, 16))
-        self.food = pygame.transform.scale(image_coeur, (12, 12))
+        self.food = pygame.transform.scale(image_coeur, (16, 16))
 
     def display_linemate(self, window, coordLinemate):
         if coordLinemate.nb_resource > 0:
@@ -410,42 +410,43 @@ class Perso:
         if self.animation_timer == 0:
             self.get_next_animation()
             self.animation_timer = self.animation_delay
+        print(self.action)
         window.blit(self.action, (self.x, self.y))
 
     def get_next_animation(self):
-        if self.action == 'haut':
-            self.action = 'haut2'
-        elif self.action == 'haut2':
-            self.action = 'haut'
-        elif self.action == 'bas':
-            self.action = 'bas2'
-        elif self.action == 'bas2':
-            self.action = 'bas'
-        elif self.action == 'droite':
-            self.action = 'droite2'
-        elif self.action == 'droite2':
-            self.action = 'droite'
-        elif self.action == 'gauche':
-            self.action = 'gauche2'
-        elif self.action == 'gauche2':
-            self.action = 'gauche'
-        elif self.action == 'take':
-            self.action = 'take2'
-        elif self.action == 'take2':
-            self.action = 'take'
-        elif self.action == 'layEgg':
-            self.action = 'layEgg2'
-        elif self.action == 'layEgg2':
-            self.action = 'layEgg'
-        elif self.action == 'egg':
+        if self.action == self.spriteSheet['haut']:
+            self.action = self.spriteSheet['haut2']
+        elif self.action == self.spriteSheet['haut2']:
+            self.action = self.spriteSheet['haut']
+        elif self.action == self.spriteSheet['bas']:
+            self.action = self.spriteSheet['bas2']
+        elif self.action == self.spriteSheet['bas2']:
+            self.action = self.spriteSheet['bas']
+        elif self.action == self.spriteSheet['droite']:
+            self.action = self.spriteSheet['droite2']
+        elif self.action == self.spriteSheet['droite2']:
+            self.action = self.spriteSheet['droite']
+        elif self.action == self.spriteSheet['gauche']:
+            self.action = self.spriteSheet['gauche2']
+        elif self.action == self.spriteSheet['gauche2']:
+            self.action = self.spriteSheet['gauche']
+        elif self.action == self.spriteSheet['take']:
+            self.action = self.spriteSheet['take2']
+        elif self.action == self.spriteSheet['take2']:
+            self.action = self.spriteSheet['take']
+        elif self.action == self.spriteSheet['layEgg']:
+            self.action = self.spriteSheet['layEgg2']
+        elif self.action == self.spriteSheet['layEgg2']:
+            self.action = self.spriteSheet['layEgg']
+        elif self.action == self.spriteSheet['egg']:
             pass
-        elif self.action == 'hatch':
-            self.action = 'hatch2'
-        elif self.action == 'hatch2':
-            self.action = 'hatch'
-        elif self.action == 'incant':
+        elif self.action == self.spriteSheet['hatch']:
+            self.action = self.spriteSheet['hatch2']
+        elif self.action == self.spriteSheet['hatch2']:
+            self.action = self.spriteSheet['hatch']
+        elif self.action == self.spriteSheet['incant']:
             pass
-        elif self.action == 'lvlUp':
+        elif self.action == self.spriteSheet['lvlUp']:
             pass
-        elif self.action == 'death':
+        elif self.action == self.spriteSheet['death']:
             pass
