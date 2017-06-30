@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sat Jun 24 16:09:57 2017 Thomas HENON
-** Last update Wed Jun 28 11:53:56 2017 arsene
+** Last update Fri Jun 30 10:36:44 2017 Didier
 */
 
 #include <stdio.h>
@@ -49,9 +49,10 @@ char	generate_resources(t_server *server)
     int y;
     int p;
 
+    printf("MAP: %i x %i\n", server->map.width, server->map.height);
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
-            p = y * server->map.height + x;
+            p = y * server->map.width + x;
 	    rand_ressource(server, p);
         }
     }
