@@ -49,11 +49,17 @@ class Broadcast:
             res = funct(mail[0], mail[1])
         else:
             try:
-                split = mail[0].split(" ")[0]
+                split = content['number']
+                print(" ------------ ")
+                print("[DEBUG] [check_mail] - message [{}]".format(mail[0]))
+                print("[DEBUG] [check_mail] - number -> ({} - {})".format(split, self.number_))
+                print(" ------------ ")
                 if int(split) != self.number_:
                     return res
                 res = funct(content, mail[1])
-            except ...:
+            except TypeError:
+                return res
+            except ValueError:
                 return res
         return res
 
@@ -75,8 +81,11 @@ class Broadcast:
                         res = True
             rm.append(incre)
             incre += 1
+        incre = 0
         for count in rm:
-            del self.mailBox_[count]
+            print("[DEBUG] [readMail] - delete {}".format(count - incre))
+            del self.mailBox_[count - incre]
+            incre += 1
         return res
 
     def shift(self, current_position, distance, direction: (0, 1)):
@@ -242,7 +251,11 @@ class Broadcast:
             if new_client is not None:
                 return False
             self.team_.getListClient().append(Client(int(self.lastpid_)))
-        except ...:
+            self.brd_snd_welcome()
+        except TypeError:
+            self.lastpid_ = 0
+            return False
+        except ValueError:
             self.lastpid_ = 0
             return False
         return False
@@ -255,7 +268,10 @@ class Broadcast:
             if new_client is not None:
                 return False
             self.team_.getListClient().append(Client(json['new_player_pid']))
-        except ...:
+            self.setNumber(json['number'] + 1)
+        except TypeError:
+            return False
+        except ValueError:
             return False
         return False
 
@@ -267,7 +283,9 @@ class Broadcast:
 
             client_rcv.setLvl(json['lvl'])
             client_rcv.setInventory(json['inventory'])
-        except ...:
+        except TypeError:
+            return False
+        except ValueError:
             return False
         return False
 
@@ -277,7 +295,9 @@ class Broadcast:
             if client_rcv is None:
                 return False
             client_rcv.setIsEating(True)
-        except ...:
+        except TypeError:
+            return False
+        except ValueError:
             return False
         return False
 
@@ -287,7 +307,9 @@ class Broadcast:
             if client_rcv is None:
                 return False
             client_rcv.setIsEating(False)
-        except ...:
+        except TypeError:
+            return False
+        except ValueError:
             return False
         return False
 
@@ -295,7 +317,9 @@ class Broadcast:
         try:
             if dist != 0:
                 return True
-        except ...:
+        except TypeError:
+            return True
+        except ValueError:
             return True
         return True
 
@@ -305,7 +329,7 @@ class Broadcast:
             if client_rcv is None:
                 return True
             client_rcv.setIsRitual(False)
-        except ...:
+        except ValueError:
             return True
         return True
 
@@ -315,8 +339,8 @@ class Broadcast:
             if client_rcv is None:
                 return True
             client_rcv.setIsRitual(True)
-        except ...:
-            return True
+        except ValueError:
+            return False
         return True
 
     def brd_rcv_end_ritual(self, json, dist):
@@ -325,8 +349,8 @@ class Broadcast:
             if client_rcv is None:
                 return True
             client_rcv.setIsRitual(False)
-        except ...:
-            return True
+        except ValueError:
+            return False
         return True
 
     def brd_rcv_fork(self, json, dist):

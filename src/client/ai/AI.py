@@ -1,3 +1,5 @@
+import decimal
+from decimal import Decimal
 from core.AIInterface import *
 from ai.Broadcast import *
 from ai.Team import *
@@ -7,12 +9,12 @@ class AI:
 
     def __init__(self):
         self.ai_interface = AIInterface()
-        self.level = 1
         self.team_ = Team()
 
     def onGameStart(self):
         print("Game start")
         self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
+        self.broadcast_.brd_snd_pid()
         client = self.team_.list_cli_[0]
 
         while 1:
@@ -26,37 +28,95 @@ class AI:
             else:
                 if self.broadcast_.readMail():
                     continue
-                if self.TST_TooMuchClient():
+                else:
+                    self.FindStone()
+                """if self.TST_TooMuchClient():
                     self.broadcast_.brd_snd_inventory() # 7pts
                     if self.TST_RitualCondi(client):
                         continue
                     else:
-                        #find stone
-                        continue
+                        self.FindStone()
                 else:
                     self.BHV_fork()
-                    continue
+                    continue"""
+
+
+    def FindStone(self):
+        direction = 0
+        ko_count = 0
+        client = self.team_.list_cli_[0]
+        while 1:
+            visible = self.ai_interface.lookAroundAction()
+            if self.TST_SeeObject(visible, "thystame") == 1:
+                self.ACT_MovToObject(visible, "thystame", client)
+                while self.ai_interface.takeObjectAction("thystame") == "ok":
+                    client.getInventory()['thystame'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "phiras") == 1:
+                self.ACT_MovToObject(visible, "phiras", client)
+                while self.ai_interface.takeObjectAction("phiras") == "ok":
+                    client.getInventory()['phiras'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "mendiane") == 1:
+                self.ACT_MovToObject(visible, "mendiane", client)
+                while self.ai_interface.takeObjectAction("mendiane") == "ok":
+                    client.getInventory()['mendiane'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "sibur") == 1:
+                self.ACT_MovToObject(visible, "sibur", client)
+                while self.ai_interface.takeObjectAction("sibur") == "ok":
+                    client.getInventory()['sibur'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "deraumere") == 1:
+                self.ACT_MovToObject(visible, "deraumere", client)
+                while self.ai_interface.takeObjectAction("deraumere") == "ok":
+                    client.getInventory()['deraumere'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "linemate") == 1:
+                self.ACT_MovToObject(visible, "linemate", client)
+                while self.ai_interface.takeObjectAction("linemate") == "ok":
+                    client.getInventory()['linemate'] += 1
+                return 0
+            else:
+                if ko_count == 0:
+                    self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
+                else:
+                    direction = (direction + 1) % 2
+                    for x in range(0, client.getLvl()):
+                        self.ai_interface.moveForwardAction()
+                ko_count = (ko_count + 1) % 2
+
 
     def BHV_FindFood(self):
         self.broadcast_.brd_snd_eat_on()
         direction = 0
         ko_count = 0
+        #
+        count_turn = 0
         client = self.team_.list_cli_[0]
-        while client.getInventory()['food'] < 10:
+        while client.getInventory()['food'] < 7:
             visible = self.ai_interface.lookAroundAction() # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
                 if ko_count == 0:
                     self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
-                else:
+                    ko_count = 1
+                    count_turn += 1
+
+                elif ko_count == 1:
+                    ko_count = 0
                     direction = (direction + 1) % 2
-                    for x in range(0, self.level):
+                    for x in range(0, client.getLvl()):
                         self.ai_interface.moveForwardAction()
-                ko_count = (ko_count + 1) % 2
             else:
-                self.ACT_MovToObject(visible, "food")
-                while self.ai_interface.takeObjectAction("food") == "ok":
-                    print("[AI] ~ Got some food")
-                    client.getInventory()['food'] += 1
+                ko_count = 0
+                if self.ACT_MovToObject(visible, "food", client) != -1:
+                    while self.ai_interface.takeObjectAction("food") == "ok":
+                        client.getInventory()['food'] += 1
+
+            if count_turn == 3:
+                self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
+                count_turn = 0
+
         self.broadcast_.brd_snd_eat_off()
 
     def BHV_fork(self):
@@ -105,44 +165,37 @@ class AI:
         return 0
 
 
-    def ACT_MovToObject(self, visible, obj): # Ouai c'est dégueu... Mais c'est pas facile ca ^^'
+    def ACT_MovToObject(self, visible, obj, client):
         if obj in visible[0]:
             return 0
-        index = self.ACT_GetClosestObject(visible, "food")
-        print("[AI] (DEBUG) ~ food found at cell of index " + str(index))
-        distance = self.ACT_GetDistanceToLine(index)
+        index = self.ACT_GetClosestObject(visible, obj)
+        if index == -1:
+            return -1
+        distance = self.ACT_GetDistanceToLine(index, client)
         for i in range(0, distance):
             self.ai_interface.moveForwardAction()
-        print("[AI] (DEBUG) ~ distance " + str(distance))
 
-        #  TEST ZONE
-        nbCell = (2 ** (distance + 1) - ((distance + 1) % 2)) - (2 ** (distance) - (distance % 2))
-        index = ((2 ** distance) - (distance % 2)) + 1
-        middle = (int)((nbCell / 2) + (nbCell % 2))
-        print("[AI] (DEBUG) << Nb of cells in the line: " + str(nbCell))
-        print("[AI] (DEBUG) << On line index: " + str(index))
-        print("[AI] (DEBUG) << Middle cell on line: " + str(middle))
-
-        if index == middle:
+        middle_act_line = (2 ** (distance + 1)) - (distance % 2) - (distance)
+        if index == middle_act_line:
             return 0
+        elif index < middle_act_line:
+            self.ai_interface.turnLeftAction()
+            distance = middle_act_line - index
+        else:
+            self.ai_interface.turnRightAction()
+            distance = index - middle_act_line
 
-        self.ai_interface.turnLeftAction() if index < middle else self.ai_interface.turnRightAction()
-        print("         [AI] (DEBUG) << Turn: " + "Left" if index < middle else "Right")
-        distance = (index - middle) if index > middle else (middle - index)
-        print("         [AI] (DEBUG) << Move: " + str(distance))
         for i in range(0, distance):
             self.ai_interface.moveForwardAction()
         return 0
-        # !TEST ZONE
 
-
-    def ACT_GetDistanceToLine(self, index):
-        distance = 1
-        for lvl in range(1, self.level + 1):
-            if ((2 ** (lvl + 1)) - (lvl % 2)) >= index:
+    def ACT_GetDistanceToLine(self, index, client):
+        distance = 0
+        for lvl in range(1, client.getLvl() + 1):
+            distance += 1
+            if ((2 ** (lvl + 1)) - (lvl % 2)) > index:
                 return distance
-            distance = distance + 1
-        return 0
+        return distance
 
 
     def ACT_GetClosestObject(self, visible, obj):
@@ -150,8 +203,8 @@ class AI:
         for cell in visible:
             if obj in cell:
                 return index
-            index = index + 1
-        return 0
+            index += 1
+        return -1
 
 
     def onPlayerEject(self, res):
@@ -172,9 +225,8 @@ class AI:
 
 
     def onMessage(self, player_num, message):
-        pass
-#        self.broadcast_.addMail(str(direction), message)
-#        print("onMessage: player_num={} message={}".format(direction,  message))
+        self.broadcast_.addMail(str(player_num), message)
+        print("onMessage: player_num={} message={}".format(player_num,  message))
 
 
     def onLevelUp(self, level):
