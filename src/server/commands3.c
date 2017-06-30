@@ -35,16 +35,21 @@ char    onLookPacket(t_server *server, t_client *client, char *packet)
   return 1;
 }
 
-char on_gui_client(t_server *server, t_client *client, char *packet)
+char add_callback(t_client *client,
+                  char (*func)(t_server*, t_client*, char*),
+                  int cycles,
+                  char *packet)
 {
+    t_callback *callback;
 
+    if (!(callback = malloc(sizeof(t_callback))) ||
+        !(callback->packet = strdup(packet)))
+        return exit_error(0, "malloc error\n");
+    callback->remain_cycles = cycles;
+    callback->func = func;
+    generic_list_append(&client->callbacks, callback);
+    return 1;
 }
-
-char on_client(t_server *server, t_client *client, char *packet)
-{
-
-}
-
 
 char on_welcome(t_server *server, t_client *client, char *packet) {
     if (!strcmp(packet, "GRAPHIC")) {

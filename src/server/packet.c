@@ -67,19 +67,15 @@ char handle_pre_packet(t_server *server, t_client *client)
     client->recv_packet_i++;
     if (client->recv_packet_i == 1)
         return on_welcome(server, client, packet);
-    if (!(callback = malloc(sizeof(t_callback)))) {
-        free(packet);
-        return exit_error(0, "malloc error\n");
-    }
-    if (!(net_cmd = get_network_command(packet))) {
+    if (!(net_cmd = get_network_command(packet)) ||
+            !(callback = malloc(sizeof(t_callback)))) {
         free(packet);
         return exit_error(0, "Unknown packet\n");
     }
     callback->packet = packet;
     callback->remain_cycles = net_cmd->cycles;
+    callback->func = net_cmd->post_callback;
     printf("precycle %s\n", net_cmd->cmd);
-    if (net_cmd->pre_callback)
-        net_cmd->pre_callback(server, client, callback->packet);
     generic_list_append(&client->callbacks, callback);
     return 1;
 }
@@ -87,19 +83,22 @@ char handle_pre_packet(t_server *server, t_client *client)
 char handle_post_packet(t_server *server, t_client *client)
 {
     t_network_commands *net_cmd;
+    t_generic_list *node;
     t_callback *callback;
 
-    while ((callback = generic_list_foreach(client->callbacks)))
+    node = client->callbacks;
+    while (node)
     {
+        callback = node->data;
         callback->remain_cycles--;
         if (callback->remain_cycles <= 0) {
-            if (!(net_cmd = get_network_command(callback->packet)))
-                continue;
-            printf("postcycle %s\n", net_cmd->cmd);
-            if (net_cmd->post_callback)
-                net_cmd->post_callback(server, client, callback->packet);
+            printf("postcycle %s\n", callback->packet);
+            callback->func(server, client, callback->packet);
+            node = node->next;
             generic_list_remove(&client->callbacks, callback, free);
+            continue;
         }
+        node = node->next;
     }
     return 1;
 }

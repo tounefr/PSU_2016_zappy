@@ -15,9 +15,6 @@ class PacketParser:
             return False
         self.zappy.client_num = int(raw)
 
-    def parseCurrentLevelPacket(self, raw):
-        print(raw[len("Current level"):])
-
     def parseMapSizePacket(self, raw):
         data_splitted = raw.split(" ")
         if len(data_splitted) != 2:
@@ -74,14 +71,20 @@ class PacketParser:
             raise RuntimeError("Failed to parse message packet")
 
     def parseIncantationPacket(self, packet, raw):
-        if raw == "ko":
-            return raw
-        elif raw == "Elevation underway":
-            return "underway"
-        elif raw.startswith("Current level"):
-            return 1
-        else:
-            raise RuntimeError("Failed to parse incantation packet")
+        try:
+            status = None
+            if raw == "ko":
+                status = "ko"
+            elif raw == "Elevation underway":
+                status = "underway"
+            elif raw.startswith("Current level"):
+                status = int(raw[len("Current level: "):])
+            else:
+                raise RuntimeError()
+            return status
+        except:
+            raise RuntimeError("Failed to parse level packet")
+
 
     def parseConnectNbrPacket(self, packet, raw):
         return int(raw)

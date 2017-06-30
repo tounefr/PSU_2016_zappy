@@ -72,7 +72,6 @@ typedef struct s_network_commands
     unsigned int cycles;
     char flags;
 } t_network_commands;
-// extern t_network_commands g_network_commands[N_NETWORK_COMMANDS];
 
 # define NBR_LEVELS 7
 typedef struct s_incantation
@@ -80,14 +79,12 @@ typedef struct s_incantation
     int nb_players;
     int type[RESOURCES_NBR_TYPES];
 } t_incantation;
-//extern t_incantation g_incantations[NBR_LEVELS];
 
 typedef struct s_food
 {
     char *s;
     int type;
 } t_food;
-//extern t_food g_foods[RESOURCES_NBR_TYPES];
 
 typedef struct s_pos
 {
@@ -127,19 +124,15 @@ typedef struct s_callback
 {
     char *packet;
     int remain_cycles;
+	char (*func)(t_server*, t_client*, char*);
 } t_callback;
 
 typedef struct s_client
 {
 	int	socket_fd;
     char *buffer;
-//	char buffer[BUFFER_SIZE];
     unsigned int cur_cycle;
-//    char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
-
-//    t_packet *cur_packet;
-    t_callback *callbacks;
-
+    t_generic_list *callbacks;
     t_team *team;
     int life_cycles;
     int recv_packet_i;
@@ -149,7 +142,6 @@ typedef struct s_client
 	char is_gui;
     char orientation;
 	unsigned char inventory[RESOURCES_NBR_TYPES];
-
     t_generic_list *read_packets;
 	t_generic_list *write_packets;
 } t_client;
@@ -169,7 +161,6 @@ typedef struct s_server
     unsigned int cur_cycle;
 	unsigned int clients_per_team;
 } t_server;
-
 
 // client.c
 void init_client(t_client *client);
@@ -288,5 +279,13 @@ char main_loop(t_server *server);
 
 //
 void handle_sigint(int signum);
+
+//
+char add_callback(t_client *client,
+                  char (*func)(t_server*, t_client*, char*),
+                  int cycles,
+                  char *packet);
+
+char incantationElevation(t_server *server, t_client *client, char *packet);
 
 #endif //PROJETS_SERVER_H

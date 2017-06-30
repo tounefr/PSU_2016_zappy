@@ -69,8 +69,6 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 char    onForwardPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
-    (void)server;
-
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     if (client->orientation == ORIENT_WEST)
         client->pos.x--;
@@ -96,7 +94,6 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
 
 char    onRightPacket(t_server *server, t_client *client, char *packet)
 {
-    (void)server;
     (void)packet;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_NORTH;

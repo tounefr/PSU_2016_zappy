@@ -45,6 +45,9 @@ class Network:
         with self.zappy.packet_router.cond:
             self.send(raw)
             self.zappy.packet_router.cond.wait()
+            if raw == "Incantation": # TODO: crade
+                self.zappy.packet_router.pending_packets.put(raw)
+                self.zappy.packet_router.cond.wait()
         return self.zappy.packet_router.res_packet
 
     def send(self, raw):
