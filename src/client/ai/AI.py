@@ -171,9 +171,10 @@ class AI:
             print("Incantation failed")
 
 
-    def onMessage(self, direction, message):
-        self.broadcast_.addMail(str(direction), message)
-        print("onMessage: player_num={} message={}".format(direction,  message))
+    def onMessage(self, player_num, message):
+        pass
+#        self.broadcast_.addMail(str(direction), message)
+#        print("onMessage: player_num={} message={}".format(direction,  message))
 
 
     def onLevelUp(self, level):
