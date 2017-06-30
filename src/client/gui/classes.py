@@ -67,6 +67,14 @@ class Teams:
         img_lvlUp = self.spriteSheet.get_image(0 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
         img_death = self.spriteSheet.get_image(1 * self.tileSize, 2 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
 
+        img_bas2 = self.spriteSheet.get_image(7 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_haut2 = self.spriteSheet.get_image(3 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_gauche2 = self.spriteSheet.get_image(5 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_droite2 = self.spriteSheet.get_image(1 * self.tileSize, 0 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_take2 = self.spriteSheet.get_image(1 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_layEgg2 = self.spriteSheet.get_image(3 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+        img_hatch2 = self.spriteSheet.get_image(5 * self.tileSize, 1 * self.tileSize + teamYOffset, self.tileSize, self.tileSize, color.WHITE)
+
         sprites = {
             'haut':     pygame.transform.scale(img_haut, self.tileDimension),
             'bas':      pygame.transform.scale(img_bas, self.tileDimension),
@@ -74,6 +82,15 @@ class Teams:
             'droite':   pygame.transform.scale(img_droite, self.tileDimension),
             'take':     pygame.transform.scale(img_take, self.tileDimension),
             'layEgg':   pygame.transform.scale(img_layEgg, self.tileDimension),
+
+            'haut2':    pygame.transform.scale(img_haut2, self.tileDimension),
+            'bas2':     pygame.transform.scale(img_bas2, self.tileDimension),
+            'gauche2':  pygame.transform.scale(img_gauche2, self.tileDimension),
+            'droite2':  pygame.transform.scale(img_droite2, self.tileDimension),
+            'take2':    pygame.transform.scale(img_take2, self.tileDimension),
+            'layEgg2':  pygame.transform.scale(img_layEgg2, self.tileDimension),
+            'hatch2':    pygame.transform.scale(img_hatch2, self.tileDimension),
+
             'egg':      pygame.transform.scale(img_egg, self.tileDimension),
             'hatch':    pygame.transform.scale(img_hatch, self.tileDimension),
             'incant':   pygame.transform.scale(img_incant, self.tileDimension),
