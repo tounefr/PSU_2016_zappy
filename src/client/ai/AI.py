@@ -51,6 +51,11 @@ class AI:
                 while self.ai_interface.takeObjectAction("thystame") == "ok":
                     client.getInventory()['thystame'] += 1
                 return 0
+            elif self.TST_SeeObject(visible, "phiras") == 1:
+                self.ACT_MovToObject(visible, "phiras", client)
+                while self.ai_interface.takeObjectAction("phiras") == "ok":
+                    client.getInventory()['phiras'] += 1
+                return 0
             elif self.TST_SeeObject(visible, "mendiane") == 1:
                 self.ACT_MovToObject(visible, "mendiane", client)
                 while self.ai_interface.takeObjectAction("mendiane") == "ok":
