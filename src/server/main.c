@@ -47,6 +47,7 @@ int main(int ac, char **av)
 
     (void)ac;
     (void)av;
+    srand(time(NULL));
     signal(SIGINT, handle_sigint);
     if (!(server = get_server()))
         return 84;

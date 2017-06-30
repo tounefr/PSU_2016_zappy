@@ -4,3 +4,6 @@ zappy_server2
 map.txt
 zappy_ai.spec
 build/
+*.o
+.idea/
+libnetwork.so

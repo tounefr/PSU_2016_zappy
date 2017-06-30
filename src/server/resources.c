@@ -49,7 +49,6 @@ char	generate_resources(t_server *server)
     int y;
     int p;
 
-    srand(time(NULL));
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
             p = y * server->map.height + x;

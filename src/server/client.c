@@ -68,6 +68,7 @@ char on_exit_client(t_server *server, t_client *client)
 {
     if (client->team)
         client->team->slots++;
+    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     socket_close(client->socket_fd);
     init_client(client);
     printf("on_exit_client\n");
