@@ -24,7 +24,6 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
 char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
 {
     int i;
-    int i2;
     char *msg;
     int k;
 
@@ -47,6 +46,7 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 {
     char *buffer;
 
+    (void)packet;
     if (asprintf(&buffer,
              "[ linemate %d, deraumere %d, sibur %d, "
             "mendiane %d, phiras %d, thystame %d, food %d ]\n",

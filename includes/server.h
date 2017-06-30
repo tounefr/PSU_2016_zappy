@@ -31,6 +31,8 @@
 # define DEFAULT_FREQUENCY 100
 # define DEFAULT_CLIENTS_PER_TEAM 10
 # define DEFAULT_LISTEN_PORT 4242
+# define DEFAULT_MAP_WIDTH 10
+# define DEFAULT_MAP_HEIGHT 10
 
 # define PLAYER_LIFE_UNITS 10
 # define CYCLES_PER_LIFE_UNIT 12600
@@ -211,6 +213,7 @@ char is_legal_network_char(char c);
 char is_numeric(char *s);
 int my_rand(int a, int b);
 int get_pos(t_server *server, t_pos *pos);
+char default_free(void *data);
 
 // packet.c
 void free_packet(t_packet *packet);
@@ -244,6 +247,7 @@ char    onPreIncantPacket(t_server *server, t_client *client, char *packet);
 char    onPostIncantPacket(t_server *server, t_client *client, char *packet);
 
 // gui.c
+char gui_send_map_case(t_server *server, int x, int y);
 char gui_send_map_content(t_server *server);
 char send_client_pos(t_server *server, t_client *client);
 char gui_send_teams(t_server *server);
@@ -286,8 +290,11 @@ t_callback *get_callback(t_client *client,
 char add_callback(t_client *client,
                   char (*func)(t_server*, t_client*, char*),
                   int cycles,
-                  char *packet);
+                  void *packet);
 
 char incantationElevation(t_server *server, t_client *client, char *packet);
+
+// look.c
+char		*look(t_client *client, t_server *server);
 
 #endif //PROJETS_SERVER_H

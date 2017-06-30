@@ -8,18 +8,13 @@
 ** Last update Fri Jun 23 15:01:20 2017 Thomas HENON
 */
 
-#include <string.h>
-# define _GNU_SOURCE
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "server.h"
-
-void free_packet(t_packet *packet)
-{
-    free(packet->raw);
-}
 
 char packet_send(t_client *client, char *format, ...)
 {
@@ -82,7 +77,6 @@ char handle_pre_packet(t_server *server, t_client *client)
 
 char handle_post_packet(t_server *server, t_client *client)
 {
-    t_network_commands *net_cmd;
     t_generic_list *node;
     t_callback *callback;
 
@@ -95,7 +89,8 @@ char handle_post_packet(t_server *server, t_client *client)
 //            printf("postcycle\n", callback->packet);
             callback->func(server, client, callback->packet);
             node = node->next;
-            generic_list_remove(&client->callbacks, callback, free);
+            generic_list_remove(&client->callbacks,
+                                callback, default_free);
             continue;
         }
         node = node->next;

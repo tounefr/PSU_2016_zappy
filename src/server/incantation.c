@@ -14,7 +14,6 @@
 char checkIncantationPacket(t_server *server, t_client *client, char *packet)
 {
     int i;
-    int i2;
     int pos;
     t_incantation *incantation;
 

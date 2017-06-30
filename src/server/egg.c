@@ -12,7 +12,6 @@
 
 char lay_egg(t_server *server, t_client *client)
 {
-    int i;
     t_egg *egg;
     int p;
 
@@ -36,7 +35,6 @@ char lay_egg(t_server *server, t_client *client)
 
 char hatch_egg(t_server *server, t_client *client, char *packet)
 {
-    int i;
     t_egg *egg;
 
     egg = (t_egg*)packet;

@@ -30,7 +30,7 @@ t_callback *get_callback(t_client *client,
 char add_callback(t_client *client,
                   char (*func)(t_server*, t_client*, char*),
                   int cycles,
-                  char *packet)
+                  void *packet)
 {
     t_callback *callback;
 

@@ -40,15 +40,15 @@ void init_client(t_client *client)
 void free_client(t_client *client)
 {
     if (client->eggs) {
-        generic_list_destroy(&client->eggs, free);
+        generic_list_destroy(&client->eggs, default_free);
         client->eggs = NULL;
     }
     if (client->read_packets) {
-        generic_list_destroy(&client->read_packets, free);
+        generic_list_destroy(&client->read_packets, default_free);
         client->read_packets = NULL;
     }
     if (client->write_packets) {
-        generic_list_destroy(&client->write_packets, free);
+        generic_list_destroy(&client->write_packets, default_free);
         client->write_packets = NULL;
     }
     if (client->buffer) {

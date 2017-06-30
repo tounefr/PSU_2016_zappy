@@ -8,6 +8,7 @@
 ** Last update Mon Jun 26 11:53:37 2017 Thomas HENON
 */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include "server.h"
 
@@ -26,6 +27,7 @@ char gui_send_map_case(t_server *server, int x, int y)
                     server->map.cases[pos][TYPE_PHIRAS],
                     server->map.cases[pos][TYPE_THYSTAME]
     );
+    return 1;
 }
 
 char gui_send_map_content(t_server *server)

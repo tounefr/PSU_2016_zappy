@@ -38,6 +38,7 @@ char    onEjectPacket(t_server *server, t_client *client, char *packet)
     int k;
     t_pos dest;
 
+    (void)packet;
     k = 1;
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1 ||

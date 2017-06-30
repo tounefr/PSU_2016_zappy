@@ -39,6 +39,7 @@ static char on_graphic_welcome(t_server *server,
                                t_client *client,
                                char *packet)
 {
+    (void)packet;
     client->is_gui = 1;
     server->gui_client = client;
     send_gui_packet(server, "msz %d %d\n",

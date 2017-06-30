@@ -190,6 +190,7 @@ char		*get_type(int i)
     return ("player");
   else if (i == TYPE_EGG)
     return ("egg");
+  return NULL;
 }
 
 char		*get_tiles_infos(int pos, t_server *server, char *message)
