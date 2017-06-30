@@ -57,7 +57,6 @@ char send_gui_packet(t_server *server, char *format, ...)
         return 0;
     client = server->gui_client;
     va_start(args, format);
-    printf("Send>> ");
     vprintf(format, args);
     va_end(args);
     va_start(args, format);

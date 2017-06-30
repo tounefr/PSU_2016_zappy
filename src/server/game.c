@@ -20,7 +20,6 @@ char on_game_win(t_server *server)
         if (client->socket_fd == -1)
             continue;
         packet_send(client, "dead\n");
-        socket_close(client->socket_fd);
         init_client(client);
     }
     return 1;

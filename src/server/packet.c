@@ -26,6 +26,8 @@ char packet_send(t_client *client, char *format, ...)
     char *buffer;
     va_list args;
 
+    if (client->is_gui)
+        return 0;
     va_start(args, format);
     printf("Send>> ");
     vprintf(format, args);

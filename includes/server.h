@@ -29,7 +29,6 @@
 # define MAX_EGGS 100
 
 # define DEFAULT_FREQUENCY 100
-# define DEFAULT_MAP_SIZE 30
 # define DEFAULT_CLIENTS_PER_TEAM 10
 # define DEFAULT_LISTEN_PORT 4242
 
@@ -123,6 +122,11 @@ typedef struct s_packet
     char *raw;
     int remain_cycles;
 } t_packet;
+
+typedef struct s_callback
+{
+
+} t_callback;
 
 typedef struct s_client
 {

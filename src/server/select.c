@@ -64,6 +64,7 @@ char on_select_write_data(t_server *server, fd_set *fds)
             if (!client->write_packets)
                 continue;
             packet = (char*)generic_list_pop(&client->write_packets);
+            printf("Send>> %s", packet);
             send(client->socket_fd, packet, strlen(packet), 0);
             free(packet);
         }
