@@ -27,16 +27,59 @@ class AI:
             else:
                 if self.broadcast_.readMail():
                     continue
-                if self.TST_TooMuchClient():
+                else:
+                    self.FindStone()
+                """if self.TST_TooMuchClient():
                     self.broadcast_.brd_snd_inventory() # 7pts
                     if self.TST_RitualCondi(client):
                         continue
                     else:
-                        #find stone
-                        continue
+                        self.FindStone()
                 else:
                     self.BHV_fork()
-                    continue
+                    continue"""
+
+
+    def FindStone(self):
+        direction = 0
+        ko_count = 0
+        client = self.team_.list_cli_[0]
+        while 1:
+            visible = self.ai_interface.lookAroundAction()
+            if self.TST_SeeObject(visible, "thystame") == 1:
+                self.ACT_MovToObject(visible, "thystame", client)
+                while self.ai_interface.takeObjectAction("thystame") == "ok":
+                    client.getInventory()['thystame'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "mendiane") == 1:
+                self.ACT_MovToObject(visible, "mendiane", client)
+                while self.ai_interface.takeObjectAction("mendiane") == "ok":
+                    client.getInventory()['mendiane'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "sibur") == 1:
+                self.ACT_MovToObject(visible, "sibur", client)
+                while self.ai_interface.takeObjectAction("sibur") == "ok":
+                    client.getInventory()['sibur'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "deraumere") == 1:
+                self.ACT_MovToObject(visible, "deraumere", client)
+                while self.ai_interface.takeObjectAction("deraumere") == "ok":
+                    client.getInventory()['deraumere'] += 1
+                return 0
+            elif self.TST_SeeObject(visible, "linemate") == 1:
+                self.ACT_MovToObject(visible, "linemate", client)
+                while self.ai_interface.takeObjectAction("linemate") == "ok":
+                    client.getInventory()['linemate'] += 1
+                return 0
+            else:
+                if ko_count == 0:
+                    self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
+                else:
+                    direction = (direction + 1) % 2
+                    for x in range(0, client.getLvl()):
+                        self.ai_interface.moveForwardAction()
+                ko_count = (ko_count + 1) % 2
+
 
     def BHV_FindFood(self):
         self.broadcast_.brd_snd_eat_on()
@@ -119,7 +162,7 @@ class AI:
     def ACT_MovToObject(self, visible, obj, client):
         if obj in visible[0]:
             return 0
-        index = self.ACT_GetClosestObject(visible, "food")
+        index = self.ACT_GetClosestObject(visible, obj)
         if index == -1:
             return -1
         distance = self.ACT_GetDistanceToLine(index, client)
