@@ -54,16 +54,15 @@ class AI:
                     count_turn += 1
 
                 elif ko_count == 1:
+                    ko_count = 0
                     direction = (direction + 1) % 2
-                    print("------------ test -------------")
                     for x in range(0, client.getLvl()):
-                        print("------------ boucle -------------")
                         self.ai_interface.moveForwardAction()
             else:
                 ko_count = 0
-                self.ACT_MovToObject(visible, "food", client)
-                while self.ai_interface.takeObjectAction("food") == "ok":
-                    client.getInventory()['food'] += 1
+                if self.ACT_MovToObject(visible, "food", client) != -1:
+                    while self.ai_interface.takeObjectAction("food") == "ok":
+                        client.getInventory()['food'] += 1
 
             if count_turn == 3:
                 self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
@@ -121,18 +120,13 @@ class AI:
         if obj in visible[0]:
             return 0
         index = self.ACT_GetClosestObject(visible, "food")
+        if index == -1:
+            return -1
         distance = self.ACT_GetDistanceToLine(index, client)
         for i in range(0, distance):
             self.ai_interface.moveForwardAction()
 
-        print("[debug] - visible [{}]".format(visible))
-        print("[debug] - index {}".format(index))
-        print("[debug] - distance {}".format(distance))
-
         middle_act_line = (2 ** (distance + 1)) - (distance % 2) - (distance)
-
-        print("[debug] - middle_act_line {}".format(middle_act_line))
-
         if index == middle_act_line:
             return 0
         elif index < middle_act_line:
@@ -150,10 +144,7 @@ class AI:
         distance = 0
         for lvl in range(1, client.getLvl() + 1):
             distance += 1
-            v1 = ((2 ** (lvl + 1)) - (lvl % 2))
-            v2 = ((2 ** (lvl + 1)) - (lvl % 2)) < index
-            print("[debug] [Distance] - ({} < {}) = {}".format(v1, index, v2))
-            if ((2 ** (lvl + 1)) - (lvl % 2)) < index:
+            if ((2 ** (lvl + 1)) - (lvl % 2)) > index:
                 return distance
         return distance
 
@@ -164,7 +155,7 @@ class AI:
             if obj in cell:
                 return index
             index += 1
-        return 0
+        return -1
 
 
     def onPlayerEject(self, res):
