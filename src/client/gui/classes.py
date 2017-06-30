@@ -151,7 +151,7 @@ class Resource:
         self.rubis_rouge = pygame.transform.scale(image_rubis_rouge, (8, 16))
         self.rubis_violet = pygame.transform.scale(image_rubis_violet, (8, 16))
         self.rubis_orange = pygame.transform.scale(image_rubis_orange, (8, 16))
-        self.food = pygame.transform.scale(image_coeur, (12, 12))
+        self.food = pygame.transform.scale(image_coeur, (16, 16))
 
     def display_linemate(self, window, coordLinemate):
         if coordLinemate.nb_resource > 0:
@@ -289,10 +289,10 @@ class PlayerList:
     def __init__(self):
         self.list = []
 
-    def display_players(self, window):
+    def display_players(self, window, t1, is_displayed):
         for i in range(len(self.list)):
             player = self.list[i]
-            player.update_animation(window)
+            player.update_animation(window, t1, is_displayed)
 
     def get_player(self, player_num):
         i = 0
@@ -334,6 +334,7 @@ class Perso:
         self.haut = 0
         self.map = map
 
+        self.t = 0
         self.animation_timer = 10
         self.animation_delay = 10
 
@@ -354,11 +355,11 @@ class Perso:
             self.direction = self.haut
             self.action = self.spriteSheet['haut']
 
-    def update_animation(self, window):
-        self.animation_timer -= 1
-        if self.animation_timer == 0:
+    def update_animation(self, window, t1, is_displayed):
+        if self.t != t1 and is_displayed == True:
             self.get_next_animation()
-            self.animation_timer = self.animation_delay
+            self.t = t1
+        print(self.action)
         window.blit(self.action, (self.x, self.y))
 
     def get_next_animation(self):

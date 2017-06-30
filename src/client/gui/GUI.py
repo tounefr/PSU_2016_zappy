@@ -7,6 +7,7 @@ from sys import *
 import time
 import threading
 
+
 class GUI:
     def __init__(self):
         from ZappyClient import ZappyClient
@@ -22,10 +23,16 @@ class GUI:
     def update(self):
         with self.wait_start:
             self.wait_start.wait()
+        t0 = time.time()
+        is_displayed = False
         while True:
+            if round(time.time() - t0, 1) == 0.6:
+                t0 = time.time()
+                is_displayed = True
             self.map.display_content(self.window)
-            self.playerList.display_players(self.window)
+            self.playerList.display_players(self.window, t0, is_displayed)
             pygame.display.flip()
+            is_displayed = False
 
     def onGameStart(self):
         pygame.init()
