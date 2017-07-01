@@ -146,6 +146,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_welcome(self):
         print("[DEBUG] [brd_snd_welcome] - rentre")
@@ -165,6 +166,7 @@ class Broadcast:
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
         self.lastpid_ = 0
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_inventory(self):
         print("[DEBUG] [brd_snd_inventory] - rentre")
@@ -183,6 +185,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_eat_on(self):
         print("[DEBUG] [brd_snd_eat_on] - rentre")
@@ -198,6 +201,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_eat_off(self):
         print("[DEBUG] [brd_snd_eat_off] - rentre")
@@ -213,11 +217,13 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_grp_ritual(self):
         print("[DEBUG] [brd_snd_grp_ritual] - rentre")
 
         self.setNumber(self.getNumber() + 1)
+        print("[DEBUG] [brd_send_pid] - sort")
         return
 
     def brd_snd_ab_ritual(self):
@@ -234,6 +240,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_str_ritual(self):
         print("[DEBUG] [brd_snd_str_ritual] - rentre")
@@ -249,6 +256,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_end_ritual(self):
         print("[DEBUG] [brd_snd_end_ritual] - rentre")
@@ -264,6 +272,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     def brd_snd_fork(self):
         print("[DEBUG] [brd_snd_fork] - rentre")
@@ -279,6 +288,7 @@ class Broadcast:
         text = json.dumps(content)
         text = self.stream_cipher(text)
         self.interface.broadcastAction(text)
+        print("[DEBUG] [brd_send_pid] - sort")
 
     # rcv
     def brd_rcv_pid(self, json, dist):
@@ -296,6 +306,7 @@ class Broadcast:
         except ValueError:
             self.lastpid_ = 0
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return False
 
     def brd_rcv_welcome(self, json, dist):
@@ -311,6 +322,7 @@ class Broadcast:
             return False
         except ValueError:
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return False
 
     def brd_rcv_inventory(self, json, dist):
@@ -326,6 +338,7 @@ class Broadcast:
             return False
         except ValueError:
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return False
 
     def brd_rcv_eat_on(self, json, dist):
@@ -339,6 +352,7 @@ class Broadcast:
             return False
         except ValueError:
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return False
 
     def brd_rcv_eat_off(self, json, dist):
@@ -352,6 +366,7 @@ class Broadcast:
             return False
         except ValueError:
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return False
 
     def brd_rcv_grp_ritual(self, json, dist):
@@ -363,6 +378,7 @@ class Broadcast:
             return True
         except ValueError:
             return True
+        print("[DEBUG] [brd_send_pid] - sort")
         return True
 
     def brd_rcv_ab_ritual(self, json, dist):
@@ -374,6 +390,7 @@ class Broadcast:
             client_rcv.setIsRitual(False)
         except ValueError:
             return True
+        print("[DEBUG] [brd_send_pid] - sort")
         return True
 
     def brd_rcv_str_ritual(self, json, dist):
@@ -385,6 +402,7 @@ class Broadcast:
             client_rcv.setIsRitual(True)
         except ValueError:
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return True
 
     def brd_rcv_end_ritual(self, json, dist):
@@ -396,9 +414,11 @@ class Broadcast:
             client_rcv.setIsRitual(False)
         except ValueError:
             return False
+        print("[DEBUG] [brd_send_pid] - sort")
         return True
 
     def brd_rcv_fork(self, json, dist):
         print("[debug] [brd_rcv_fork] - rentre")
         self.team_.setAttendList(self.team_.getAttendList() + 1)
+        print("[DEBUG] [brd_send_pid] - sort")
         return False
