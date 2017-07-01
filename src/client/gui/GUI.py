@@ -7,7 +7,6 @@ from sys import *
 import time
 import threading
 
-
 class GUI:
     def __init__(self):
         from ZappyClient import ZappyClient
@@ -41,8 +40,8 @@ class GUI:
     #msz
     # size=(width, height)
     def onMapSize(self, size):
-        self.window = pygame.display.set_mode((size[0] * 48, size[1] * 48))
-        self.map = Map(size[0] * 48, size[1] * 48)
+        self.window = pygame.display.set_mode((size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale))
+        self.map = Map(size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale)
         self.map.create(self.window)
         print("onMapSize size={}".format(size))
         with self.wait_start:
@@ -68,8 +67,8 @@ class GUI:
         link = Perso(player_num, team_name, 0, self.map)
         #link.assign_model()
         link.set_direction(orientation)
-        link.x = pos[0] * 48
-        link.y = pos[1] * 48
+        link.x = pos[0] * Constantes.instance().tileScale
+        link.y = pos[1] * Constantes.instance().tileScale
 
         self.playerList.add_player(link)
         print("onPlayerConnect player_num={} pos={} orien={} level={} team_name={}".format(
@@ -81,8 +80,8 @@ class GUI:
         index = self.playerList.get_player(int(player_num))
         player = self.playerList.list[index]
         player.set_direction(orientation)
-        player.x = pos[0] * 48
-        player.y = pos[1] * 48
+        player.x = pos[0] * Constantes.instance().tileScale
+        player.y = pos[1] * Constantes.instance().tileScale
 
         print("onPlayerPos player_num={} pos={} orien={}".format(
             player_num, pos, orientation
@@ -160,13 +159,15 @@ class GUI:
 
     #pdi
     def onPlayerDieOfHunger(self, player_num):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            print("onPlayerDieOfHunger: failed to remove player")
+            return
         player.action_previous = player.action
         player.action = player.spriteSheet['death']
-
         self.playerList.remove_player(player_num)
-        print("onPlayerDieOfHunger player_num={}".format(player_num))
 
     #enw
     def onPlayerLaid(self, egg_num, player_num, pos):

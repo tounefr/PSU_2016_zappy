@@ -78,7 +78,7 @@ socket_send(int fd,
 
 char socket_close(int fd)
 {
-    shutdown(fd, SHUT_RDWR);
+    //shutdown(fd, SHUT_RDWR);
     close(fd);
     return 1;
 }
