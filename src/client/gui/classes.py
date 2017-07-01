@@ -6,7 +6,6 @@ from pygame.locals import *
 from gui.constantes import *
 import random
 
-
 class Window:
     def __init__(self, width, height):
         self.width = width
@@ -359,7 +358,6 @@ class Perso:
         if self.t != t1 and is_displayed == True:
             self.get_next_animation()
             self.t = t1
-        print(self.action)
         window.blit(self.action, (self.x, self.y))
 
     def get_next_animation(self):
