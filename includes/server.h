@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sun Jun  4 12:04:38 2017 Thomas HENON
-** Last update Wed Jun 28 11:48:41 2017 arsene
+** Last update Sat Jul  1 12:31:23 2017 arsene
 */
 
 #ifndef PROJETS_SERVER_H
@@ -47,9 +47,9 @@
 # define TYPE_PLAYER 7
 # define TYPE_EGG 8
 
-# define ORIENT_NORTH 1
-# define ORIENT_SOUTH 2
-# define ORIENT_EAST 3
+# define ORIENT_NORTH 3
+# define ORIENT_SOUTH 1
+# define ORIENT_EAST 2
 # define ORIENT_WEST 4
 
 #include <sys/time.h>
