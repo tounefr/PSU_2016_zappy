@@ -12,7 +12,7 @@
 #define PROJETS_SERVER_H
 
 # define N_NETWORK_COMMANDS 12
-# define LOG_PACKET 0
+# define LOG_PACKET 1
 
 # define MAX_MAP_WIDTH 30
 # define MAX_MAP_HEIGHT 30
@@ -36,7 +36,7 @@
 # define DEFAULT_MAP_HEIGHT 10
 
 # define PLAYER_LIFE_UNITS 10
-# define CYCLES_PER_LIFE_UNIT 12600
+# define CYCLES_PER_LIFE_UNIT 126
 
 # define TYPE_FOOD 0
 # define TYPE_LINEMATE 1

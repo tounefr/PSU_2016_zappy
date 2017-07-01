@@ -10,7 +10,6 @@
 
 #include "server.h"
 
-/*
 char on_game_win(t_server *server)
 {
     int i;
@@ -20,9 +19,7 @@ char on_game_win(t_server *server)
         client = &server->clients[i];
         if (client->socket_fd == -1)
             continue;
-        packet_send(client, "dead\n");
-        init_client(client);
+        on_exit_client(server, client);
     }
     return 1;
 }
- */

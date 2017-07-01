@@ -14,6 +14,8 @@ char onPlayerDead(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
     packet_send(client, "dead\n");
+//    socket_close(client->socket_fd);
+  //  client->socket_fd = -1;
     on_exit_client(server, client);
     return 1;
 }

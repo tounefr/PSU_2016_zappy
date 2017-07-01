@@ -12,6 +12,7 @@
 
 char lay_egg(t_server *server, t_client *client)
 {
+    static egg_num = 0;
     t_egg *egg;
     int p;
 
@@ -22,11 +23,13 @@ char lay_egg(t_server *server, t_client *client)
     if (!add_callback(client, hatch_egg, 600, egg))
         return 0;
     egg->pos = client->pos;
-    egg->num = 0;
+    egg->num = egg_num++;
     egg->pending_client = 0;
     p = egg->pos.x + egg->pos.y * server->map.width;
     server->map.cases[p][TYPE_EGG]++;
     printf("egg layed\n");
+    if (!add_callback(client, hatch_egg, 600, egg))
+        return 0;
     send_gui_packet(server, "enw %d %d %d %d\n",
                     egg->num, client->num,
                     egg->pos.x, egg->pos.y);
