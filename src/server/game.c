@@ -10,6 +10,7 @@
 
 #include "server.h"
 
+/*
 char on_game_win(t_server *server)
 {
     int i;
@@ -24,3 +25,4 @@ char on_game_win(t_server *server)
     }
     return 1;
 }
+ */
