@@ -4,17 +4,17 @@ from core.AIInterface import *
 from ai.Broadcast import *
 from ai.Team import *
 
-class AI:
 
+class AI:
     def __init__(self):
         self.ai_interface = AIInterface()
         self.team_ = Team()
+        self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
 
     def onGameStart(self):
         print("Game start")
-        self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
-        self.broadcast_.brd_snd_pid()
         client = self.team_.list_cli_[0]
+        self.broadcast_.brd_snd_pid()
 
         while 1:
             print("boucle 1")
@@ -39,12 +39,13 @@ class AI:
                     self.BHV_fork()
                     continue"""
 
-
     def FindStone(self):
         direction = 0
         ko_count = 0
         client = self.team_.list_cli_[0]
         while 1:
+            if self.broadcast_.readMail():
+                return
             visible = self.ai_interface.lookAroundAction()
             if self.TST_SeeObject(visible, "thystame") == 1:
                 self.ACT_MovToObject(visible, "thystame", client)
@@ -85,7 +86,6 @@ class AI:
                         self.ai_interface.moveForwardAction()
                 ko_count = (ko_count + 1) % 2
 
-
     def BHV_FindFood(self):
         self.broadcast_.brd_snd_eat_on()
         direction = 0
@@ -94,7 +94,8 @@ class AI:
         count_turn = 0
         client = self.team_.list_cli_[0]
         while client.getInventory()['food'] < 7:
-            visible = self.ai_interface.lookAroundAction() # 7pts
+            self.broadcast_.readMail(False)
+            visible = self.ai_interface.lookAroundAction()  # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
                 if ko_count == 0:
                     self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
@@ -163,7 +164,6 @@ class AI:
                 return 1
         return 0
 
-
     def ACT_MovToObject(self, visible, obj, client):
         if obj in visible[0]:
             return 0
@@ -196,7 +196,6 @@ class AI:
                 return distance
         return distance
 
-
     def ACT_GetClosestObject(self, visible, obj):
         index = 0
         for cell in visible:
@@ -213,7 +212,7 @@ class AI:
 
     def onMessage(self, player_num, message):
         self.broadcast_.addMail(str(player_num), message)
-        print("onMessage: player_num={} message={}".format(player_num,  message))
+        print("onMessage: player_num={} message={}".format(player_num, message))
 
     def onNbrOfTeamSlotsUnused(self, count):
         print(count)
