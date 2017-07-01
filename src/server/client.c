@@ -57,6 +57,8 @@ char on_exit_client(t_server *server, t_client *client)
     if (client->team)
         client->team->slots++;
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
+    gui_send_map_case(server, client->pos.x, client->pos.y);
+    send_gui_packet(server, "pdi %d\n", client->num);
     socket_close(client->socket_fd);
     init_client(client);
 //    gui_send_map_content(server);

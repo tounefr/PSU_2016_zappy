@@ -54,7 +54,8 @@ char remove_hatched_egg(t_server *server, t_client *join_client)
 
     for (i = 0; i < MAX_CLIENTS; i++) {
         client = &server->clients[i];
-        if (client->socket_fd == -1 || client->is_gui)
+        if (client->socket_fd == -1 || client->is_gui ||
+            strcmp(client->team->name, join_client->team->name))
             continue;
         node = client->eggs;
         while (node) {

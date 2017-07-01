@@ -8,6 +8,8 @@
 ** Last update Wed Jun 28 14:04:24 2017 arsene
 */
 
+#include <sys/types.h>
+#include <unistd.h>
 #include "server.h"
 
 char    onLeftPacket(t_server *server, t_client *client, char *packet)
@@ -55,7 +57,7 @@ static char on_client_welcome(t_server *server,
                               t_client *client,
                               char *packet)
 {
-    client->num = server->client_lastnum++;
+    client->num = getpid();
     if (!client_assign_team(server, client, packet))
         return packet_send(client, "ko\n");
     if (client->team->slots - 1 < 0)

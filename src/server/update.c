@@ -12,6 +12,8 @@
 
 char update_client(t_server *server, t_client *client)
 {
+    int cycles;
+
     if (client->socket_fd == -1 || client->is_gui)
         return 0;
     if (!handle_pre_packet(server, client)) {
@@ -19,6 +21,8 @@ char update_client(t_server *server, t_client *client)
         return 0;
     }
     get_callback(client, onPlayerDead)->cycles--;
+    cycles = get_callback(client, onPlayerDead)->cycles;
+    client->inventory[TYPE_FOOD] = cycles / 126;
     if (!handle_post_packet(server, client)) {
         on_exit_client(server, client);
         return 0;

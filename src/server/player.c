@@ -14,7 +14,6 @@ char onPlayerDead(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
     packet_send(client, "dead\n");
-    send_gui_packet(server, "pdi %d\n", client->num);
     on_exit_client(server, client);
     return 1;
 }
