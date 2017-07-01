@@ -14,10 +14,14 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "server.h"
 
 char log_packet(int num, char type, char *raw)
 {
+    if (!LOG_PACKET)
+        return 1;
     char *file_name;
     FILE *handle;
     char *line;

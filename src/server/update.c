@@ -25,7 +25,6 @@ char update_client(t_server *server, t_client *client)
         callback->cycles--;
         client->inventory[TYPE_FOOD] = callback->cycles / CYCLES_PER_LIFE_UNIT;
     }
-    printf("food: %d\n", client->inventory[TYPE_FOOD]);
     if (!handle_post_packet(server, client)) {
         on_exit_client(server, client);
         return 0;
@@ -36,15 +35,21 @@ char update_client(t_server *server, t_client *client)
 char update(t_server *server, struct timeval *last_tick)
 {
     int i;
+    int nb_clients;
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
         if (server->cur_cycle == 1 || (server->cur_cycle % 1200) == 0)
             generate_resources(server);
+        nb_clients = 0;
         for (i = 0; i < MAX_CLIENTS; i++) {
             client = &server->clients[i];
+            if (client->socket_fd != -1 && !client->is_gui)
+                nb_clients++;
             update_client(server, client);
         }
+        if ((server->cur_cycle % 1) == 0)
+            printf("%d clients connected\n", nb_clients);
     }
     return 1;
 }
