@@ -11,16 +11,16 @@ class Broadcast:
         self.interface = ai_interface
         self.ai_ = ai
         self.broad_ = {
-            "PID": self.brd_rcv_pid,
-            "WELCOME": self.brd_rcv_welcome,
-            "INVENTORY": self.brd_rcv_inventory,
-            "EAT_ON": self.brd_rcv_eat_on,
-            "EAT_OFF": self.brd_rcv_eat_off,
-            "GRP_RITUAL": self.brd_rcv_grp_ritual,
-            "AB_RITUAL": self.brd_rcv_ab_ritual,
-            "STR_RITUAL": self.brd_rcv_str_ritual,
-            "END_RITUAL": self.brd_rcv_end_ritual,
-            "FORK": self.brd_rcv_fork
+            "PID": [self.brd_rcv_pid, False],
+            "WELCOME": [self.brd_rcv_welcome, False],
+            "INVENTORY": [self.brd_rcv_inventory, False],
+            "EAT_ON": [self.brd_rcv_eat_on, False],
+            "EAT_OFF": [self.brd_rcv_eat_off, False],
+            "GRP_RITUAL": [self.brd_rcv_grp_ritual, True],
+            "AB_RITUAL": [self.brd_rcv_ab_ritual, True],
+            "STR_RITUAL": [self.brd_rcv_str_ritual, True],
+            "END_RITUAL": [self.brd_rcv_end_ritual, True],
+            "FORK": [self.brd_rcv_fork, False]
         }
         self.number_ = 0
         self.lastpid_ = 0
@@ -94,7 +94,7 @@ class Broadcast:
         self.mailBox_.append((content, dist, self.number_))
         self.setNumber(self.getNumber() + 1)
 
-    def readMail(self):
+    def readMail(self, act=True):
         rm = list()
 
         res = False
@@ -103,9 +103,10 @@ class Broadcast:
             print("[DEBUG] [readMail] - av content = {}".format(mail[0]))
             for key, value in self.broad_.items():
                 if key in mail[0]['cmd']:
-                    if self.check_mail(key, mail):
-                        res = True
-            rm.append(incre)
+                    if act is True or value[1] is False:
+                        if self.check_mail(key, mail):
+                            res = True
+                        rm.append(incre)
             incre += 1
         incre = 0
         for count in rm:
