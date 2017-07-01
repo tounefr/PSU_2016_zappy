@@ -10,6 +10,8 @@
 
 #define _GNU_SOURCE
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include "server.h"
 
 char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
@@ -28,18 +30,18 @@ char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
     int k;
     char *buffer;
 
+//    return packet_send(client, "ok\n");
     k = 1; //TODO
     if (strlen(packet) + 1 < strlen("Broadcast "))
         return packet_send(client, "ko\n");
     msg = packet + strlen("Broadcast ");
-    send_gui_packet(server, "pbc %d %s\n", client->num, msg);
+//    send_gui_packet(server, "pbc %d %s\n", client->num, msg);
     for (i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].socket_fd == -1)
-            continue;
-        if (&server->clients[i] == client)
+        if (server->clients[i].socket_fd == -1 ||
+            &server->clients[i] == client)
             continue;
         asprintf(&buffer, "message %d, %s\n", k, msg);
-        send(&server->clients[i], packet, strlen(buffer), 0);
+        send(server->clients[i].socket_fd, buffer, strlen(buffer), 0);
         free(buffer);
     }
     return packet_send(client, "ok\n");
@@ -51,12 +53,12 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 
     (void)packet;
     if (asprintf(&buffer,
-             "[ linemate %d, deraumere %d, sibur %d, "
-            "mendiane %d, phiras %d, thystame %d, food %d ]\n",
-             client->inventory[TYPE_LINEMATE], client->inventory[TYPE_DERAUMERE],
-             client->inventory[TYPE_SIBUR], client->inventory[TYPE_MENDIANE],
-             client->inventory[TYPE_PHIRAS], client->inventory[TYPE_THYSTAME],
-             client->inventory[TYPE_FOOD]) == -1)
+         "[ linemate %d, deraumere %d, sibur %d, "
+        "mendiane %d, phiras %d, thystame %d, food %d ]\n",
+         client->inventory[TYPE_LINEMATE], client->inventory[TYPE_DERAUMERE],
+         client->inventory[TYPE_SIBUR], client->inventory[TYPE_MENDIANE],
+         client->inventory[TYPE_PHIRAS], client->inventory[TYPE_THYSTAME],
+         client->inventory[TYPE_FOOD]) == -1)
         return exit_error(0, "malloc error\n");
     packet_send(client, "%s", buffer);
     send_gui_packet(server, "pin %d %d %d %d %d %d %d %d %d %d\n",

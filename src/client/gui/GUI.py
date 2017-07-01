@@ -32,7 +32,7 @@ class GUI:
             self.playerList.display_players(self.window, t0, is_displayed)
             pygame.display.flip()
             is_displayed = False
-            time.sleep(0.05)
+            time.sleep(0.01)
 
     def onGameStart(self):
         pygame.init()

@@ -4,17 +4,15 @@ from core.AIInterface import *
 from ai.Broadcast import *
 from ai.Team import *
 
-
 class AI:
     def __init__(self):
         self.ai_interface = AIInterface()
+        self.team_ = Team()
+        self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
 
     def onGameStart(self):
         print("Game start")
-        self.team_ = Team()
-        self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
         client = self.team_.list_cli_[0]
-        self.broadcast_ = Broadcast(self.team_, self.ai_interface, self)
         self.broadcast_.brd_snd_pid()
 
         while 1:

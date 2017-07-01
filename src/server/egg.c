@@ -12,7 +12,7 @@
 
 char lay_egg(t_server *server, t_client *client)
 {
-    static egg_num = 0;
+    static int egg_num = 0;
     t_egg *egg;
     int p;
 

@@ -12,7 +12,6 @@
 
 char update_client(t_server *server, t_client *client)
 {
-    int cycles;
     t_callback *callback;
 
     if (client->socket_fd == -1 || client->is_gui)
