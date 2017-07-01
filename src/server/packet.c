@@ -109,6 +109,8 @@ char handle_post_packet(t_server *server, t_client *client)
     node = client->callbacks;
     while (node)
     {
+        if (client->socket_fd == -1)
+            return 0;
         callback = node->data;
         callback->cycles--;
         if (callback->cycles <= 0) {

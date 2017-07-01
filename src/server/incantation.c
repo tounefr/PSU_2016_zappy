@@ -69,8 +69,8 @@ char incantationElevation(t_server *server, t_client *client, char *packet)
                     client->pos.x, client->pos.y, 1);
     packet_send(client, "Current level: %d\n", client->level);
     decreaseResourcesOnMap(server, &client->pos, incantation);
-    if (client->level == 8)
-        return on_game_win(server);
+    /*if (client->level == 8)
+        return on_game_win(server);*/
     return 1;
 }
 
