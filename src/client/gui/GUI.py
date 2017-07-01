@@ -23,6 +23,10 @@ class GUI:
         with self.wait_start:
             self.wait_start.wait()
         while True:
+
+            # Check mouse click
+            print("MOUSE: ".format(pygame.mouse.get_pos()))
+
             self.map.display_content(self.window)
             self.playerList.display_players(self.window)
             pygame.display.flip()
