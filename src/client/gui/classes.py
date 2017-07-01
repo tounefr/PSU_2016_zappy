@@ -26,6 +26,11 @@ class Constantes:
         self.tileDimension = (self.tileScale, self.tileScale)
         self.tileSize = 16
 
+    def setScale(self, size):
+        if size >= 24:
+            self.tileScale -= 8
+        self.tileDimension = (self.tileScale, self.tileScale)
+
 
 class Teams:
     g_instance = None
