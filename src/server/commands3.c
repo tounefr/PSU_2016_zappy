@@ -57,7 +57,9 @@ static char on_client_welcome(t_server *server,
                               t_client *client,
                               char *packet)
 {
-    client->num = getpid();
+    static int max_client_num = 0;
+
+    client->num = max_client_num++;
     if (!client_assign_team(server, client, packet))
         return packet_send(client, "ko\n");
     if (client->team->slots - 1 < 0)

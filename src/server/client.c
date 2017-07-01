@@ -59,7 +59,8 @@ char on_exit_client(t_server *server, t_client *client)
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     gui_send_map_case(server, client->pos.x, client->pos.y);
     send_gui_packet(server, "pdi %d\n", client->num);
-    socket_close(client->socket_fd);
+    if (client->socket_fd > 0)
+        socket_close(client->socket_fd);
     init_client(client);
 //    gui_send_map_content(server);
     printf("on_exit_client\n");
@@ -92,10 +93,4 @@ char on_new_client(t_server *server)
         return 1;
     }
     return exit_error(0, "error : no slots available\n");
-}
-
-void close_client_connection(t_client *client)
-{
-    socket_close(client->socket_fd);
-    init_client(client);
 }

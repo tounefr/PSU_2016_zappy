@@ -15,6 +15,7 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
     int i;
     char food[100];
     int client_pos;
+    t_callback *callback;
 
     memset((char*)&food, 0, sizeof(food));
     strncpy((char*)&food, packet + 5, sizeof(food) - 1);
@@ -29,8 +30,10 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
             server->map.cases[client_pos][get_g_foods()[i].type]++;
             send_gui_packet(server, "pdr %d %d\n",
                             client->num, get_g_foods()[i].type);
-            if (get_g_foods()[i].type == TYPE_FOOD)
-                get_callback(client, onPlayerDead)->cycles -= CYCLES_PER_LIFE_UNIT;
+            if (get_g_foods()[i].type == TYPE_FOOD) {
+                if ((callback = get_callback(client, onPlayerDead)))
+                    callback->cycles += CYCLES_PER_LIFE_UNIT;
+            }
             gui_send_map_case(server, client->pos.x, client->pos.y);
             return packet_send(client, "ok\n");
         }
@@ -44,6 +47,7 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
     int i;
     char food[100];
     int client_pos;
+    t_callback *callback;
 
     memset(&food, 0, sizeof(food));
     strncpy((char*)&food, packet + 5, sizeof(food) - 1);
@@ -58,8 +62,10 @@ char    onTakeObjectPacket(t_server *server, t_client *client, char *packet)
             server->map.cases[client_pos][get_g_foods()[i].type]--;
             send_gui_packet(server, "pgt %d %d\n",
                             client->num, get_g_foods()[i].type);
-            if (get_g_foods()[i].type == TYPE_FOOD)
-                get_callback(client, onPlayerDead)->cycles += CYCLES_PER_LIFE_UNIT;
+            if (get_g_foods()[i].type == TYPE_FOOD) {
+                if ((callback = get_callback(client, onPlayerDead)))
+                    callback->cycles += CYCLES_PER_LIFE_UNIT;
+            }
             gui_send_map_case(server, client->pos.x, client->pos.y);
             return packet_send(client, "ok\n");
         }
