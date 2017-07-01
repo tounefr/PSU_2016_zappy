@@ -25,7 +25,7 @@ typedef struct	s_look
 
 int	coordsToIndex(t_server *server, t_pos pos)
 {
-  printf("Looking at coords: [%i; %i]\n", pos.x, pos.y);
+  //printf("Looking at coords: [%i; %i]\n", pos.x, pos.y);
   while (pos.x <= 0)
     pos.x += server->map.width;
   while (pos.x > server->map.width)
@@ -34,7 +34,7 @@ int	coordsToIndex(t_server *server, t_pos pos)
     pos.y += server->map.height;
   while (pos.y > server->map.height)
     pos.y -= server->map.height;
-  printf("Giving: [%i; %i] ->%i\n\n", pos.x, pos.y, (pos.y * server->map.width) + pos.x);
+  //printf("Giving: [%i; %i] ->%i\n\n", pos.x, pos.y, (pos.y * server->map.width) + pos.x);
   return ((pos.y * server->map.width) + pos.x);
 }
 
@@ -190,7 +190,6 @@ char		*get_type(int i)
     return ("player");
   else if (i == TYPE_EGG)
     return ("egg");
-  return NULL;
 }
 
 char		*get_tiles_infos(int pos, t_server *server, char *message)
@@ -211,7 +210,7 @@ char		*get_tiles_infos(int pos, t_server *server, char *message)
 		  message = realloc(message, strlen(message) + 2);
 		  message = strcat(message, " ");
 		}
-	      printf("WHAT IS ABOUT TO BE WRITTEN : %s\n", get_type(i));
+	      //printf("WHAT IS ABOUT TO BE WRITTEN : %s\n", get_type(i));
 	      sleep(1);
 
 	      if (message != NULL)
@@ -223,7 +222,7 @@ char		*get_tiles_infos(int pos, t_server *server, char *message)
 	    }
 	}
     }
-  printf("pos : %d\n", pos);
+  //printf("pos : %d\n", pos);
   if (message != NULL)
     message = realloc(message, strlen(message) + 2);
   else
@@ -268,7 +267,7 @@ void	convertView(t_client *c, t_look *see)
       limit += limit + 2;
       i++;
     }
-  printf("### [LOOK] index of view [0, %i]\n", limit - 1);
+  //printf("### [LOOK] index of view [0, %i]\n", limit - 1);
 
   index = 0;
   if ((buffer = malloc(1)) == NULL)
@@ -296,7 +295,7 @@ void	convertView(t_client *c, t_look *see)
       index++;
     }
   buffer = myAppend(buffer, "]");
-  printf("### [LOOK] Goind to send: \"%s\"\n", buffer);
+  //printf("### [LOOK] Goind to send: \"%s\"\n", buffer);
   packet_send(c, "%s\n", buffer);
 }
 
@@ -308,7 +307,7 @@ void	debug_count(t_server *s)
 
   i = 0;
   total = 0;
-  printf("Counting ressources...\n");
+  //printf("Counting ressources...\n");
   while (i < s->map.width * s->map.height)
     {
       j = 0;
@@ -319,7 +318,7 @@ void	debug_count(t_server *s)
 	}
       i++;
     }
-  printf("Nb of ressources found on the map: %i\n", total);
+  //printf("Nb of ressources found on the map: %i\n", total);
 }
 
 char		*look(t_client *client, t_server *server)
@@ -334,9 +333,9 @@ char		*look(t_client *client, t_server *server)
   t_look	see;
 
   init_look(&see);
-  printf("### START LOOK\n");
+  //printf("### START LOOK\n");
   debug_count(server);
-  printf("### [DEBUG] Map %i x %i\n", server->map.width, server->map.height);
+  //printf("### [DEBUG] Map %i x %i\n", server->map.width, server->map.height);
   if (client->orientation == ORIENT_NORTH)
     lookUp(server, client, &see);
   if (client->orientation == ORIENT_SOUTH)
@@ -346,7 +345,7 @@ char		*look(t_client *client, t_server *server)
   if (client->orientation == ORIENT_WEST)
     lookLeft(server, client, &see);
   convertView(client, &see);
-  printf("### END LOOK\n");
+  //printf("### END LOOK\n");
 
 
 
@@ -369,16 +368,16 @@ char		*look(t_client *client, t_server *server)
 
 
 	  field_of_view = get_tiles_infos(front, server, field_of_view);
-	  printf("FRONT\n");
+	  //printf("FRONT\n");
 
 	  if (i != 0)
 	    {
 	      while (j <= i)
 		{
 		  field_of_view = get_tiles_infos(front - j, server, field_of_view);
-		  printf("LEFT\n");
+		  //printf("LEFT\n");
 		  field_of_view = get_tiles_infos(front + j, server, field_of_view);
-		  printf("RIGHT\n");
+		  //printf("RIGHT\n");
 		  j++;
 		}
 	    }

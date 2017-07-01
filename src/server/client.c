@@ -88,7 +88,7 @@ char on_new_client(t_server *server)
         flags = fcntl(fd, F_GETFL, 0);
         if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
             return exit_error(0, "fcntl error : %s\n", strerror(errno));
-        packet_send(client, "BIENVENUE\n");
+        packet_send(client, "WELCOME\n");
         return 1;
     }
     return exit_error(0, "error : no slots available\n");
