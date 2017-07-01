@@ -23,8 +23,9 @@ char update_client(t_server *server, t_client *client)
     }
     if ((callback = get_callback(client, onPlayerDead))) {
         callback->cycles--;
-        client->inventory[TYPE_FOOD] = callback->cycles / 126;
+        client->inventory[TYPE_FOOD] = callback->cycles / CYCLES_PER_LIFE_UNIT;
     }
+    printf("food: %d\n", client->inventory[TYPE_FOOD]);
     if (!handle_post_packet(server, client)) {
         on_exit_client(server, client);
         return 0;

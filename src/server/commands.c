@@ -32,7 +32,7 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
                             client->num, get_g_foods()[i].type);
             if (get_g_foods()[i].type == TYPE_FOOD) {
                 if ((callback = get_callback(client, onPlayerDead)))
-                    callback->cycles += CYCLES_PER_LIFE_UNIT;
+                    callback->cycles -= CYCLES_PER_LIFE_UNIT;
             }
             gui_send_map_case(server, client->pos.x, client->pos.y);
             return packet_send(client, "ok\n");

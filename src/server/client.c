@@ -82,8 +82,7 @@ char on_new_client(t_server *server)
         client->socket_fd = socket_accept(server->server_fd);
         if (!add_callback(client, onPlayerDead,
              client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT, NULL)) {
-            on_exit_client(server, client);
-            return 0;
+            return on_exit_client(server, client);
         }
         fd = client->socket_fd;
         flags = fcntl(fd, F_GETFL, 0);
