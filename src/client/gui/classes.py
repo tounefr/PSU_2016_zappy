@@ -6,7 +6,6 @@ from pygame.locals import *
 from gui.constantes import *
 import random
 
-
 class Window:
     def __init__(self, width, height):
         self.width = width
