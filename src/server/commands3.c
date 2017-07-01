@@ -42,8 +42,8 @@ static char on_graphic_welcome(t_server *server,
                                char *packet)
 {
     (void)packet;
-    client->is_gui = 1;
     server->gui_client = client;
+    client->is_gui = 1;
     send_gui_packet(server, "msz %d %d\n",
                     server->map.width, server->map.height);
     send_gui_packet(server, "sgt %d\n", (int) server->freq);
@@ -66,8 +66,8 @@ static char on_client_welcome(t_server *server,
             return packet_send(client, "ko\n");
         else
             client->team->slots--;
-    remove_hatched_egg(server, client);
     generate_position(server, client);
+    remove_hatched_egg(server, client);
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     packet_send(client, "%d\n", client->team->slots);
     packet_send(client, "%d %d\n",

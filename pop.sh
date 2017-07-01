@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TEAM="team1"
-COUNT=10
+COUNT=100
 
 function usage()
 {
@@ -32,6 +32,6 @@ PRM="-p 4242 -n $TEAM"
 
 for (( c=0; c<$COUNT; c++ ))
 do
-    sleep 1;
+    sleep 0.2
     eval "$BIN $PRM&"
 done

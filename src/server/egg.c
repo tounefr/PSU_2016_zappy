@@ -61,6 +61,7 @@ char remove_hatched_egg(t_server *server, t_client *join_client)
         while (node) {
             egg = node->data;
             if (egg->pending_client) {
+                join_client->pos = client->pos;
                 generic_list_remove(&client->eggs, egg, default_free);
                 printf("USING EGG SLOT\n");
                 send_gui_packet(server, "ebo %d\n", egg->num);
