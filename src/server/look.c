@@ -5,7 +5,7 @@
 ** Login   <arsene@arsene-HP-EliteBook-840-G2>
 **
 ** Started on  Mon Jun 26 14:18:29 2017 arsene
-** Last update Fri Jun 30 17:22:29 2017 arsene
+** Last update Sat Jul  1 12:46:23 2017 arsene
 */
 
 #include <stdlib.h>
@@ -26,11 +26,11 @@ typedef struct	s_look
 int	coordsToIndex(t_server *server, t_pos pos)
 {
   //printf("Looking at coords: [%i; %i]\n", pos.x, pos.y);
-  while (pos.x <= 0)
+  while (pos.x < 0)
     pos.x += server->map.width;
   while (pos.x > server->map.width)
     pos.x -= server->map.width;
-  while (pos.y <= 0)
+  while (pos.y < 0)
     pos.y += server->map.height;
   while (pos.y > server->map.height)
     pos.y -= server->map.height;
