@@ -160,12 +160,8 @@ class GUI:
 
     #pdi
     def onPlayerDieOfHunger(self, player_num):
-        try:
-            index = self.playerList.get_player(int(player_num))
-            player = self.playerList.list[index]
-        except IndexError:
-            print("onPlayerDieOfHunger: failed to remove player")
-            return
+        index = self.playerList.get_player(int(player_num))
+        player = self.playerList.list[index]
         player.action_previous = player.action
         player.action = player.spriteSheet['death']
         self.playerList.remove_player(player_num)

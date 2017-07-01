@@ -57,16 +57,17 @@ static char on_client_welcome(t_server *server,
                               t_client *client,
                               char *packet)
 {
-    static int max_client_num = 0;
+    static int max_client_num = 1;
 
     client->num = max_client_num++;
     if (!client_assign_team(server, client, packet))
         return packet_send(client, "ko\n");
     if (client->team->slots - 1 < 0)
-            return packet_send(client, "ko\n");
-        else
-            client->team->slots--;
-    generate_position(server, client);
+        return packet_send(client, "ko\n");
+    else
+        client->team->slots--;
+    client->pos.x = my_rand(0, server->map.width - 1);
+    client->pos.y = my_rand(0, server->map.height - 1);
     remove_hatched_egg(server, client);
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     packet_send(client, "%d\n", client->team->slots);

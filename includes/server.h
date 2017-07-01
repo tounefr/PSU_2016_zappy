@@ -12,7 +12,7 @@
 #define PROJETS_SERVER_H
 
 # define N_NETWORK_COMMANDS 12
-# define LOG_PACKET 1
+# define LOG_PACKET 0
 
 # define MAX_MAP_WIDTH 30
 # define MAX_MAP_HEIGHT 30
