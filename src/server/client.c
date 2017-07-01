@@ -59,7 +59,8 @@ char on_exit_client(t_server *server, t_client *client)
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     gui_send_map_case(server, client->pos.x, client->pos.y);
     send_gui_packet(server, "pdi %d\n", client->num);
-    socket_close(client->socket_fd);
+    if (client->socket_fd > 0)
+        socket_close(client->socket_fd);
     init_client(client);
 //    gui_send_map_content(server);
     printf("on_exit_client\n");
@@ -81,21 +82,14 @@ char on_new_client(t_server *server)
         client->socket_fd = socket_accept(server->server_fd);
         if (!add_callback(client, onPlayerDead,
              client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT, NULL)) {
-            on_exit_client(server, client);
-            return 0;
+            return on_exit_client(server, client);
         }
         fd = client->socket_fd;
         flags = fcntl(fd, F_GETFL, 0);
         if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
             return exit_error(0, "fcntl error : %s\n", strerror(errno));
-        packet_send(client, "BIENVENUE\n");
+        packet_send(client, "WELCOME\n");
         return 1;
     }
     return exit_error(0, "error : no slots available\n");
-}
-
-void close_client_connection(t_client *client)
-{
-    socket_close(client->socket_fd);
-    init_client(client);
 }

@@ -39,15 +39,17 @@ void select_init(t_server *server, int *nfds,
 char on_select_read_data(t_server *server, fd_set *fds)
 {
     int i;
+    t_client *client;;
 
     if (FD_ISSET(server->server_fd, fds))
         on_new_client(server);
     for (i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].socket_fd == -1)
+        client = &server->clients[i];
+        if (client->socket_fd == -1)
             continue;
-        if (FD_ISSET(server->clients[i].socket_fd, fds)) {
-            if (!on_available_data(server, &server->clients[i]))
-                close_client_connection(&server->clients[i]);
+        if (FD_ISSET(client->socket_fd, fds)) {
+            if (!on_available_data(server, client))
+                on_exit_client(server, client);
         }
     }
     return 1;

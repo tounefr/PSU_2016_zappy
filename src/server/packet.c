@@ -16,6 +16,32 @@
 #include <sys/socket.h>
 #include "server.h"
 
+char log_packet(int num, char type, char *raw)
+{
+    char *file_name;
+    FILE *handle;
+    char *line;
+
+    if (-1 == asprintf(&file_name, "logs/%d.txt", num))
+        return 0;
+    if (!(handle = fopen(file_name, "a+")))
+        return 0;
+    if (type == 0) {
+        if (-1 == asprintf(&line, "Send>> %s", raw)) {
+            fclose(handle);
+            return 0;
+        }
+    } else {
+        if (-1 == asprintf(&line, "Recv<< %s\n", raw)) {
+            fclose(handle);
+            return 0;
+        }
+    }
+    fputs(line, handle);
+    fclose(handle);
+    return 1;
+}
+
 char packet_send(t_client *client, char *format, ...)
 {
     char *buffer;
@@ -24,14 +50,11 @@ char packet_send(t_client *client, char *format, ...)
     if (client->is_gui)
         return 0;
     va_start(args, format);
-    printf("Send>> ");
-    vprintf(format, args);
-    va_end(args);
-    va_start(args, format);
     if (vasprintf(&buffer, format, args) == -1) {
         va_end(args);
         return exit_error(0, "malloc error\n");
     }
+    log_packet(client->num, 0, buffer);
     va_end(args);
     if (!generic_list_append(&client->write_packets, buffer))
         return exit_error(0, "malloc error\n");
@@ -70,7 +93,6 @@ char handle_pre_packet(t_server *server, t_client *client)
     callback->packet = packet;
     callback->cycles = net_cmd->cycles;
     callback->func = net_cmd->post_callback;
-    printf("precycle %s\n", net_cmd->cmd);
     generic_list_append(&client->callbacks, callback);
     return 1;
 }
@@ -86,7 +108,6 @@ char handle_post_packet(t_server *server, t_client *client)
         callback = node->data;
         callback->cycles--;
         if (callback->cycles <= 0) {
-            printf("postcycle\n");
             callback->func(server, client, callback->packet);
             node = node->next;
             generic_list_remove(&client->callbacks,
