@@ -42,39 +42,42 @@ class AI:
     def FindStone(self):
         direction = 0
         ko_count = 0
+
+        count_turn = 0
         client = self.team_.list_cli_[0]
         while 1:
             if self.broadcast_.readMail():
                 return
             visible = self.ai_interface.lookAroundAction()
+            incre = -1
             if self.TST_SeeObject(visible, "thystame") == 1:
-                self.ACT_MovToObject(visible, "thystame", client)
-                while self.ai_interface.takeObjectAction("thystame") == "ok":
+                nbr = self.ACT_MovToObject(visible, "thystame", client)
+                while ++incre < nbr and self.ai_interface.takeObjectAction("thystame") == "ok":
                     client.getInventory()['thystame'] += 1
                 return 0
             elif self.TST_SeeObject(visible, "phiras") == 1:
-                self.ACT_MovToObject(visible, "phiras", client)
-                while self.ai_interface.takeObjectAction("phiras") == "ok":
+                nbr = self.ACT_MovToObject(visible, "phiras", client)
+                while ++incre < nbr and self.ai_interface.takeObjectAction("phiras") == "ok":
                     client.getInventory()['phiras'] += 1
                 return 0
             elif self.TST_SeeObject(visible, "mendiane") == 1:
-                self.ACT_MovToObject(visible, "mendiane", client)
-                while self.ai_interface.takeObjectAction("mendiane") == "ok":
+                nbr = self.ACT_MovToObject(visible, "mendiane", client)
+                while ++incre < nbr and self.ai_interface.takeObjectAction("mendiane") == "ok":
                     client.getInventory()['mendiane'] += 1
                 return 0
             elif self.TST_SeeObject(visible, "sibur") == 1:
-                self.ACT_MovToObject(visible, "sibur", client)
-                while self.ai_interface.takeObjectAction("sibur") == "ok":
+                nbr = self.ACT_MovToObject(visible, "sibur", client)
+                while ++incre < nbr and self.ai_interface.takeObjectAction("sibur") == "ok":
                     client.getInventory()['sibur'] += 1
                 return 0
             elif self.TST_SeeObject(visible, "deraumere") == 1:
-                self.ACT_MovToObject(visible, "deraumere", client)
-                while self.ai_interface.takeObjectAction("deraumere") == "ok":
+                nbr = self.ACT_MovToObject(visible, "deraumere", client)
+                while ++incre < nbr and self.ai_interface.takeObjectAction("deraumere") == "ok":
                     client.getInventory()['deraumere'] += 1
                 return 0
             elif self.TST_SeeObject(visible, "linemate") == 1:
-                self.ACT_MovToObject(visible, "linemate", client)
-                while self.ai_interface.takeObjectAction("linemate") == "ok":
+                nbr = self.ACT_MovToObject(visible, "linemate", client)
+                while ++incre < nbr and self.ai_interface.takeObjectAction("linemate") == "ok":
                     client.getInventory()['linemate'] += 1
                 return 0
             else:
@@ -92,7 +95,7 @@ class AI:
         ko_count = 0
         #
         count_turn = 0
-        client = self.team_.list_cli_[0]
+        client = self.team_.getListClient()[0]
         while client.getInventory()['food'] < 7:
             self.broadcast_.readMail(False)
             visible = self.ai_interface.lookAroundAction()  # 7pts
@@ -109,8 +112,10 @@ class AI:
                         self.ai_interface.moveForwardAction()
             else:
                 ko_count = 0
-                if self.ACT_MovToObject(visible, "food", client) != -1:
-                    while self.ai_interface.takeObjectAction("food") == "ok":
+                nbr = self.ACT_MovToObject(visible, "food", client)
+                if nbr != -1:
+                    incre = -1
+                    while ++incre < nbr and self.ai_interface.takeObjectAction("food") == "ok":
                         client.getInventory()['food'] += 1
 
             if count_turn == 3:
@@ -127,15 +132,71 @@ class AI:
         res = False
 
         if client.getLvl() == 1:
-            res = True
             if self.TST_TooManyRessources(self.team_.getRessouceByLvl()[client.getLvl() - 1],
                                           client.getInventory()):
+                res = True
                 self.broadcast_.brd_snd_str_ritual()
                 self.ai_interface.setObjectDownAction("linemate")
                 client.getInventory()["linemate"] -= 1
                 if self.ai_interface.startIncantationAction() != "ko":
                     client.setLvl(client.getLvl() + 1)
                 self.broadcast_.brd_snd_end_ritual()
+        else:
+            lvl_requirement = dict(self.team_.getRessouceByLvl()[client.getLvl() - 1])
+            same_lvl, other = [], []
+            list_client = self.team_.getListClient()
+
+            same_lvl.append(client)
+            for x in list_client:
+                if x == client:
+                    continue
+                (same_lvl, other)[x.getLvl() == client.getLvl()].append(x)
+
+            if len(same_lvl) < lvl_requirement['player']:
+                return False
+
+            material = []
+            other.sort()
+            ord_list = same_lvl + other
+
+            eject_count = 4
+            for cli in ord_list:
+                lis = {cli.getPid(): {}}
+                if lvl_requirement['player'] > 0 and cli.getLvl() == client.getLvl():
+                    lis[cli.getPid()]['lvl'] = 1
+                    lvl_requirement['player'] -= 1
+                else:
+                    lis[cli.getPid()]['lvl'] = 0
+
+                if lis[cli.getPid()]['lvl'] is not True and eject_count > 0:
+                    lis[cli.getPid()]['eject'] = 1
+                else:
+                    lis[cli.getPid()]['eject'] = 0
+                cpy_inven = dict(cli.getInventory())
+                for key, value in cpy_inven.items():
+                    if key != "food":
+                        if lvl_requirement[key] > 0 and cpy_inven[key] > 0:
+                            lis[cli.getPid()]['inventory'] = {key: 0}
+                            while lvl_requirement[key] > 0 and cpy_inven[key] > 0:
+                                lvl_requirement[key] -= 1
+                                cpy_inven[key] -= 1
+                                lis[cli.getPid()]['inventory'][key] += 1
+
+                if len(lis[cli.getPid()]['inventory']) == 0:
+                    lis[cli.getPid()]['conso'] = 0
+                else:
+                    lis[cli.getPid()]['conso'] = 1
+
+                if lis[cli.getPid()]['conso'] == 1 or lis[cli.getPid()]['lvl'] == 1 or lis[cli.getPid()]['eject'] == 1:
+                    material.append(lis)
+
+            for key, value in lvl_requirement.items():
+                if value > 0:
+                    return False
+
+            #doit faire la pose de pierre du client actuel
+            #ensuite lancer le material en broadcast
+            #puis faire la reception
         return res
 
     def TST_TooManyRessources(self, lvl_ress, inventory):
@@ -186,7 +247,7 @@ class AI:
 
         for i in range(0, distance):
             self.ai_interface.moveForwardAction()
-        return 0
+        return visible[obj]
 
     def ACT_GetDistanceToLine(self, index, client):
         distance = 0

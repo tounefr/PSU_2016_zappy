@@ -312,11 +312,11 @@ class Broadcast:
     def brd_rcv_welcome(self, json, dist):
         print("[debug] [brd_rcv_welcome] - rentre")
         try:
-            self.setNumber(json['number'] + 1)
 
             new_client = self.team_.getClientByPid(json['new_player_pid'])
             if new_client is not None:
                 return False
+            self.setNumber(json['number'] + 1)
             self.team_.getListClient().append(Client(json['new_player_pid']))
         except TypeError:
             return False

@@ -44,3 +44,7 @@ class Client:
         if self.is_ritual_ == 1 or self.is_eating_ == 1:
             return 0
         return 1
+
+    #sort
+    def __lt__(self, other):
+        return self.getLvl() < other.getLvl()
