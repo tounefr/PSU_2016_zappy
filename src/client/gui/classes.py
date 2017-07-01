@@ -12,6 +12,21 @@ class Window:
         self.height = height
 
 
+class Constantes:
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if Constantes.g_instance is None:
+            Constantes.g_instance = Constantes()
+        return Constantes.g_instance
+
+    def __init__(self):
+        self.tileScale = 40
+        self.tileDimension = (self.tileScale, self.tileScale)
+        self.tileSize = 16
+
+
 class Teams:
     g_instance = None
 
@@ -24,8 +39,8 @@ class Teams:
     def __init__(self):
         self.list = []
         self.spriteSheet = SpriteSheet("src/client/gui/assets/character.png")
-        self.tileDimension = (48, 48)
-        self.tileSize = 16
+        self.tileDimension = Constantes.instance().tileDimension
+        self.tileSize = Constantes.instance().tileSize
 
     def getTeam(self, teamName):
         for tmp in self.list:
@@ -186,8 +201,8 @@ class CoordResource:
         self.x = x
         self.y = y
         self.nb_resource = nb_resource
-        self.case_x = random.randint(0, 32) + self.x * 48
-        self.case_y = random.randint(0, 32) + self.y * 48
+        self.case_x = random.randint(0, Constantes.instance().tileScale - 16) + self.x * Constantes.instance().tileScale
+        self.case_y = random.randint(0, Constantes.instance().tileScale - 16) + self.y * Constantes.instance().tileScale
 
     def set_nb_resource(self, nb_resource):
         self.nb_resource = nb_resource
@@ -199,8 +214,8 @@ class Map:
         self.stone_map = []
         self.sprite_width = sprite_width
         self.sprite_height = sprite_height
-        self.width = sprite_width // 48
-        self.height = sprite_height // 48
+        self.width = sprite_width // Constantes.instance().tileScale
+        self.height = sprite_height // Constantes.instance().tileScale
         self.resource = Resource.instance()
 
         color = Color()
@@ -214,13 +229,13 @@ class Map:
         img_ground6 = GroundTexture.get_image(96, 0, 16, 16, color.BLACK)
 
         self.Ground = []
-        self.Ground.append(pygame.transform.scale(img_ground0, (48, 48)))
-        self.Ground.append(pygame.transform.scale(img_ground1, (48, 48)))
-        self.Ground.append(pygame.transform.scale(img_ground2, (48, 48)))
-        self.Ground.append(pygame.transform.scale(img_ground3, (48, 48)))
-        self.Ground.append(pygame.transform.scale(img_ground4, (48, 48)))
-        self.Ground.append(pygame.transform.scale(img_ground5, (48, 48)))
-        self.Ground.append(pygame.transform.scale(img_ground6, (48, 48)))
+        self.Ground.append(pygame.transform.scale(img_ground0, Constantes.instance().tileDimension))
+        self.Ground.append(pygame.transform.scale(img_ground1, Constantes.instance().tileDimension))
+        self.Ground.append(pygame.transform.scale(img_ground2, Constantes.instance().tileDimension))
+        self.Ground.append(pygame.transform.scale(img_ground3, Constantes.instance().tileDimension))
+        self.Ground.append(pygame.transform.scale(img_ground4, Constantes.instance().tileDimension))
+        self.Ground.append(pygame.transform.scale(img_ground5, Constantes.instance().tileDimension))
+        self.Ground.append(pygame.transform.scale(img_ground6, Constantes.instance().tileDimension))
 
     def create(self, window):
         cell = {'texture':self.Ground[0], 'food':0}
@@ -269,7 +284,7 @@ class Map:
     def display_content(self, window):
         for i in range(self.height):
             for j in range(self.width):
-                window.blit(self.map[i][j]['texture'], (j * 48, i * 48))
+                window.blit(self.map[i][j]['texture'], (j * Constantes.instance().tileScale, i * Constantes.instance().tileScale))
                 self.resource.display_linemate(window, self.map[i][j]['linemate'])
                 self.resource.display_deraumere(window, self.map[i][j]['deraumere'])
                 self.resource.display_sibur(window, self.map[i][j]['sibur'])
@@ -281,7 +296,7 @@ class Map:
     def read(self, window):
         for x in range(self.width):
             for y in range(self.height):
-                window.blit(self.map[y][x]['texture'], (x * 48, y * 48))
+                window.blit(self.map[y][x]['texture'], (x * Constantes.instance().tileScale, y * Constantes.instance().tileScale))
 
 
 class PlayerList:
