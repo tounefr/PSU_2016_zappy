@@ -16,6 +16,7 @@ static char increase_buffer(t_server *server, t_client *client, char *buffer)
 {
     int len;
 
+    (void)server;
     if (!client->buffer) {
         client->buffer = buffer;
         return 1;
@@ -36,6 +37,7 @@ static char split_buffer(t_server *server, t_client *client)
     int start;
     char *packet;
 
+    (void)server;
     len = strlen(client->buffer);
     start = 0;
     for (i = 0; i < len; i++) {

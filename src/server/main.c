@@ -10,15 +10,16 @@
 
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 #include "server.h"
 
-static t_server *get_server()
+t_server *get_server()
 {
     static t_server *server = NULL;
 
     if (!server) {
         if (((server = malloc(sizeof(t_server))) == NULL))
-            return exit_error(NULL, "malloc error\n");
+            return NULL;
         init_server(server);
     }
     return server;
@@ -30,6 +31,7 @@ void handle_sigint(int signum)
     t_client *client;
     t_server *server;
 
+    (void)signum;
     exit(1);
     if (!(server = get_server()))
         return;

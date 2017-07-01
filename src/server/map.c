@@ -22,9 +22,9 @@ void init_map(t_map *map)
     int i;
     int i2;
 
-    max_mapsize = MAX_MAP_HEIGHT * MAX_MAP_HEIGHT;
-    map->width = MAX_MAP_WIDTH;
-    map->height = MAX_MAP_HEIGHT;
+    max_mapsize = MAX_MAP_WIDTH * MAX_MAP_HEIGHT;
+    map->width = DEFAULT_MAP_WIDTH;
+    map->height = DEFAULT_MAP_HEIGHT;
     for (i = 0; i < max_mapsize; i++) {
         for (i2 = 0; i2 < RESOURCES_NBR_TYPES; i2++)
             map->cases[i][i2] = 0;

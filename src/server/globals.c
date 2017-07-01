@@ -57,7 +57,7 @@ t_network_commands		*g_network_commands()
       { "Eject", NULL, onEjectPacket, 7, FLAG_NONE },
       { "Take", NULL, onTakeObjectPacket, 7, FLAG_NONE },
       { "Set", NULL, onSetObjectPacket, 7, FLAG_NONE },
-      { "Incantation", onPreIncantPacket, onPostIncantPacket, 300, FLAG_NONE }
+      { "Incantation", NULL, onPostIncantPacket, 0, FLAG_NONE }
     };
   return (g_network_commands);
 }

@@ -42,3 +42,17 @@ int get_pos(t_server *server, t_pos *pos)
 {
     return pos->y * server->map.width + pos->x;
 }
+
+char default_free(void *data)
+{
+    free(data);
+    return 1;
+}
+
+void free_null(void **data)
+{
+    if (*data) {
+        free(*data);
+    }
+    *data = NULL;
+}

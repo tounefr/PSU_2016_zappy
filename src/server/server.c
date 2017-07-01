@@ -35,7 +35,6 @@ void init_server(t_server *server)
     server->client_lastnum = 1;
     init_map(&server->map);
     server->clients_per_team = DEFAULT_CLIENTS_PER_TEAM;
-    memset(&server->eggs, 0, sizeof(server->eggs));
 }
 
 char listen_server(t_server *server)

@@ -5,7 +5,7 @@
 ** Login   <arsene@arsene-HP-EliteBook-840-G2>
 **
 ** Started on  Mon Jun 26 14:18:29 2017 arsene
-** Last update Thu Jun 29 22:56:01 2017 Didier
+** Last update Fri Jun 30 17:22:29 2017 arsene
 */
 
 #include <stdlib.h>
@@ -20,7 +20,7 @@ typedef struct	s_cell
 
 typedef struct	s_look
 {
-  t_cell	cell[64]
+  t_cell	cell[64];
 }		t_look;
 
 int	coordsToIndex(t_server *server, t_pos pos)
@@ -190,6 +190,7 @@ char		*get_type(int i)
     return ("player");
   else if (i == TYPE_EGG)
     return ("egg");
+  return NULL;
 }
 
 char		*get_tiles_infos(int pos, t_server *server, char *message)
@@ -268,7 +269,7 @@ void	convertView(t_client *c, t_look *see)
       i++;
     }
   printf("### [LOOK] index of view [0, %i]\n", limit - 1);
-  
+
   index = 0;
   if ((buffer = malloc(1)) == NULL)
     return;
@@ -296,10 +297,10 @@ void	convertView(t_client *c, t_look *see)
     }
   buffer = myAppend(buffer, "]");
   printf("### [LOOK] Goind to send: \"%s\"\n", buffer);
-  packet_send(c, "%s", buffer);
+  packet_send(c, "%s\n", buffer);
 }
 
-void	debug_countRessourcesOnMapCauzMauryCantGenAProperMapToWorkWIth(t_server *s)
+void	debug_count(t_server *s)
 {
   int  	total;
   int  	i;
@@ -334,7 +335,7 @@ char		*look(t_client *client, t_server *server)
 
   init_look(&see);
   printf("### START LOOK\n");
-  debug_countRessourcesOnMapCauzMauryCantGenAProperMapToWorkWIth(server);
+  debug_count(server);
   printf("### [DEBUG] Map %i x %i\n", server->map.width, server->map.height);
   if (client->orientation == ORIENT_NORTH)
     lookUp(server, client, &see);
@@ -346,10 +347,10 @@ char		*look(t_client *client, t_server *server)
     lookLeft(server, client, &see);
   convertView(client, &see);
   printf("### END LOOK\n");
-  
 
 
-  
+
+
   /*
   i = 0;
   j = 1;

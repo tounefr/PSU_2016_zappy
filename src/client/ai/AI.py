@@ -4,7 +4,6 @@ from core.AIInterface import *
 from ai.Broadcast import *
 from ai.Team import *
 
-
 class AI:
 
     def __init__(self):
@@ -206,32 +205,15 @@ class AI:
             index += 1
         return -1
 
-
     def onPlayerEject(self, res):
         print("onPlayerEject res={}".format(res))
-
 
     def onPlayerDead(self, status):
         print("onPlayerDead")
 
-
-    def onIncantation(self, status):
-        if type(status) is int:
-            print("Level up : {}".format(status))
-        elif status == "underway":
-            print("Underway")
-        elif status == "ko":
-            print("Incantation failed")
-
-
     def onMessage(self, player_num, message):
         self.broadcast_.addMail(str(player_num), message)
         print("onMessage: player_num={} message={}".format(player_num,  message))
-
-
-    def onLevelUp(self, level):
-        print("onLevelUp level={}".format(level))
-
 
     def onNbrOfTeamSlotsUnused(self, count):
         print(count)

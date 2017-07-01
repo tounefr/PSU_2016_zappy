@@ -24,7 +24,6 @@ char    onConnectNbrPacket(t_server *server, t_client *client, char *packet)
 char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
 {
     int i;
-    int i2;
     char *msg;
     int k;
 
@@ -32,6 +31,7 @@ char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
     if (strlen(packet) + 1 < strlen("Broadcast "))
         return packet_send(client, "ko\n");
     msg = packet + strlen("Broadcast ");
+    send_gui_packet(server, "pbc %d %s\n", client->num, msg);
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1)
             continue;
@@ -47,6 +47,7 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 {
     char *buffer;
 
+    (void)packet;
     if (asprintf(&buffer,
              "[ linemate %d, deraumere %d, sibur %d, "
             "mendiane %d, phiras %d, thystame %d, food %d ]\n",
@@ -58,9 +59,12 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
     packet_send(client, "%s", buffer);
     send_gui_packet(server, "pin %d %d %d %d %d %d %d %d %d %d\n",
         client->num, client->pos.x, client->pos.y,
-                    client->inventory[TYPE_FOOD], client->inventory[TYPE_LINEMATE],
-                    client->inventory[TYPE_DERAUMERE], client->inventory[TYPE_SIBUR],
-                    client->inventory[TYPE_MENDIANE], client->inventory[TYPE_PHIRAS],
+                    client->inventory[TYPE_FOOD],
+                    client->inventory[TYPE_LINEMATE],
+                    client->inventory[TYPE_DERAUMERE],
+                    client->inventory[TYPE_SIBUR],
+                    client->inventory[TYPE_MENDIANE],
+                    client->inventory[TYPE_PHIRAS],
                     client->inventory[TYPE_THYSTAME]);
     free(buffer);
     return 1;
@@ -69,8 +73,6 @@ char    onInventoryPacket(t_server *server, t_client *client, char *packet)
 char    onForwardPacket(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
-    (void)server;
-
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     if (client->orientation == ORIENT_WEST)
         client->pos.x--;
@@ -90,15 +92,14 @@ char    onForwardPacket(t_server *server, t_client *client, char *packet)
         client->pos.x = 0;
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     send_gui_packet(server, "ppo %d %d %d %d\n",
-                    client->num, client->pos.x, client->pos.y, client->orientation);
+                    client->num, client->pos.x,
+                    client->pos.y, client->orientation);
     return packet_send(client, "ok\n");
 }
 
 char    onRightPacket(t_server *server, t_client *client, char *packet)
 {
-    (void)server;
     (void)packet;
-    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
     if (client->orientation == ORIENT_WEST)
         client->orientation = ORIENT_NORTH;
     else if (client->orientation == ORIENT_EAST)
@@ -107,9 +108,9 @@ char    onRightPacket(t_server *server, t_client *client, char *packet)
         client->orientation = ORIENT_EAST;
     else if (client->orientation == ORIENT_SOUTH)
         client->orientation = ORIENT_WEST;
-    server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]++;
     packet_send(client, "ok\n");
     send_gui_packet(server, "ppo %d %d %d %d\n",
-                    client->num, client->pos.x, client->pos.y, client->orientation);
+                    client->num, client->pos.x,
+                    client->pos.y, client->orientation);
     return 1;
 }

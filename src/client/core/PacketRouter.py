@@ -5,6 +5,11 @@ import queue
 import threading
 from gui.GUI import *
 
+"""
+            Packet(cmd="Current level",
+                   parser=self.zappy.packet_parser.parseIncantationPacket),
+"""
+
 class PacketRouter:
 
     def __init__(self):
@@ -32,8 +37,6 @@ class PacketRouter:
             Packet(cmd="Set"),
             Packet(cmd="Incantation",
                    parser=self.zappy.packet_parser.parseIncantationPacket),
-            Packet(cmd="Current level",
-                   parser=self.zappy.packet_parser.parseCurrentLevelPacket),
             Packet(cmd="dead",
                    parser=self.zappy.packet_parser.parseDeadPacket,
                    listeners=[self.zappy.ai.onPlayerDead]),

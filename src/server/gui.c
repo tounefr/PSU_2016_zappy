@@ -8,41 +8,49 @@
 ** Last update Mon Jun 26 11:53:37 2017 Thomas HENON
 */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include "server.h"
+
+char gui_send_map_case(t_server *server, int x, int y)
+{
+    int pos;
+
+    pos = x + y * server->map.width;
+    send_gui_packet(server, "bct %d %d %d %d %d %d %d %d %d\n",
+        x, y,
+        server->map.cases[pos][TYPE_FOOD],
+        server->map.cases[pos][TYPE_LINEMATE],
+        server->map.cases[pos][TYPE_DERAUMERE],
+        server->map.cases[pos][TYPE_SIBUR],
+        server->map.cases[pos][TYPE_MENDIANE],
+        server->map.cases[pos][TYPE_PHIRAS],
+        server->map.cases[pos][TYPE_THYSTAME]
+    );
+    return 1;
+}
 
 char gui_send_map_content(t_server *server)
 {
     int y;
     int x;
-    int pos;
 
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
-            pos = x + y * server->map.width;
-            send_gui_packet(server, "bct %d %d %d %d %d %d %d %d %d\n",
-                    x, y,
-                    server->map.cases[pos][TYPE_FOOD],
-                    server->map.cases[pos][TYPE_LINEMATE],
-                    server->map.cases[pos][TYPE_DERAUMERE],
-                    server->map.cases[pos][TYPE_SIBUR],
-                    server->map.cases[pos][TYPE_MENDIANE],
-                    server->map.cases[pos][TYPE_PHIRAS],
-                    server->map.cases[pos][TYPE_THYSTAME]
-            );
+            gui_send_map_case(server, x, y);
         }
     }
     return 1;
 }
 
-char gui_send_teams(t_server *server, t_client *client)
+char gui_send_teams(t_server *server)
 {
     int i;
 
     for (i = 0; i < MAX_TEAMS; i++) {
         if (strlen(server->teams[i].name) == 0)
             continue;
-        packet_send(client, "tna %s\n", server->teams[i].name);
+        send_gui_packet(server, "tna %s\n", server->teams[i].name);
     }
     return 1;
 }
@@ -56,9 +64,6 @@ char send_gui_packet(t_server *server, char *format, ...)
     if (!server->gui_client)
         return 0;
     client = server->gui_client;
-    va_start(args, format);
-    vprintf(format, args);
-    va_end(args);
     va_start(args, format);
     if (vasprintf(&buffer, format, args) == -1) {
         va_end(args);

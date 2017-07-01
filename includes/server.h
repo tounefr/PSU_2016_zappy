@@ -13,8 +13,8 @@
 
 # define N_NETWORK_COMMANDS 12
 
-# define MAX_MAP_WIDTH 10
-# define MAX_MAP_HEIGHT 10
+# define MAX_MAP_WIDTH 30
+# define MAX_MAP_HEIGHT 30
 # define RESOURCE_MAX_LENGTH 50
 # define RESOURCES_NBR_TYPES 9
 # define TIME_EGG_HATCHING 600
@@ -31,6 +31,8 @@
 # define DEFAULT_FREQUENCY 100
 # define DEFAULT_CLIENTS_PER_TEAM 10
 # define DEFAULT_LISTEN_PORT 4242
+# define DEFAULT_MAP_WIDTH 10
+# define DEFAULT_MAP_HEIGHT 10
 
 # define PLAYER_LIFE_UNITS 10
 # define CYCLES_PER_LIFE_UNIT 126
@@ -72,7 +74,6 @@ typedef struct s_network_commands
     unsigned int cycles;
     char flags;
 } t_network_commands;
-// extern t_network_commands g_network_commands[N_NETWORK_COMMANDS];
 
 # define NBR_LEVELS 7
 typedef struct s_incantation
@@ -80,14 +81,12 @@ typedef struct s_incantation
     int nb_players;
     int type[RESOURCES_NBR_TYPES];
 } t_incantation;
-//extern t_incantation g_incantations[NBR_LEVELS];
 
 typedef struct s_food
 {
     char *s;
     int type;
 } t_food;
-//extern t_food g_foods[RESOURCES_NBR_TYPES];
 
 typedef struct s_pos
 {
@@ -106,9 +105,7 @@ typedef struct s_egg
 {
     t_pos pos;
     int num;
-    int remain_cycles;
     char pending_client;
-    t_client *master;
 } t_egg;
 
 typedef struct s_team
@@ -126,22 +123,18 @@ typedef struct s_packet
 typedef struct s_callback
 {
     char *packet;
-    int remain_cycles;
+    int cycles;
+	char (*func)(t_server*, t_client*, char*);
 } t_callback;
 
 typedef struct s_client
 {
 	int	socket_fd;
     char *buffer;
-//	char buffer[BUFFER_SIZE];
     unsigned int cur_cycle;
-//    char pending_packets[MAX_PENDING_PACKETS][BUFFER_SIZE];
-
-//    t_packet *cur_packet;
-    t_callback *callbacks;
-
+    t_generic_list *callbacks;
+    t_generic_list *eggs;
     t_team *team;
-    int life_cycles;
     int recv_packet_i;
     int level;
 	int num;
@@ -149,7 +142,6 @@ typedef struct s_client
 	char is_gui;
     char orientation;
 	unsigned char inventory[RESOURCES_NBR_TYPES];
-
     t_generic_list *read_packets;
 	t_generic_list *write_packets;
 } t_client;
@@ -158,7 +150,6 @@ typedef struct s_server
 {
     t_team teams[MAX_TEAMS];
 	t_client clients[MAX_CLIENTS];
-    t_egg eggs[MAX_EGGS];
     int client_lastnum;
     t_client *gui_client;
     int server_fd;
@@ -169,7 +160,6 @@ typedef struct s_server
     unsigned int cur_cycle;
 	unsigned int clients_per_team;
 } t_server;
-
 
 // client.c
 void init_client(t_client *client);
@@ -204,6 +194,9 @@ void select_init(t_server *server, int *nfds,
 char on_select_read_data(t_server *server, fd_set *fds);
 char on_select_write_data(t_server *server, fd_set *fds);
 
+// main.c
+t_server *get_server();
+
 // server.c
 float cpt_cycle_time(t_server *server);
 void init_server(t_server *server);
@@ -220,6 +213,8 @@ char is_legal_network_char(char c);
 char is_numeric(char *s);
 int my_rand(int a, int b);
 int get_pos(t_server *server, t_pos *pos);
+char default_free(void *data);
+void free_null(void **data);
 
 // packet.c
 void free_packet(t_packet *packet);
@@ -253,19 +248,21 @@ char    onPreIncantPacket(t_server *server, t_client *client, char *packet);
 char    onPostIncantPacket(t_server *server, t_client *client, char *packet);
 
 // gui.c
+char gui_send_map_case(t_server *server, int x, int y);
 char gui_send_map_content(t_server *server);
 char send_client_pos(t_server *server, t_client *client);
-char gui_send_teams(t_server *server, t_client *client);
+char gui_send_teams(t_server *server);
 char send_gui_packet(t_server *server, char *packet, ...);
 char send_gui_players_connected(t_server *server);
 
 // egg.c
+char remove_hatched_egg(t_server *server, t_client *client);
 char egg_pending_client(t_server *server, t_client *client);
 char lay_egg(t_server *server, t_client *client);
-char hatch_eggs(t_server *server, t_client *client);
+char hatch_egg(t_server *server, t_client *client, char *packet);
 
 // player.c
-char check_player_dead(t_server *server, t_client *client);
+char onPlayerDead(t_server *server, t_client *client, char *packet);
 int get_nb_players_lvl(t_server *server, int level);
 
 // game.c
@@ -288,5 +285,18 @@ char main_loop(t_server *server);
 
 //
 void handle_sigint(int signum);
+
+//
+t_callback *get_callback(t_client *client,
+                         char (*func)(t_server*, t_client*, char*));
+char add_callback(t_client *client,
+                  char (*func)(t_server*, t_client*, char*),
+                  int cycles,
+                  void *packet);
+
+char incantationElevation(t_server *server, t_client *client, char *packet);
+
+// look.c
+char		*look(t_client *client, t_server *server);
 
 #endif //PROJETS_SERVER_H

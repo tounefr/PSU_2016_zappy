@@ -18,12 +18,7 @@ char update_client(t_server *server, t_client *client)
         on_exit_client(server, client);
         return 0;
     }
-    client->life_cycles--;
-    if ((client->life_cycles % 126) == 0)
-        client->inventory[TYPE_FOOD]--;
-    if (check_player_dead(server, client))
-        return 1;
-    hatch_eggs(server, client);
+    get_callback(client, onPlayerDead)->cycles--;
     if (!handle_post_packet(server, client)) {
         on_exit_client(server, client);
         return 0;
@@ -62,9 +57,9 @@ char main_loop(t_server *server)
     while (1) {
         select_init(server, &nfds, &read_fds, &write_fds);
         timeout.tv_sec = 0;
-        timeout.tv_usec = 1000 * 10; // 10ms
-        if ((selectrv = select(nfds, &read_fds,
-                               &write_fds, NULL, &timeout)) == -1)
+        timeout.tv_usec = server->cycle_time; // 10ms
+        if ((selectrv = select(nfds, &read_fds, &write_fds, NULL,
+                               &timeout)) == -1)
             return exit_error(0, "select error : %s\n", strerror(errno));
         if (selectrv > 0 && !on_select_read_data(server, &read_fds))
             return 0;
