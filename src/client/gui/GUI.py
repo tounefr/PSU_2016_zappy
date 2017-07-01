@@ -40,6 +40,7 @@ class GUI:
     #msz
     # size=(width, height)
     def onMapSize(self, size):
+        Constantes.instance().setScale(size[1])
         self.window = pygame.display.set_mode((size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale))
         self.map = Map(size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale)
         self.map.create(self.window)
