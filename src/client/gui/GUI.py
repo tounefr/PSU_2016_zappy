@@ -31,6 +31,7 @@ class GUI:
         score = Scoreboard.instance()
         score.setSurface(self.window)
         score.setResource()
+        score.playerList = self.playerList
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -122,6 +123,7 @@ class GUI:
             return
         player.action_previous = player.action
         player.action = player.spriteSheet['lvlUp']
+        player.level += 1
 
         index = self.playerList.get_player(player_num)
         player = self.playerList.list[index]

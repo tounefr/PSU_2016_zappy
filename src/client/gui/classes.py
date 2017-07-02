@@ -50,6 +50,7 @@ class Scoreboard:
         self.resource = None
         pygame.font.init()
         self.font = None
+        self.playerList = None
 
         self.font_type = 'src/client/gui/assets/Zelda.ttf'
         try:
@@ -136,11 +137,31 @@ class Scoreboard:
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
+        first = None
+        if self.playerList is not None:
+            for player in self.playerList.list:
+                first = self.ComparePlayers(first, player)
+            if first is not None:
+                self.surface.blit(first.action, (self.originX + 25, Constantes.instance().MapHeight * Constantes.instance().tileScale - (Constantes.instance().tileScale + 20)))
+                label = self.font.render("Best: " + first.team, 1, (180, 180, 180))
+                self.surface.blit(label, (self.originX + 30 + (Constantes.instance().tileScale + 20), Constantes.instance().MapHeight * Constantes.instance().tileScale - (Constantes.instance().tileScale + 40)))
+                label = self.font.render("Level: " + str(first.level), 1, self.color)
+                self.surface.blit(label, (self.originX + 30 + (Constantes.instance().tileScale + 20), Constantes.instance().MapHeight * Constantes.instance().tileScale - (Constantes.instance().tileScale + 20)))
+
+
+    def ComparePlayers(self, P1, P2):
+        if P1 is None:
+            return P2
+        if P2.level > P1.level:
+            return P2
+        return P1
+
     def DrawScoreboard(self):
         pygame.draw.rect(self.surface, (60, 60, 60), (self.originX, 0, 300, Constantes.instance().MapHeight * Constantes.instance().tileScale))
-        pygame.draw.rect(self.surface, (80, 80, 80), (self.originX + 5, 0 + 5, 300 - 10, Constantes.instance().MapHeight * Constantes.instance().tileScale - 10))
+        pygame.draw.rect(self.surface, (80, 80, 80), (self.originX + 5, 0 + 5, 300 - 10, Constantes.instance().MapHeight * Constantes.instance().tileScale - 105))
+        pygame.draw.rect(self.surface, (80, 80, 80), (self.originX + 5, Constantes.instance().MapHeight * Constantes.instance().tileScale - 95, 300 - 10, Constantes.instance().tileScale + 40))
+        pygame.draw.rect(self.surface, (90, 90, 90), (self.originX + 15, Constantes.instance().MapHeight * Constantes.instance().tileScale - 85, Constantes.instance().tileScale + 20, Constantes.instance().tileScale + 20))
         self.UpdateScore()
-
 
 class Teams:
     g_instance = None
