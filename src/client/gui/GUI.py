@@ -179,15 +179,6 @@ class GUI:
 
     #pdr
     def onPlayerThrowResource(self, player_num, resource):
-        try:
-            index = self.playerList.get_player(int(player_num))
-            player = self.playerList.list[index]
-        except IndexError:
-            return
-        try:
-            self.map.add_case_content(player.x, player.y, resource)
-        except AttributeError:
-            return
         print("onPlayerThrowResource player_num={} resource={}".format(
             player_num, resource
         ))
@@ -254,11 +245,9 @@ class GUI:
     #ebo
     def onEggDieOfHunger(self, egg_num):
         try:
-            index = self.playerList.get_player(int(egg_num))
-            player = self.playerList.list[index]
-        except IndexError:
+            self.playerList.remove_player(egg_num)
+        except:
             return
-        self.playerList.remove_player(player)
         print("onEggDieOfHunger egg_num={}".format(egg_num))
 
     #edi
