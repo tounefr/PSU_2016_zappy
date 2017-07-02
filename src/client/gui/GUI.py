@@ -25,10 +25,12 @@ class GUI:
         t0 = time.time()
         is_displayed = False
 
-        pygame.mixer.music.load("src/client/gui/assets/ZappySong.mp3")
-        pygame.mixer.music.play(-1)
-        score = Scoreboard.instance()
+        #pygame.mixer.music.load("src/client/gui/assets/ZappySong.mp3")
+        #pygame.mixer.music.play(-1)
 
+        score = Scoreboard.instance()
+        score.setSurface(self.window)
+        score.DrawScoreboard()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
