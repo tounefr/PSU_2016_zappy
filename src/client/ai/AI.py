@@ -26,16 +26,15 @@ class AI:
                 if self.broadcast_.readMail():
                     continue
                 else:
-                    self.FindStone()
-                """if self.TST_TooMuchClient():
-                    self.broadcast_.brd_snd_inventory() # 7pts
-                    if self.TST_RitualCondi(client):
-                        continue
+                    if self.TST_TooMuchClient():
+                        self.broadcast_.brd_snd_inventory()  # 7pts
+                        if self.TST_RitualCondi(client):
+                            continue
+                        else:
+                            self.FindStone()
                     else:
-                        self.FindStone()
-                else:
-                    self.BHV_fork()
-                    continue"""
+                        self.BHV_fork()
+                        continue
 
     def FindStone(self):
         direction = 0
@@ -94,7 +93,7 @@ class AI:
         #
         count_turn = 0
         client = self.team_.getListClient()[0]
-        while client.getInventory()['food'] < 7:
+        while client.getInventory()['food'] < 10:
             self.broadcast_.readMail(False)
             visible = self.ai_interface.lookAroundAction()  # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
@@ -144,11 +143,12 @@ class AI:
             same_lvl, other = [], []
             list_client = self.team_.getListClient()
 
+            print("****************")
             same_lvl.append(client)
             for x in list_client:
-                if x == client:
+                if x.getPid() == client.getPid():
                     continue
-                (same_lvl, other)[x.getLvl() == client.getLvl()].append(x)
+                (same_lvl, other)[x.getLvl() != client.getLvl()].append(x)
 
             if len(same_lvl) < lvl_requirement['player']:
                 return False
@@ -166,15 +166,17 @@ class AI:
                 else:
                     lis[cli.getPid()]['lvl'] = 0
 
-                if lis[cli.getPid()]['lvl'] is not True and eject_count > 0:
+                if lis[cli.getPid()]['lvl'] != 1 and eject_count > 0:
                     lis[cli.getPid()]['eject'] = 1
+                    eject_count -= 1
                 else:
                     lis[cli.getPid()]['eject'] = 0
                 cpy_inven = dict(cli.getInventory())
+                lis[cli.getPid()]['inventory'] = {}
                 for key, value in cpy_inven.items():
                     if key != "food":
                         if lvl_requirement[key] > 0 and cpy_inven[key] > 0:
-                            lis[cli.getPid()]['inventory'] = {key: 0}
+                            lis[cli.getPid()]['inventory'][key] = 0
                             while lvl_requirement[key] > 0 and cpy_inven[key] > 0:
                                 lvl_requirement[key] -= 1
                                 cpy_inven[key] -= 1
@@ -188,6 +190,8 @@ class AI:
                 if lis[cli.getPid()]['conso'] == 1 or lis[cli.getPid()]['lvl'] == 1 or lis[cli.getPid()]['eject'] == 1:
                     material.append(lis)
 
+            print("[debug] - requirements = {}".format(lvl_requirement))
+            print("[DEBUG] - ok - {}".format(material))
             for key, value in lvl_requirement.items():
                 if value > 0:
                     return False
@@ -229,13 +233,17 @@ class AI:
         index = self.ACT_GetClosestObject(visible, obj)
         if index == -1:
             return -1
+        number = 0
+        for cell in visible[index]:
+            if cell in obj:
+                number += 1
         distance = self.ACT_GetDistanceToLine(index, client)
         for i in range(0, distance):
             self.ai_interface.moveForwardAction()
 
         middle_act_line = (2 ** (distance + 1)) - (distance % 2) - (distance)
         if index == middle_act_line:
-            return 0
+            return number
         elif index < middle_act_line:
             self.ai_interface.turnLeftAction()
             distance = middle_act_line - index
@@ -245,7 +253,7 @@ class AI:
 
         for i in range(0, distance):
             self.ai_interface.moveForwardAction()
-        return visible[obj]
+        return number
 
     def ACT_GetDistanceToLine(self, index, client):
         distance = 0
