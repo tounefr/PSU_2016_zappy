@@ -42,7 +42,7 @@ void free_client(t_client *client)
     generic_list_destroy(&client->eggs, default_free);
     generic_list_destroy(&client->read_packets, default_free);
     generic_list_destroy(&client->write_packets, default_free);
-    generic_list_destroy(&client->callbacks, default_free);
+    generic_list_destroy(&client->callbacks, free_callback);
     free_null((void**)&client->buffer);
 }
 
@@ -54,15 +54,18 @@ void generate_position(t_server *server, t_client *client)
 
 char on_exit_client(t_server *server, t_client *client)
 {
+    t_pos pos;
+
     if (client->team)
         client->team->slots++;
     server->map.cases[get_pos(server, &client->pos)][TYPE_PLAYER]--;
-    gui_send_map_case(server, client->pos.x, client->pos.y);
-    send_gui_packet(server, "pdi %d\n", client->num);
+    pos = client->pos;
+    if (client->num > 0)
+        send_gui_packet(server, "pdi %d\n", client->num);
     if (client->socket_fd > 0)
         socket_close(client->socket_fd);
     init_client(client);
-//    gui_send_map_content(server);
+    gui_send_map_case(server, pos.x, pos.y);
     printf("on_exit_client\n");
     return 1;
 }
@@ -81,9 +84,8 @@ char on_new_client(t_server *server)
             continue;
         client->socket_fd = socket_accept(server->server_fd);
         if (!add_callback(client, onPlayerDead,
-             client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT, NULL)) {
+             client->inventory[TYPE_FOOD] * CYCLES_PER_LIFE_UNIT, NULL))
             return on_exit_client(server, client);
-        }
         fd = client->socket_fd;
         flags = fcntl(fd, F_GETFL, 0);
         if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))

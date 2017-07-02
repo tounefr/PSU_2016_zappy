@@ -51,7 +51,7 @@ class ZappyClient:
         self.player_pos = ()
         self.server_hostname = "localhost"
         self.server_port = 4242
-        self.team_name = None
+        self.team_name = ""
         self.client_num = -1
         self.graphical = False
         self.optparser()

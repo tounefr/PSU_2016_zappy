@@ -20,28 +20,24 @@
 
 char log_packet(int num, char type, char *raw)
 {
-    if (!LOG_PACKET)
-        return 1;
     char *file_name;
     FILE *handle;
     char *line;
 
+    if (!LOG_PACKET)
+        return 1;
     if (-1 == asprintf(&file_name, "logs/%d.txt", num))
         return 0;
     if (!(handle = fopen(file_name, "a+")))
         return 0;
-    if (type == 0) {
-        if (-1 == asprintf(&line, "Send>> %s", raw)) {
-            fclose(handle);
-            return 0;
-        }
-    } else {
-        if (-1 == asprintf(&line, "Recv<< %s\n", raw)) {
-            fclose(handle);
-            return 0;
-        }
+    if (-1 == asprintf(&line, "%s<< %s\n",
+                       ((type == 0) ? "Send" : "Recv"), raw)) {
+        fclose(handle);
+        return 0;
     }
     fputs(line, handle);
+    free(line);
+    free(file_name);
     fclose(handle);
     return 1;
 }
@@ -109,13 +105,15 @@ char handle_post_packet(t_server *server, t_client *client)
     node = client->callbacks;
     while (node)
     {
+        if (client->socket_fd == -1)
+            return 0;
         callback = node->data;
         callback->cycles--;
         if (callback->cycles <= 0) {
             callback->func(server, client, callback->packet);
             node = node->next;
             generic_list_remove(&client->callbacks,
-                                callback, default_free);
+                                callback, free_callback);
             continue;
         }
         node = node->next;
