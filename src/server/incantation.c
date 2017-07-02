@@ -28,7 +28,6 @@ char checkIncantationPacket(t_server *server, t_client *client, char *packet)
     for (i = 0 ; i < RESOURCES_NBR_TYPES; i++) {
         if (!is_stone(i))
             continue;
-        printf("%d %d %d\n", i, server->map.cases[pos][i], incantation->type[i]);
         if (server->map.cases[pos][i] != incantation->type[i])
             return exit_error(0, "not enough ressources\n");
     }
@@ -79,16 +78,26 @@ char    onPostIncantPacket(t_server *server,
                                 t_client *client,
                                  char *packet)
 {
+    int i;
+    t_client *c;
+
     if (!checkIncantationPacket(server, client, packet)) {
         send_gui_packet(server, "pie %d %d %d\n",
                         client->pos.x, client->pos.y, 0);
         packet_send(client, "ko\n");
     }
     else {
-        send_gui_packet(server, "pic %d %d %d %d\n",
-                        client->pos.x, client->pos.y,
-                        client->level, client->num);
         packet_send(client, "Elevation underway\n");
+        for (i = 0; i < MAX_CLIENTS; i++) {
+            c = &server->clients[i];
+            if (c->socket_fd == -1 || c->is_gui)
+                continue;
+            if (c->pos.x != client->pos.x || c->pos.y != client->pos.y)
+                continue;
+            send_gui_packet(server, "pic %d %d %d %d\n",
+                            client->pos.x, client->pos.y,
+                            client->level, client->num);
+        }
     }
     if (!add_callback(client, incantationElevation, 300, packet))
         return 0;
