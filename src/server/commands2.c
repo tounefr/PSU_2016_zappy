@@ -28,21 +28,20 @@ char    onBroadcastPacket(t_server *server, t_client *client, char *packet)
     int i;
     char *msg;
     int k;
-    char *buffer;
 
-//    return packet_send(client, "ok\n");
     k = 1; //TODO
     if (strlen(packet) + 1 < strlen("Broadcast "))
         return packet_send(client, "ko\n");
     msg = packet + strlen("Broadcast ");
-//    send_gui_packet(server, "pbc %d %s\n", client->num, msg);
     for (i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].socket_fd == -1 ||
+                server->clients[i].is_gui ||
             &server->clients[i] == client)
             continue;
-        asprintf(&buffer, "message %d, %s\n", k, msg);
-        send(server->clients[i].socket_fd, buffer, strlen(buffer), 0);
-        free(buffer);
+        if (server->clients[i].in_game) {
+            send_gui_packet(server, "pbc %d %s\n", server->clients[i].num, msg);
+            packet_send(&server->clients[i], "message %d, %s\n", k, msg);
+        }
     }
     return packet_send(client, "ok\n");
 }

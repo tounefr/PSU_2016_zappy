@@ -28,6 +28,7 @@ void init_client(t_client *client)
     client->level = 1;
     client->team = NULL;
     client->eggs = NULL;
+    client->in_game = 0;
     for (i = 0; i < RESOURCES_NBR_TYPES; i++)
         client->inventory[i] = 0;
     client->inventory[TYPE_FOOD] = PLAYER_LIFE_UNITS;

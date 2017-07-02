@@ -13,6 +13,7 @@
 
 # define N_NETWORK_COMMANDS 12
 # define LOG_PACKET 0
+# define LOG_SEND_RECV 0
 
 # define MAX_MAP_WIDTH 30
 # define MAX_MAP_HEIGHT 30
@@ -75,6 +76,16 @@ typedef struct s_network_commands
     unsigned int cycles;
     char flags;
 } t_network_commands;
+
+typedef struct s_cell
+{
+	int content[9];
+} t_cell;
+
+typedef struct s_look
+{
+	t_cell cell[64];
+} t_look;
 
 # define NBR_LEVELS 7
 typedef struct s_incantation
@@ -142,6 +153,7 @@ typedef struct s_client
 	t_pos pos;
 	char is_gui;
     char orientation;
+    char in_game;
 	unsigned char inventory[RESOURCES_NBR_TYPES];
     t_generic_list *read_packets;
 	t_generic_list *write_packets;
@@ -300,6 +312,16 @@ char add_callback(t_client *client,
 char incantationElevation(t_server *server, t_client *client, char *packet);
 
 // look.c
-char		*look(t_client *client, t_server *server);
+void look(t_client *client, t_server *server);
+void lookLeft(t_server *s, t_client *c, t_look *see);
+void lookRight(t_server *s, t_client *c, t_look *see);
+char *get_type(int i);
+char *myAppend(char *old, char *str);
+void convertView(t_client *c, t_look *see);
+int coordsToIndex(t_server *server, t_pos pos);
+void init_look(t_look *tmp);
+void get_ressources(t_server *s, t_look *see, int index, int pos);
+void lookUp(t_server *s, t_client *c, t_look *see);
+void lookDown(t_server *s, t_client *c, t_look *see);
 
 #endif //PROJETS_SERVER_H

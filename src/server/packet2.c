@@ -47,7 +47,8 @@ static char split_buffer(t_server *server, t_client *client)
                 return exit_error(0, "malloc error\n");
             start = i + 1;
             log_packet(client->num, 1, packet);
-            printf("Recv<< %s\n", packet);
+            if (LOG_SEND_RECV)
+                printf("Recv<< %s\n", packet);
             if (!generic_list_append(&client->read_packets, packet))
                 return exit_error(0, "malloc error\n");
             start = i + 1;
