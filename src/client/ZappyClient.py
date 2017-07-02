@@ -46,6 +46,9 @@ class ZappyClient:
 
     def __init__(self):
         self.fork_cond = Event()
+        if not ZappyClient.g_instance is None:
+            return
+        ZappyClient.g_instance = self
         self.running = True
         self.map_size = ()
         self.player_pos = ()
@@ -56,30 +59,23 @@ class ZappyClient:
         self.graphical = False
         self.optparser()
 
-        """
-        try:
-            pid = os.fork()
-        except:
-            sys.exit(1)
-        if pid == 0:
-        """
+        while self.running:
+            try:
+                pid = os.fork()
+            except:
+                sys.exit(1)
 
-        if not ZappyClient.g_instance is None:
-            return
-        ZappyClient.g_instance = self
-
-        self.gui = GUI()
-        self.ai = AI()
-        self.network = Network()
-        self.packet_parser = PacketParser()
-        self.packet_router = PacketRouter()
-        self.start()
-
-        """
-        else:
-            self.fork_cond.wait()
-            self.fork_cond.clear()
-        """
+            if pid == 0:
+                self.gui = GUI()
+                self.ai = AI()
+                self.network = Network()
+                self.packet_parser = PacketParser()
+                self.packet_router = PacketRouter()
+                self.start()
+                sys.exit(1)
+            else:
+                self.fork_cond.wait()
+                self.fork_cond.clear()
 
     def startGUI(self):
         print("GRAPHIC")

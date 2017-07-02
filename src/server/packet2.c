@@ -30,6 +30,18 @@ static char increase_buffer(t_server *server, t_client *client, char *buffer)
     return 1;
 }
 
+static char split_buffer2(t_client *client, int i, int len, int start)
+{
+    if (client->buffer)
+        free(client->buffer);
+    if (i + 1 < len) {
+        if (!(client->buffer = strdup(&client->buffer[start])))
+            return exit_error(0, "malloc error\n");
+    } else
+        client->buffer = NULL;
+    return 1;
+}
+
 static char split_buffer(t_server *server, t_client *client)
 {
     int i;
@@ -54,14 +66,7 @@ static char split_buffer(t_server *server, t_client *client)
             start = i + 1;
         }
     }
-    if (client->buffer)
-        free(client->buffer);
-    if (i + 1 < len) {
-        if (!(client->buffer = strdup(&client->buffer[start])))
-            return exit_error(0, "malloc error\n");
-    } else
-        client->buffer = NULL;
-    return 1;
+    return split_buffer2(client, i, len, start);
 }
 
 char on_available_data(t_server *server, t_client *client)

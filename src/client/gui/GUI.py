@@ -2,10 +2,10 @@
 
 from core.GUIInterface import *
 from gui.constantes import *
-from random import *
 from sys import *
 import time
 import threading
+import random
 
 class GUI:
     def __init__(self):
@@ -27,6 +27,8 @@ class GUI:
 
         #pygame.mixer.music.load("src/client/gui/assets/ZappySong.mp3")
         #pygame.mixer.music.play(-1)
+        son = pygame.mixer.Sound("src/client/gui/assets/main_theme.wav")
+        son.play()
 
         score = Scoreboard.instance()
         score.setSurface(self.window)
@@ -213,8 +215,12 @@ class GUI:
             player = self.playerList.list[index]
         except IndexError:
             return
-        # TODO Spawn egg?
-        # keep player team in egg
+        baby_link = Perso(egg_num, player.team, 0, self.map)
+        baby_link.is_egg = True
+        baby_link.x = pos[0] * Constantes.instance().tileScale
+        baby_link.y = pos[1] * Constantes.instance().tileScale
+        baby_link.set_direction(1)
+        self.playerList.add_player(baby_link)
 
         print("onPlayerLaid egg_num={} player_num={} pos={}".format(
             egg_num, player_num, pos
@@ -222,9 +228,15 @@ class GUI:
 
     #eht
     def onEggHatch(self, egg_num):
-        # TODO rm egg
-        # TODO spawn player ???
-
+        try:
+            index = self.playerList.get_player(int(egg_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
+        player.set_direction(random.randint(1, 4))
+        player.is_egg = False
+        player.action_previous = player.action
+        player.action = player.spriteSheet['hatch']
         print("onEggHatch egg_num={}".format(egg_num))
 
     def onPlayerConnectedAfterHatch(self, egg_num):
@@ -232,6 +244,12 @@ class GUI:
 
     #ebo
     def onEggDieOfHunger(self, egg_num):
+        try:
+            index = self.playerList.get_player(int(egg_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
+        self.playerList.remove_player(player)
         print("onEggDieOfHunger egg_num={}".format(egg_num))
 
     #edi

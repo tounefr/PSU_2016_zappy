@@ -442,7 +442,12 @@ class PlayerList:
     def display_players(self, window, t1, is_displayed):
         for i in range(len(self.list)):
             player = self.list[i]
-            player.update_animation(window, t1, is_displayed)
+            if player.is_egg == True:
+                player.update_animation(window, t1, is_displayed)
+        for i in range(len(self.list)):
+            player = self.list[i]
+            if player.is_egg == False:
+                player.update_animation(window, t1, is_displayed)
 
     def get_player(self, player_num):
         i = 0
@@ -467,6 +472,7 @@ class Perso:
     def __init__(self, player_num, team, model, map):
         self.team = team
         self.player_num = player_num
+        self.is_egg = False
         self.level = 1
         self.spriteSheet = Teams.instance().getTeamSprites(team)
         self.action_previous = 0
@@ -512,7 +518,9 @@ class Perso:
         window.blit(self.action, (self.x, self.y))
 
     def get_next_animation(self):
-        if self.action == self.spriteSheet['haut']:
+        if self.is_egg == True:
+            self.action = self.spriteSheet['egg']
+        elif self.action == self.spriteSheet['haut']:
             self.action = self.spriteSheet['haut2']
         elif self.action == self.spriteSheet['haut2']:
             self.action = self.spriteSheet['haut']
@@ -533,7 +541,7 @@ class Perso:
         elif self.action == self.spriteSheet['take2']:
             self.action = self.action_previous
         elif self.action == self.spriteSheet['layEgg']:
-            self.action = self.spriteSheet['layEgg2']
+            self.action = self.spriteSheet['layEgg']
         elif self.action == self.spriteSheet['layEgg2']:
             self.action = self.action_previous
         elif self.action == self.spriteSheet['hatch']:

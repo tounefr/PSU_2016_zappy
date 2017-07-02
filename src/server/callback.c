@@ -15,7 +15,6 @@ char free_callback(void *data)
   t_callback *callback;
 
     callback = (t_callback*)data;
-//    free(callback->packet);
     free(callback);
     return 1;
 }
