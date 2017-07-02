@@ -474,7 +474,9 @@ class Perso:
         window.blit(self.action, (self.x, self.y))
 
     def get_next_animation(self):
-        if self.action == self.spriteSheet['haut']:
+        if self.is_egg == True:
+            self.action = self.spriteSheet['egg']
+        elif self.action == self.spriteSheet['haut']:
             self.action = self.spriteSheet['haut2']
         elif self.action == self.spriteSheet['haut2']:
             self.action = self.spriteSheet['haut']
