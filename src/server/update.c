@@ -1,11 +1,11 @@
 /*
 ** update.c for  in /home/toune/Documents/Epitech/projets/PSU_2016_zappy
-** 
+**
 ** Made by Thomas HENON
 ** Login   <thomas.henon@epitech.eu>
-** 
+**
 ** Started on  Thu Jun 29 20:28:26 2017 Thomas HENON
-** Last update Thu Jun 29 20:28:26 2017 Thomas HENON
+** Last update Sun Jul  2 17:16:15 2017 arsene
 */
 
 #include "server.h"
@@ -33,12 +33,12 @@ char update_client(t_server *server, t_client *client)
 
 char update(t_server *server, struct timeval *last_tick)
 {
-    int i;
-    int nb_clients;
-    t_client *client;
+  int i;
+  int nb_clients;
+  t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-        if (server->cur_cycle == 1 || (server->cur_cycle % 600) == 0)
+        if (server->cur_cycle == 1)
             generate_resources(server);
         nb_clients = 0;
         for (i = 0; i < MAX_CLIENTS; i++) {
@@ -50,7 +50,7 @@ char update(t_server *server, struct timeval *last_tick)
         /*if ((server->cur_cycle % 1) == 0)
             printf("%d clients connected\n", nb_clients);*/
     }
-    return 1;
+  return 1;
 }
 
 char main_loop(t_server *server)

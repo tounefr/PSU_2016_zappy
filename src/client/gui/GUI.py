@@ -30,7 +30,6 @@ class GUI:
 
         score = Scoreboard.instance()
         score.setSurface(self.window)
-        score.DrawScoreboard()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -46,6 +45,7 @@ class GUI:
 
             self.map.display_content(self.window)
             self.playerList.display_players(self.window, t0, is_displayed)
+            score.DrawScoreboard()
             pygame.display.flip()
 
             is_displayed = False
@@ -65,6 +65,7 @@ class GUI:
         self.window = pygame.display.set_mode((size[0] * Constantes.instance().tileScale + 300, size[1] * Constantes.instance().tileScale))
         self.map = Map(size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale)
         self.map.create(self.window)
+        Scoreboard.instance().setMap(self.map)
         print("onMapSize size={}".format(size))
         with self.wait_start:
             self.wait_start.notify()

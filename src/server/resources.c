@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sat Jun 24 16:09:57 2017 Thomas HENON
-** Last update Sat Jul  1 17:08:45 2017 arsene
+** Last update Sun Jul  2 17:05:21 2017 arsene
 */
 
 #include <stdio.h>
@@ -18,6 +18,19 @@ char is_stone(int type)
             type == TYPE_SIBUR || type == TYPE_MENDIANE ||
             type == TYPE_MENDIANE || type == TYPE_PHIRAS ||
             type == TYPE_THYSTAME);
+}
+
+void	take_ressource(t_server *server, int client_pos, int i)
+{
+  int	x;
+  int	y;
+  int	pos;
+
+  server->map.cases[client_pos][get_g_foods()[i].type]--;
+  x = (rand() % (server->map.width - 0) + 0);
+  y = (rand() % (server->map.height - 0) + 0);
+  pos = x + (y * server->map.height);
+  server->map.cases[pos][get_g_foods()[i].type]++;
 }
 
 void	rand_ressource(t_server *server, int p)
