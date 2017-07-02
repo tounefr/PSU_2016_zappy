@@ -41,7 +41,7 @@ char hatch_egg(t_server *server, t_client *client, char *packet)
     t_egg *egg;
 
     egg = (t_egg*)packet;
-    egg->pending_client = 1;
+//    egg->pending_client = 1;
     client->team->slots++;
     printf("hatch egg\n");
     send_gui_packet(server, "eht %d\n", egg->num);

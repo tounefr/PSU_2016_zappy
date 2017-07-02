@@ -165,7 +165,10 @@ class PacketRouter:
         elif self.packet_i == 2 and not self.zappy.isGraphical():
             return self.zappy.packet_parser.parseClientNumPacket(raw)
         elif self.packet_i == 3 and not self.zappy.isGraphical():
-            self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
+            try:
+                self.zappy.map_size = self.zappy.packet_parser.parseMapSizePacket(raw)
+            except:
+                pass
             return self.onGameStart()
 
         for p in self.packets:

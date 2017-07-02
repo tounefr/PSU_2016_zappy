@@ -24,13 +24,30 @@ class GUI:
             self.wait_start.wait()
         t0 = time.time()
         is_displayed = False
+
+        #pygame.mixer.music.load("src/client/gui/assets/ZappySong.mp3")
+        #pygame.mixer.music.play(-1)
+
+        score = Scoreboard.instance()
+        score.setSurface(self.window)
+        score.DrawScoreboard()
         while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    score.UpdateMouse(True)
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    score.UpdateMouse(False)
+
             if round(time.time() - t0, 1) == 0.6:
                 t0 = time.time()
                 is_displayed = True
+
             self.map.display_content(self.window)
             self.playerList.display_players(self.window, t0, is_displayed)
             pygame.display.flip()
+
             is_displayed = False
             time.sleep(0.01)
 
@@ -42,7 +59,10 @@ class GUI:
     # size=(width, height)
     def onMapSize(self, size):
         Constantes.instance().setScale(size[1])
-        self.window = pygame.display.set_mode((size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale))
+        Constantes.instance().MapWidth = size[0]
+        Constantes.instance().MapHeight = size[1]
+        Scoreboard.instance().setOrigin()
+        self.window = pygame.display.set_mode((size[0] * Constantes.instance().tileScale + 300, size[1] * Constantes.instance().tileScale))
         self.map = Map(size[0] * Constantes.instance().tileScale, size[1] * Constantes.instance().tileScale)
         self.map.create(self.window)
         print("onMapSize size={}".format(size))

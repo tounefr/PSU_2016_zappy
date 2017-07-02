@@ -22,14 +22,53 @@ class Constantes:
         return Constantes.g_instance
 
     def __init__(self):
-        self.tileScale = 40
+        self.tileScale = 48
         self.tileDimension = (self.tileScale, self.tileScale)
         self.tileSize = 16
+        self.MapWidth = 0
+        self.MapHeight = 0
 
     def setScale(self, size):
-        if size >= 24:
+        if size >= 20:
+            self.tileScale -= 8
+        if size >= 26:
             self.tileScale -= 8
         self.tileDimension = (self.tileScale, self.tileScale)
+
+class Scoreboard:
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if Scoreboard.g_instance is None:
+            Scoreboard.g_instance = Scoreboard()
+        return Scoreboard.g_instance
+
+    def __init__(self):
+        self.bMouseDown = False
+        self.surface = None
+        self.originX = 0
+        self.HCellIndex = 0
+
+    def setOrigin(self):
+        const = Constantes.instance()
+        self.originX = const.MapWidth * const.tileScale
+
+    def setSurface(self, surface):
+        self.surface = surface
+
+    def UpdateMouse(self, bDown):
+        self.bMouseDown = bDown
+        if self.bMouseDown == True:
+            pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            if pos[0] < Constantes.instance().MapWidth * Constantes.instance().tileScale:
+                self.HCellIndex = ((int(pos[1] // Constantes.instance().tileScale)) * Constantes.instance().MapWidth) + int((pos[0] // Constantes.instance().tileScale))
+                self.DrawScoreboard()
+            print("Highlighted Cell: " + str(self.HCellIndex))
+
+    def DrawScoreboard(self):
+        pygame.draw.rect(self.surface, (60, 60, 60), (self.originX, 0, 300, Constantes.instance().MapHeight * Constantes.instance().tileScale))
+        pygame.draw.rect(self.surface, (80, 80, 80), (self.originX + 5, 0 + 5, 300 - 10, Constantes.instance().MapHeight * Constantes.instance().tileScale - 10))
 
 
 class Teams:

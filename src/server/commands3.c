@@ -77,6 +77,7 @@ static char on_client_welcome(t_server *server,
                     client->num, client->pos.x,
                     client->pos.y, client->orientation,
                     client->level, client->team->name);
+    client->in_game = 1;
     return 1;
 }
 

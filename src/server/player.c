@@ -13,9 +13,8 @@
 char onPlayerDead(t_server *server, t_client *client, char *packet)
 {
     (void)packet;
+    printf("player dead\n");
     packet_send(client, "dead\n");
-//    socket_close(client->socket_fd);
-  //  client->socket_fd = -1;
     on_exit_client(server, client);
     return 1;
 }
@@ -29,7 +28,7 @@ int get_nb_players_lvl(t_server *server, int level)
     c = 0;
     for (i = 0; i < MAX_CLIENTS; i++) {
         client = &server->clients[i];
-        if (client->socket_fd == -1)
+        if (client->socket_fd == -1 || client->is_gui)
             continue;
         if (client->level == level)
             c++;
