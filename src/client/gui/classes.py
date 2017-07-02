@@ -46,8 +46,13 @@ class Scoreboard:
 
     def __init__(self):
         self.bMouseDown = False
+        pygame.font.init()
+        self.font = pygame.font.Font(None, 18)
+        self.map = None
         self.surface = None
         self.originX = 0
+        self.HCellX = 0
+        self.HCellY = 0
         self.HCellIndex = 0
 
     def setOrigin(self):
@@ -57,18 +62,66 @@ class Scoreboard:
     def setSurface(self, surface):
         self.surface = surface
 
+    def setMap(self, map):
+        self.map = map
+
     def UpdateMouse(self, bDown):
         self.bMouseDown = bDown
         if self.bMouseDown == True:
             pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
             if pos[0] < Constantes.instance().MapWidth * Constantes.instance().tileScale:
+                self.HCellX = int(pos[0] // Constantes.instance().tileScale)
+                self.HCellY = int(pos[1] // Constantes.instance().tileScale)
                 self.HCellIndex = ((int(pos[1] // Constantes.instance().tileScale)) * Constantes.instance().MapWidth) + int((pos[0] // Constantes.instance().tileScale))
                 self.DrawScoreboard()
             print("Highlighted Cell: " + str(self.HCellIndex))
 
+    def UpdateScore(self):
+        cell = self.map.map[self.HCellY][self.HCellX]
+
+        # Cell content
+        YOffset = 20
+
+        if cell['food'].nb_resource > 0:
+            label = self.font.render("Food: " + str(cell['food'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+        if cell['linemate'].nb_resource > 0:
+            label = self.font.render("Linemate: " + str(cell['linemate'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+        if cell['deraumere'].nb_resource > 0:
+            label = self.font.render("Deraumere: " + str(cell['deraumere'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+        if cell['sibur'].nb_resource > 0:
+            label = self.font.render("Sibur: " + str(cell['sibur'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+        if cell['mendiane'].nb_resource > 0:
+            label = self.font.render("Mendiane: " + str(cell['mendiane'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+        if cell['phiras'].nb_resource > 0:
+            label = self.font.render("Phiras: " + str(cell['phiras'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+        if cell['thystame'].nb_resource > 0:
+            label = self.font.render("Thystame: " + str(cell['thystame'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(label, (self.originX + 60, YOffset))
+            YOffset += 50
+
+
     def DrawScoreboard(self):
         pygame.draw.rect(self.surface, (60, 60, 60), (self.originX, 0, 300, Constantes.instance().MapHeight * Constantes.instance().tileScale))
         pygame.draw.rect(self.surface, (80, 80, 80), (self.originX + 5, 0 + 5, 300 - 10, Constantes.instance().MapHeight * Constantes.instance().tileScale - 10))
+        self.UpdateScore()
 
 
 class Teams:
@@ -290,14 +343,14 @@ class Map:
             for x in range(self.width):
                 index = 0 if random.randint(0, 100) <= 75 else random.randint(1, len(self.Ground) - 1)
                 cell = {
-                    'texture':  self.Ground[index],
-                    'food':     coordResource,
-                    'linemate': coordResource,
-                    'deraumere': coordResource,
-                    'sibur': coordResource,
-                    'mendiane': coordResource,
-                    'phiras': coordResource,
-                    'thystame': coordResource,
+                    'texture':      self.Ground[index],
+                    'food':         coordResource,
+                    'linemate':     coordResource,
+                    'deraumere':    coordResource,
+                    'sibur':        coordResource,
+                    'mendiane':     coordResource,
+                    'phiras':       coordResource,
+                    'thystame':     coordResource,
                 }
                 self.map[y][x] = cell
         #print("onEggHatch egg_num={}".format(self.map))
