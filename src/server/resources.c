@@ -5,7 +5,7 @@
 ** Login   <thomas.henon@epitech.eu>
 **
 ** Started on  Sat Jun 24 16:09:57 2017 Thomas HENON
-** Last update Sun Jul  2 17:05:21 2017 arsene
+** Last update Sun Jul  2 18:41:04 2017 arsene
 */
 
 #include <stdio.h>
@@ -36,25 +36,27 @@ void take_ressource(t_server *server, int client_pos, int i) {
 }
 
 void rand_ressource(t_server *server, int p) {
-    int item;
+  int item;
 
-    item = (rand() % (100 - 0) + 0);
-    if (item <= 54)
-        return;
-    else if (item <= 55 && item > 54)
-        server->map.cases[p][TYPE_THYSTAME]++;
-    else if (item <= 57 && item > 55)
-        server->map.cases[p][TYPE_MENDIANE]++;
-    else if (item <= 59 && item > 57)
-        server->map.cases[p][TYPE_PHIRAS]++;
-    else if (item <= 62 && item > 59)
-        server->map.cases[p][TYPE_SIBUR]++;
-    else if (item <= 65 && item > 62)
-        server->map.cases[p][TYPE_DERAUMERE]++;
-    else if (item <= 75 && item > 65)
-        server->map.cases[p][TYPE_LINEMATE]++;
-    else if (item <= 100 && item > 75)
-        server->map.cases[p][TYPE_FOOD]++;
+  item = (rand() % (100 - 0) + 0);
+  if (item <= 40)
+    return;
+  if (item <= 41  && item > 40)
+    server->map.cases[p][TYPE_THYSTAME]++;
+  if (item <= 43 && item > 40)
+    server->map.cases[p][TYPE_MENDIANE]++;
+  if (item <= 45 && item > 42)
+    server->map.cases[p][TYPE_PHIRAS]++;
+  if (item <= 47 && item > 42)
+    server->map.cases[p][TYPE_SIBUR]++;
+  if (item <= 52 && item > 46)
+    server->map.cases[p][TYPE_DERAUMERE]++;
+  if (item <= 68 && item > 48)
+    server->map.cases[p][TYPE_LINEMATE]++;
+  if (item <= 100 && item > 40)
+    server->map.cases[p][TYPE_FOOD]++;
+  if (item <= 100 && item > 60)
+    server->map.cases[p][TYPE_FOOD] = server->map.cases[p][TYPE_FOOD] + 2;
 }
 
 char generate_resources(t_server *server) {
