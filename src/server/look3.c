@@ -12,7 +12,6 @@
 #include <string.h>
 #include "server.h"
 
-
 void    lookLeft(t_server *s, t_client *c, t_look *see)
 {
     t_pos target;
@@ -113,13 +112,10 @@ void	convertView(t_client *c, t_look *see)
     int	x;
     int	first;
 
-    i = 0;
+    i = -1;
     limit = 1;
-    while (i < c->level)
-    {
+    while (++i < c->level)
         limit += limit + 2;
-        i++;
-    }
     index = 0;
     if ((buffer = malloc(1)) == NULL)
         return;
