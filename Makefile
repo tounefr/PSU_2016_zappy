@@ -14,14 +14,57 @@ LDFLAGS+=
 CFLAGS+= -I./includes -W -Wall -fPIC
 
 SERVER_NAME = zappy_server
-SERVER_SRCS = $(wildcard src/server/*.c) \
-              $(wildcard src/common/*.c) \
-              $(wildcard src/libnetwork/*.c)
+
+SERVER_SRCS =   src/server/callback.c \
+                src/server/client.c \
+                src/server/commands.c \
+                src/server/commands2.c \
+                src/server/commands3.c \
+                src/server/cycle.c \
+                src/server/egg.c \
+                src/server/eject.c \
+                src/server/game.c \
+                src/server/globals.c \
+                src/server/gui.c \
+                src/server/incantation.c \
+                src/server/look.c \
+                src/server/look2.c \
+                src/server/look3.c \
+                src/server/look4.c \
+                src/server/main.c \
+                src/server/map.c \
+                src/server/opts.c \
+                src/server/packet.c \
+                src/server/packet2.c \
+                src/server/player.c \
+                src/server/resources.c \
+                src/server/select.c \
+                src/server/server.c \
+                src/server/team.c \
+                src/server/update.c \
+                src/server/util.c \
+                src/server/util2.c \
+                src/common/error.c \
+                src/common/generic_list.c \
+                src/common/generic_list2.c \
+                src/common/util.c \
+                src/libnetwork/packet.c \
+                src/libnetwork/socket.c \
+                src/libnetwork/socket2.c \
+                src/libnetwork/socket_server.c
+
 SERVER_OBJS = $(SERVER_SRCS:.c=.o)
 
 LIBNETWORK_NAME = libnetwork.so
-LIBNETWORK_SRCS = $(wildcard src/common/*.c \
-		          $(wildcard src/libnetwork/*.c))
+LIBNETWORK_SRCS =   src/libnetwork/packet.c \
+                    src/libnetwork/socket.c \
+                    src/libnetwork/socket2.c \
+                    src/libnetwork/socket_server.c \
+                    src/common/error.c \
+                    src/common/generic_list.c \
+                    src/common/generic_list2.c \
+                    src/common/util.c
+
 LIBNETWORK_OBJS = $(LIBNETWORK_SRCS:.c=.o)
 
 AI_NAME = zappy_ai
