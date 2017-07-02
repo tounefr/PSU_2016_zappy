@@ -25,10 +25,14 @@ void take_ressource(t_server *server, int client_pos, int i) {
     int pos;
 
     server->map.cases[client_pos][get_g_foods()[i].type]--;
+    gui_send_map_case(server, client_pos % server->map.height,
+                      client_pos / server->map.height);
     x = my_rand(0, server->map.width - 1);
     y = my_rand(0, server->map.height - 1);
     pos = x + (y * server->map.height);
     server->map.cases[pos][get_g_foods()[i].type]++;
+    gui_send_map_case(server, pos % server->map.height,
+                      pos / server->map.height);
 }
 
 void rand_ressource(t_server *server, int p) {
