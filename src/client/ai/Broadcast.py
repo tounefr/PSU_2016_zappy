@@ -421,6 +421,6 @@ class Broadcast:
 
     def brd_rcv_fork(self, json, dist):
         print("[debug] [brd_rcv_fork] - rentre")
-        self.team_.setAttendList(self.team_.getAttendList() + 1)
+        self.team_.setAttendList(self.team_.getAttendClient() + 1)
         print("[DEBUG] [brd_rcv_fork] - sort")
         return False

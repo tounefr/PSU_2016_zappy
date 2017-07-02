@@ -19,24 +19,21 @@ class AI:
             inventory = self.ai_interface.inventoryAction()  # 1pt
             client.setInventory(inventory)
 
-            if inventory['food'] < 4:
+            if inventory['food'] < 6:
                 self.BHV_FindFood()
                 continue
             else:
                 if self.broadcast_.readMail():
                     continue
                 else:
-                    if self.TST_TooMuchClient():
-                        self.broadcast_.brd_snd_inventory()  # 7pts
-                        if self.TST_RitualCondi(client):
-                            continue
-                        else:
-                            self.FindStone()
-                    else:
-                        self.BHV_fork()
+                    self.TST_TooMuchClient(client)
+                    self.broadcast_.brd_snd_inventory()  # 7pts
+                    if self.TST_RitualCondi(client):
                         continue
+                    else:
+                        self.BHV_FindStone()
 
-    def FindStone(self):
+    def BHV_FindStone(self):
         direction = 0
         ko_count = 0
 
@@ -93,7 +90,7 @@ class AI:
         #
         count_turn = 0
         client = self.team_.getListClient()[0]
-        while client.getInventory()['food'] < 10:
+        while client.getInventory()['food'] < 16:
             self.broadcast_.readMail(False)
             visible = self.ai_interface.lookAroundAction()  # 7pts
             if self.TST_SeeObject(visible, "food") == 0:
@@ -125,6 +122,12 @@ class AI:
         self.broadcast_.brd_snd_fork()
         self.ai_interface.forkAction()
 
+    def BHV_SetRoleRitual(self, client, material):
+        try:
+            material[client.getPid()][""]
+        except ValueError:
+            return 0
+
     def TST_RitualCondi(self, client):
         res = False
 
@@ -153,7 +156,7 @@ class AI:
             if len(same_lvl) < lvl_requirement['player']:
                 return False
 
-            material = []
+            material = {}
             other.sort()
             ord_list = same_lvl + other
 
@@ -210,16 +213,17 @@ class AI:
                     res = False
         return res
 
-    def TST_TooMuchClient(self):
+    def TST_TooMuchClient(self, client):
         count = self.ai_interface.numberOfTeamSlotsUnusedAction()
         count += self.team_.getAttendClient()
 
         needed = self.team_.getRessouceByLvl()[(self.team_.getMaxLvl() - 1)].get('player')
         if needed is None:
-            return False
-        if count >= needed:
-            return True
-        return False
+            return
+        while count < needed and client.getInventory()["food"] > 4:
+            self.BHV_fork()
+            count += 1
+        return
 
     def TST_SeeObject(self, visible, obj):
         for indexVisible in range(0, len(visible)):
