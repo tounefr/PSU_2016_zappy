@@ -120,10 +120,11 @@ class GUI:
 
     #pic
     def onFirstPlayerTriggerSpell(self, pos, level, players_num):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
-        player.action_previous = player.action
-        player.action = player.spriteSheet['incant']
+        for num in players_num:
+            index = self.playerList.get_player(num)
+            player = self.playerList.list[index]
+            player.action_previous = player.action
+            player.action = player.spriteSheet['incant']
         print("onFirstPlayerTriggerSpell pos={} level={} players_num={}".format(
             pos, level, players_num
         ))
