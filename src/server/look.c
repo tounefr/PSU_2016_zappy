@@ -190,6 +190,7 @@ char		*get_type(int i)
     return ("player");
   else if (i == TYPE_EGG)
     return ("egg");
+  return "";
 }
 
 char		*get_tiles_infos(int pos, t_server *server, char *message)
@@ -297,6 +298,7 @@ void	convertView(t_client *c, t_look *see)
   buffer = myAppend(buffer, "]");
   //printf("### [LOOK] Goind to send: \"%s\"\n", buffer);
   packet_send(c, "%s\n", buffer);
+  free(buffer);
 }
 
 void	debug_count(t_server *s)

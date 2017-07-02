@@ -32,6 +32,7 @@ class GUI:
             self.playerList.display_players(self.window, t0, is_displayed)
             pygame.display.flip()
             is_displayed = False
+            time.sleep(0.01)
 
     def onGameStart(self):
         pygame.init()
@@ -51,11 +52,10 @@ class GUI:
     #bct
     # items: {'linemate': 0, 'deraumere': 0, 'food': 0, ...}
     def onMapCaseContent(self, pos, resources):
-        #self.map.read(self.window)
-        self.map.add_case_content(pos[0], pos[1], resources)
-        #self.map.display_content(self.window)
-        #self.playerList.display_players(self.window)
-        #pygame.display.flip()
+        try:
+            self.map.add_case_content(pos[0], pos[1], resources)
+        except AttributeError:
+            return
         print("onMapCaseContent pos={} resources={}".format(pos, resources))
 
     #tna
@@ -78,8 +78,11 @@ class GUI:
 
     #ppo
     def onPlayerPos(self, player_num, pos, orientation):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         player.set_direction(orientation)
         player.x = pos[0] * Constantes.instance().tileScale
         player.y = pos[1] * Constantes.instance().tileScale
@@ -90,8 +93,11 @@ class GUI:
 
     #plv
     def onPlayerLevel(self, player_num, level):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         player.action_previous = player.action
         player.action = player.spriteSheet['lvlUp']
 
@@ -120,8 +126,11 @@ class GUI:
 
     #pic
     def onFirstPlayerTriggerSpell(self, pos, level, players_num):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         player.action_previous = player.action
         player.action = player.spriteSheet['incant']
         print("onFirstPlayerTriggerSpell pos={} level={} players_num={}".format(
@@ -130,13 +139,16 @@ class GUI:
 
     #pie
     def onEndSpell(self, pos, result):
-        player.action = player.action_previous
+        #player.action = player.action_previous
         print("onEndSpell pos={} result={}".format(pos, result))
 
     #pfk
     def onPlayerLayEgg(self, player_num):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         player.action_previous = player.action
         player.action = player.spriteSheet['layEgg']
         print("onPlayerLayEgg player_num={}".format(player_num))
@@ -149,8 +161,11 @@ class GUI:
 
     #pgt
     def onPlayerTakeResource(self, player_num, resource):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         player.action_previous = player.action
         player.action = player.spriteSheet['take']
 
@@ -160,14 +175,22 @@ class GUI:
 
     #pdi
     def onPlayerDieOfHunger(self, player_num):
-        index = self.playerList.get_player(int(player_num))
-        player = self.playerList.list[index]
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         player.action_previous = player.action
         player.action = player.spriteSheet['death']
         self.playerList.remove_player(player_num)
 
     #enw
     def onPlayerLaid(self, egg_num, player_num, pos):
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
         # TODO Spawn egg?
         # keep player team in egg
 

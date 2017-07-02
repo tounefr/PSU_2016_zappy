@@ -160,7 +160,7 @@ class PacketRouter:
         raw = raw[:-1]
         self.packet_i += 1
 
-        if self.packet_i == 1:
+        if self.packet_i == 1 or raw == "WELCOME":
             return self.onWelcomePacket()
         elif self.packet_i == 2 and not self.zappy.isGraphical():
             return self.zappy.packet_parser.parseClientNumPacket(raw)

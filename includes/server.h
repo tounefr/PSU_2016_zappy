@@ -36,7 +36,7 @@
 # define DEFAULT_MAP_HEIGHT 10
 
 # define PLAYER_LIFE_UNITS 10
-# define CYCLES_PER_LIFE_UNIT 12600
+# define CYCLES_PER_LIFE_UNIT 126
 
 # define TYPE_FOOD 0
 # define TYPE_LINEMATE 1
@@ -218,6 +218,7 @@ char default_free(void *data);
 void free_null(void **data);
 
 // packet.c
+char log_packet(int num, char type, char *raw);
 void free_packet(t_packet *packet);
 char packet_send(t_client *client, char *format, ...);
 t_network_commands *get_network_command(char *packet);
@@ -287,7 +288,8 @@ char main_loop(t_server *server);
 //
 void handle_sigint(int signum);
 
-//
+// callback.c
+char free_callback(void *data);
 t_callback *get_callback(t_client *client,
                          char (*func)(t_server*, t_client*, char*));
 char add_callback(t_client *client,
