@@ -27,6 +27,8 @@ class GUI:
 
         #pygame.mixer.music.load("src/client/gui/assets/ZappySong.mp3")
         #pygame.mixer.music.play(-1)
+        son = pygame.mixer.Sound("src/client/gui/assets/main_theme.wav")
+        son.play()
 
         score = Scoreboard.instance()
         score.setSurface(self.window)
