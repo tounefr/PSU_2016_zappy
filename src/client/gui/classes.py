@@ -421,7 +421,12 @@ class PlayerList:
     def display_players(self, window, t1, is_displayed):
         for i in range(len(self.list)):
             player = self.list[i]
-            player.update_animation(window, t1, is_displayed)
+            if player.is_egg == True:
+                player.update_animation(window, t1, is_displayed)
+        for i in range(len(self.list)):
+            player = self.list[i]
+            if player.is_egg == False:
+                player.update_animation(window, t1, is_displayed)
 
     def get_player(self, player_num):
         i = 0
@@ -515,7 +520,7 @@ class Perso:
         elif self.action == self.spriteSheet['take2']:
             self.action = self.action_previous
         elif self.action == self.spriteSheet['layEgg']:
-            self.action = self.spriteSheet['layEgg2']
+            self.action = self.spriteSheet['layEgg']
         elif self.action == self.spriteSheet['layEgg2']:
             self.action = self.action_previous
         elif self.action == self.spriteSheet['hatch']:
