@@ -16,19 +16,25 @@ static t_pos get_dest_case(t_server *server, t_client *client)
 
     dest = client->pos;
     if (client->orientation == ORIENT_NORTH) {
-        dest.y = abs(dest.y - 1) % server->map.height;
+        dest.y = dest.y - 1;
         if (dest.y < 0)
             dest.y = server->map.height - 1;
     }
-    else if (client->orientation == ORIENT_SOUTH)
-        dest.y = abs(dest.y + 1) % server->map.height;
+    else if (client->orientation == ORIENT_SOUTH) {
+        dest.y = dest.y + 1;
+        if (dest.y >= server->map.height)
+            dest.y = 0;
+    }
     else if (client->orientation == ORIENT_EAST) {
-        dest.x = abs(dest.x - 1) % server->map.width;
+        dest.x = dest.x + 1;
+        if (dest.x >= server->map.width)
+            dest.x = 0;
+    }
+    else if (client->orientation == ORIENT_WEST) {
+        dest.x = dest.x - 1;
         if (dest.x < 0)
             dest.x = server->map.width - 1;
     }
-    else if (client->orientation == ORIENT_WEST)
-        dest.x = abs(dest.x + 1) % server->map.width;
     return dest;
 }
 
@@ -37,19 +43,21 @@ char    onEjectPacket(t_server *server, t_client *client, char *packet)
     int i;
     int k;
     t_pos dest;
+    t_client *c;
 
     (void)packet;
     k = 1;
+    dest = get_dest_case(server, client);
     for (i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].socket_fd == -1 ||
-                &server->clients[i] == client)
+         c = &server->clients[i];
+        if (c->socket_fd == -1 || c == client || c->is_gui)
             continue;
-        dest = get_dest_case(server, client);
-        server->clients[i].pos = dest;
-        packet_send(&server->clients[i], "eject: %d\n", k);
+        if (c->pos.x != client->pos.x || c->pos.y != client->pos.y)
+            continue;
+        c->pos = dest;
+        packet_send(c, "eject: %d\n", k);
         send_gui_packet(server, "ppo %d %d %d %d\n",
-                        server->clients[i].num, server->clients[i].pos.x,
-                        server->clients[i].pos.y, server->clients[i].orientation);
+            c->num, c->pos.x, c->pos.y, c->orientation);
     }
     return 1;
 }

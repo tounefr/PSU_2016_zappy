@@ -38,7 +38,7 @@ char update(t_server *server, struct timeval *last_tick)
     t_client *client;
 
     if (is_next_cycle(server, last_tick)) {
-        if (server->cur_cycle == 1 || (server->cur_cycle % 270) == 0)
+        if (server->cur_cycle == 1 || (server->cur_cycle % 600) == 0)
             generate_resources(server);
         nb_clients = 0;
         for (i = 0; i < MAX_CLIENTS; i++) {

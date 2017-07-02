@@ -24,10 +24,8 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
         if ((!is_stone(i) && strcmp((char*)&food, "food")) ||
                 strcmp(get_g_foods()[i].s, (char*)&food))
             continue;
-        if (client->inventory[get_g_foods()[i].type] - 1 < 0) {
-            printf("kooo2\n");
+        if (client->inventory[get_g_foods()[i].type] - 1 < 0)
             return packet_send(client, "ko\n");
-        }
         client->inventory[get_g_foods()[i].type]--;
         server->map.cases[client_pos][get_g_foods()[i].type]++;
         send_gui_packet(server, "pdr %d %d\n",
@@ -38,7 +36,6 @@ char    onSetObjectPacket(t_server *server, t_client *client, char *packet)
         gui_send_map_case(server, client->pos.x, client->pos.y);
         return packet_send(client, "ok\n");
     }
-    printf("kooo1\n");
     return packet_send(client, "ko\n");
 }
 
