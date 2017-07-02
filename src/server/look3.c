@@ -121,14 +121,12 @@ void	convertView(t_client *c, t_look *see)
         return;
     buffer[0] = 0;
     buffer = myAppend(buffer, "[");
-    while (index < limit)
-    {
+    while (index < limit) {
         if (index != 0)
             buffer = myAppend(buffer, ",");
         i = 0;
         first = 1;
-        for (i = 0; i < 9; i++)
-        {
+        for (i = 0; i < 9; i++) {
             x = 0;
             while (x < see->cell[index].content[i])
             {
