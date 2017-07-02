@@ -375,6 +375,7 @@ class Perso:
     def __init__(self, player_num, team, model, map):
         self.team = team
         self.player_num = player_num
+        self.is_egg = False
         self.level = 1
         self.spriteSheet = Teams.instance().getTeamSprites(team)
         self.action_previous = 0

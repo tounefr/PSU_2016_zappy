@@ -207,6 +207,10 @@ class GUI:
         try:
             index = self.playerList.get_player(int(player_num))
             player = self.playerList.list[index]
+            baby_link = Perso(egg_num, player.team, 0, self.map)
+            baby_link.is_egg = True
+            self.playerList.list.add_player(baby_link)
+            player = self.playerList.list[index]
         except IndexError:
             return
         # TODO Spawn egg?
