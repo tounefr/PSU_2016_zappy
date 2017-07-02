@@ -45,16 +45,26 @@ class Scoreboard:
         return Scoreboard.g_instance
 
     def __init__(self):
+        print("[GUI] Creating Scoreboard class")
         self.bMouseDown = False
         self.resource = None
         pygame.font.init()
-        self.font = pygame.font.Font(None, 18)
+        self.font = None
+
+        self.font_type = 'src/client/gui/assets/Zelda.ttf'
+        try:
+            self.font = pygame.font.Font(self.font_type, 18)
+        except:
+            print("Could not load font")
+
         self.map = None
+        self.color = (200, 200, 200)
         self.surface = None
         self.originX = 0
         self.HCellX = 0
         self.HCellY = 0
         self.HCellIndex = 0
+        print("[GUI] Scoreboard created")
 
     def setOrigin(self):
         const = Constantes.instance()
@@ -85,44 +95,44 @@ class Scoreboard:
         YOffset = 30
 
         if cell['food'].nb_resource > 0:
-            self.surface.blit(self.resource.food, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Food: " + str(cell['food'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.food, (self.originX + 30, YOffset))
+            label = self.font.render("Food: " + str(cell['food'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
         if cell['linemate'].nb_resource > 0:
-            self.surface.blit(self.resource.rubis_vert, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Linemate: " + str(cell['linemate'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.rubis_vert, (self.originX + 30, YOffset))
+            label = self.font.render("Linemate: " + str(cell['linemate'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
         if cell['deraumere'].nb_resource > 0:
-            self.surface.blit(self.resource.rubis_bleu, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Deraumere: " + str(cell['deraumere'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.rubis_bleu, (self.originX + 30, YOffset))
+            label = self.font.render("Deraumere: " + str(cell['deraumere'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
         if cell['sibur'].nb_resource > 0:
-            self.surface.blit(self.resource.rubis_jaune, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Sibur: " + str(cell['sibur'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.rubis_jaune, (self.originX + 30, YOffset))
+            label = self.font.render("Sibur: " + str(cell['sibur'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
         if cell['mendiane'].nb_resource > 0:
-            self.surface.blit(self.resource.rubis_rouge, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Mendiane: " + str(cell['mendiane'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.rubis_rouge, (self.originX + 30, YOffset))
+            label = self.font.render("Mendiane: " + str(cell['mendiane'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
         if cell['phiras'].nb_resource > 0:
-            self.surface.blit(self.resource.rubis_violet, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Phiras: " + str(cell['phiras'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.rubis_violet, (self.originX + 30, YOffset))
+            label = self.font.render("Phiras: " + str(cell['phiras'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 
         if cell['thystame'].nb_resource > 0:
-            self.surface.blit(self.resource.rubis_orange, (self.originX + 30, YOffset - 3))
-            label = self.font.render("Thystame: " + str(cell['thystame'].nb_resource), 1, (255, 255, 0))
+            self.surface.blit(self.resource.rubis_orange, (self.originX + 30, YOffset))
+            label = self.font.render("Thystame: " + str(cell['thystame'].nb_resource), 1, self.color)
             self.surface.blit(label, (self.originX + 50, YOffset))
             YOffset += 50
 

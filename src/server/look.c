@@ -12,6 +12,17 @@
 #include <string.h>
 #include "server.h"
 
+
+typedef struct	s_cell
+{
+  int		content[9];
+}		t_cell;
+
+typedef struct	s_look
+{
+  t_cell	cell[64];
+}		t_look;
+
 int	coordsToIndex(t_server *server, t_pos pos)
 {
   //printf("Looking at coords: [%i; %i]\n", pos.x, pos.y);

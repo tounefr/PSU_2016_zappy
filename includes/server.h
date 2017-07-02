@@ -77,16 +77,6 @@ typedef struct s_network_commands
     char flags;
 } t_network_commands;
 
-typedef struct s_cell
-{
-	int content[9];
-} t_cell;
-
-typedef struct s_look
-{
-	t_cell cell[64];
-} t_look;
-
 # define NBR_LEVELS 7
 typedef struct s_incantation
 {
