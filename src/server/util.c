@@ -48,11 +48,3 @@ char default_free(void *data)
     free(data);
     return 1;
 }
-
-void free_null(void **data)
-{
-    if (*data) {
-        free(*data);
-    }
-    *data = NULL;
-}

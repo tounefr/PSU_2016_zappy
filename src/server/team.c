@@ -15,6 +15,7 @@
 char client_assign_team(t_server *server, t_client *client, char *packet)
 {
     int i;
+
     for (i = 0; i < MAX_TEAMS; i++) {
         if (!strcmp(packet, server->teams[i].name)) {
             client->team = &server->teams[i];

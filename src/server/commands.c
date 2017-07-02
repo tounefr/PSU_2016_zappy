@@ -23,12 +23,12 @@ char onSetObjectPacket(t_server *server, t_client *client, char *packet) {
         if ((!is_stone(i) && strcmp((char *) &food, "food")) ||
             strcmp(get_g_foods()[i].s, (char *) &food))
             continue;
-        if (client->inventory[get_g_foods()[i].type] - 1 < 0)
+        if (client->inventory[i] - 1 < 0)
             return packet_send(client, "ko\n");
-        client->inventory[get_g_foods()[i].type]--;
-        server->map.cases[client_pos][get_g_foods()[i].type]++;
+        client->inventory[i]--;
+        server->map.cases[client_pos][i]++;
         send_gui_packet(server, "pdr %d %d\n",
-                        client->num, get_g_foods()[i].type);
+                        client->num, i);
         if (get_g_foods()[i].type == TYPE_FOOD &&
             (callback = get_callback(client, onPlayerDead)))
             callback->cycles -= CYCLES_PER_LIFE_UNIT;
@@ -37,7 +37,6 @@ char onSetObjectPacket(t_server *server, t_client *client, char *packet) {
     }
     return packet_send(client, "ko\n");
 }
-
 
 char onTakeObjectPacket(t_server *server, t_client *cli, char *packet) {
     int i;
@@ -52,12 +51,12 @@ char onTakeObjectPacket(t_server *server, t_client *cli, char *packet) {
         if ((!is_stone(i) && strcmp((char *) &food, "food")) ||
             strcmp(get_g_foods()[i].s, (char *) &food))
             continue;
-        if (server->map.cases[client_pos][get_g_foods()[i].type] - 1 < 0)
+        if (server->map.cases[client_pos][i] - 1 < 0)
             return packet_send(cli, "ko\n");
-        cli->inventory[get_g_foods()[i].type]++;
+        cli->inventory[i]++;
         take_ressource(server, client_pos, i);
-        send_gui_packet(server, "pgt %d %d\n", cli->num, get_g_foods()[i].type);
-        if (get_g_foods()[i].type == TYPE_FOOD &&
+        send_gui_packet(server, "pgt %d %d\n", cli->num, i);
+        if (i == TYPE_FOOD &&
             (cb = get_callback(cli, onPlayerDead)))
             cb->cycles += CYCLES_PER_LIFE_UNIT;
         gui_send_map_case(server, cli->pos.x, cli->pos.y);

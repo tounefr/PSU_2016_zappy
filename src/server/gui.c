@@ -25,8 +25,7 @@ char gui_send_map_case(t_server *server, int x, int y)
         server->map.cases[pos][TYPE_SIBUR],
         server->map.cases[pos][TYPE_MENDIANE],
         server->map.cases[pos][TYPE_PHIRAS],
-        server->map.cases[pos][TYPE_THYSTAME]
-    );
+        server->map.cases[pos][TYPE_THYSTAME]);
     return 1;
 }
 
