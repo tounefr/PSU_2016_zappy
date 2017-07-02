@@ -177,6 +177,15 @@ class GUI:
 
     #pdr
     def onPlayerThrowResource(self, player_num, resource):
+        try:
+            index = self.playerList.get_player(int(player_num))
+            player = self.playerList.list[index]
+        except IndexError:
+            return
+        try:
+            self.map.add_case_content(player.x, player.y, resource)
+        except AttributeError:
+            return
         print("onPlayerThrowResource player_num={} resource={}".format(
             player_num, resource
         ))
