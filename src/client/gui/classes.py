@@ -29,7 +29,9 @@ class Constantes:
         self.MapHeight = 0
 
     def setScale(self, size):
-        if size >= 24:
+        if size >= 20:
+            self.tileScale -= 8
+        if size >= 26:
             self.tileScale -= 8
         self.tileDimension = (self.tileScale, self.tileScale)
 
@@ -55,7 +57,7 @@ class Scoreboard:
         self.bMouseDown = bDown
         if self.bMouseDown == True:
             pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-            if pos[1] < Constantes.instance().MapWidth * Constantes.instance().tileScale:
+            if pos[0] < Constantes.instance().MapWidth * Constantes.instance().tileScale:
                 self.HCellIndex = ((int(pos[1] // Constantes.instance().tileScale)) * Constantes.instance().MapWidth) + int((pos[0] // Constantes.instance().tileScale))
             print("Highlighted Cell: " + str(self.HCellIndex))
 
