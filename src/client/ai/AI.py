@@ -70,7 +70,16 @@ class AI:
                 self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
                 count_turn = 0
 
-    def BHV_Broad_Move_To(self):
+    def BHV_Broad_Move_To(self, dist):
+        if dist == 0:
+            return True
+        if self.broadcast_.readMail() == 2:
+            if 2 < dist < 5:
+                self.ai_interface.turnLeftAction()
+            elif 4 < dist < 8:
+                self.ai_interface.turnRightAction()
+            else:
+                self.ai_interface.moveForwardAction()
         return False
 
     def BHV_FindFood(self):
