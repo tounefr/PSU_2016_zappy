@@ -68,6 +68,16 @@
 typedef struct s_server t_server;
 typedef struct s_client t_client;
 
+typedef struct s_cell
+{
+    int content[9];
+} t_cell;
+
+typedef struct s_look
+{
+    t_cell cell[64];
+} t_look;
+
 typedef struct s_network_commands
 {
     char *cmd;
@@ -303,5 +313,17 @@ char add_callback(t_client *client,
 char incantationElevation(t_server *server, t_client *client, char *packet);
 
 // look.c
+void	debug_count(t_server *s);
+char		*look(t_client *client, t_server *server);
+int	coordsToIndex(t_server *server, t_pos pos);
+void	init_look(t_look *tmp);
+void	get_ressources(t_server *s, t_look *see, int index, int pos);
+void	lookUp(t_server *s, t_client *c, t_look *see);
+void    lookDown(t_server *s, t_client *c, t_look *see);
+void    lookLeft(t_server *s, t_client *c, t_look *see);
+void    lookRight(t_server *s, t_client *c, t_look *see);
+char		*get_type(int i);
+char	*myAppend(char *old, char *str);
+void	convertView(t_client *c, t_look *see);
 
 #endif //PROJETS_SERVER_H

@@ -64,14 +64,12 @@ char generate_resources(t_server *server) {
     int y;
     int p;
 
-    printf("MAP: %i x %i\n", server->map.width, server->map.height);
     for (y = 0; y < server->map.height; y++) {
         for (x = 0; x < server->map.width; x++) {
             p = y * server->map.width + x;
             rand_ressource(server, p);
         }
     }
-    printf("resources generated\n");
     gui_send_map_content(server);
     return 1;
 }
