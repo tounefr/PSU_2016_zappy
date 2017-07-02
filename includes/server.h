@@ -250,6 +250,7 @@ char packet_pre_cycle(t_server *server, t_client *client);
 char packet_post_cycle(t_server *server, t_client *client);
 
 // resources.c
+void	take_ressource(t_server *server, int client_pos, int i);
 char is_stone(int type);
 char generate_resources(t_server *server);
 
@@ -312,16 +313,5 @@ char add_callback(t_client *client,
 char incantationElevation(t_server *server, t_client *client, char *packet);
 
 // look.c
-void look(t_client *client, t_server *server);
-void lookLeft(t_server *s, t_client *c, t_look *see);
-void lookRight(t_server *s, t_client *c, t_look *see);
-char *get_type(int i);
-char *myAppend(char *old, char *str);
-void convertView(t_client *c, t_look *see);
-int coordsToIndex(t_server *server, t_pos pos);
-void init_look(t_look *tmp);
-void get_ressources(t_server *s, t_look *see, int index, int pos);
-void lookUp(t_server *s, t_client *c, t_look *see);
-void lookDown(t_server *s, t_client *c, t_look *see);
 
 #endif //PROJETS_SERVER_H

@@ -37,18 +37,18 @@ char update(t_server *server, struct timeval *last_tick)
   int nb_clients;
   t_client *client;
 
-  if (is_next_cycle(server, last_tick))
-    {
-      if (server->cur_cycle == 1)
-	generate_resources(server);
-      nb_clients = 0;
-      for (i = 0; i < MAX_CLIENTS; i++)
-	{
-	  client = &server->clients[i];
-	  if (client->socket_fd != -1 && !client->is_gui)
-	    nb_clients++;
-	  update_client(server, client);
-	}
+    if (is_next_cycle(server, last_tick)) {
+        if (server->cur_cycle == 1)
+            generate_resources(server);
+        nb_clients = 0;
+        for (i = 0; i < MAX_CLIENTS; i++) {
+            client = &server->clients[i];
+            if (client->socket_fd != -1 && !client->is_gui)
+                nb_clients++;
+            update_client(server, client);
+        }
+        /*if ((server->cur_cycle % 1) == 0)
+            printf("%d clients connected\n", nb_clients);*/
     }
   return 1;
 }
