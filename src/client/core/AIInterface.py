@@ -39,9 +39,7 @@ class AIInterface:
         return self.zappy.network.send_packet("Connect_nbr")
 
     def forkAction(self):
-        returnv = self.zappy.network.send_packet("Fork")
-        self.forkProcess()
-        return returnv
+        return self.zappy.network.send_packet("Fork")
 
     def ejectPlayerTileAction(self):
         return self.zappy.network.send_packet("Eject")
