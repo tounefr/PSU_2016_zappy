@@ -22,14 +22,45 @@ class Constantes:
         return Constantes.g_instance
 
     def __init__(self):
-        self.tileScale = 40
+        self.tileScale = 48
         self.tileDimension = (self.tileScale, self.tileScale)
         self.tileSize = 16
+        self.MapWidth = 0
+        self.MapHeight = 0
 
     def setScale(self, size):
         if size >= 24:
             self.tileScale -= 8
         self.tileDimension = (self.tileScale, self.tileScale)
+
+class Scoreboard:
+    g_instance = None
+
+    @staticmethod
+    def instance():
+        if Scoreboard.g_instance is None:
+            Scoreboard.g_instance = Scoreboard()
+        return Scoreboard.g_instance
+
+    def __init__(self):
+        self.bMouseDown = False
+        self.originX = 0
+        self.HCellIndex = 0
+
+    def setOrigin(self):
+        const = Constantes.instance()
+        self.originX = const.MapWidth * const.tileScale
+
+    def UpdateMouse(self, bDown):
+        self.bMouseDown = bDown
+        if self.bMouseDown == True:
+            pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            if pos[1] < Constantes.instance().MapWidth * Constantes.instance().tileScale:
+                self.HCellIndex = ((int(pos[1] // Constantes.instance().tileScale)) * Constantes.instance().MapWidth) + int((pos[0] // Constantes.instance().tileScale))
+            print("Highlighted Cell: " + str(self.HCellIndex))
+
+    def DrawScoreboard(self):
+        pass
 
 
 class Teams:
