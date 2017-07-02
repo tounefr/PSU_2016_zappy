@@ -14,10 +14,10 @@ char free_callback(void *data)
 {
   t_callback *callback;
 
-  callback = (t_callback*)data;
-  free(callback->packet);
-  free(callback);
-  return 1;
+    callback = (t_callback*)data;
+//    free(callback->packet);
+    free(callback);
+    return 1;
 }
 
 t_callback *get_callback(t_client *client,

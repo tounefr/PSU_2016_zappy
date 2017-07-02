@@ -43,45 +43,35 @@ class AI:
             if self.broadcast_.readMail():
                 return
             visible = self.ai_interface.lookAroundAction()
+            ressources = self.team_.getAllRessources()
+
             incre = -1
-            if self.TST_SeeObject(visible, "thystame") == 1:
-                nbr = self.ACT_MovToObject(visible, "thystame", client)
-                while ++incre < nbr and self.ai_interface.takeObjectAction("thystame") == "ok":
-                    client.getInventory()['thystame'] += 1
-                return 0
-            elif self.TST_SeeObject(visible, "phiras") == 1:
-                nbr = self.ACT_MovToObject(visible, "phiras", client)
-                while ++incre < nbr and self.ai_interface.takeObjectAction("phiras") == "ok":
-                    client.getInventory()['phiras'] += 1
-                return 0
-            elif self.TST_SeeObject(visible, "mendiane") == 1:
-                nbr = self.ACT_MovToObject(visible, "mendiane", client)
-                while ++incre < nbr and self.ai_interface.takeObjectAction("mendiane") == "ok":
-                    client.getInventory()['mendiane'] += 1
-                return 0
-            elif self.TST_SeeObject(visible, "sibur") == 1:
-                nbr = self.ACT_MovToObject(visible, "sibur", client)
-                while ++incre < nbr and self.ai_interface.takeObjectAction("sibur") == "ok":
-                    client.getInventory()['sibur'] += 1
-                return 0
-            elif self.TST_SeeObject(visible, "deraumere") == 1:
-                nbr = self.ACT_MovToObject(visible, "deraumere", client)
-                while ++incre < nbr and self.ai_interface.takeObjectAction("deraumere") == "ok":
-                    client.getInventory()['deraumere'] += 1
-                return 0
-            elif self.TST_SeeObject(visible, "linemate") == 1:
-                nbr = self.ACT_MovToObject(visible, "linemate", client)
-                while ++incre < nbr and self.ai_interface.takeObjectAction("linemate") == "ok":
-                    client.getInventory()['linemate'] += 1
-                return 0
-            else:
-                if ko_count == 0:
-                    self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
-                else:
-                    direction = (direction + 1) % 2
-                    for x in range(0, client.getLvl()):
-                        self.ai_interface.moveForwardAction()
-                ko_count = (ko_count + 1) % 2
+            for key, value in ressources.items():
+                if client.getInventory()[key] > ressources[key]:
+                    continue
+                see = self.TST_SeeObject(visible, key)
+                if see == 1:
+                    nbr = self.ACT_MovToObject(visible, key, client)
+                    while ++incre < nbr and self.ai_interface.takeObjectAction(key) == "ok":
+                        client.getInventory()[key] += 1
+                    return 0
+            if ko_count == 0:
+                self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
+                ko_count = 1
+                count_turn += 1
+
+            elif ko_count == 1:
+                ko_count = 0
+                direction = (direction + 1) % 2
+                for x in range(0, client.getLvl()):
+                    self.ai_interface.moveForwardAction()
+
+            if count_turn == 3:
+                self.ai_interface.turnLeftAction() if direction == 0 else self.ai_interface.turnRightAction()
+                count_turn = 0
+
+    def BHV_Broad_Move_To(self):
+        return False
 
     def BHV_FindFood(self):
         self.broadcast_.brd_snd_eat_on()
@@ -124,9 +114,43 @@ class AI:
 
     def BHV_SetRoleRitual(self, client, material):
         try:
-            material[client.getPid()][""]
+            if material[client.getPid()]["conso"] == 1:
+                self.BHV_Ritual_conso(client, material)
+            if material[client.getPid()]["lvl"] == 1:
+                self.BHV_Ritual_lvl(client, material)
+            elif material[client.getPid()]["eject"] == 1:
+                self.BHV_Ritual_eject(client, material)
         except ValueError:
-            return 0
+            return
+
+    def BHV_Ritual_conso(self, client, material):
+        try:
+            for key, value in material[client.getPid()]["inventory"].items():
+                while material[client.getPid()]["inventory"][key] > 0 and \
+                                client.getInventory()[key] > 0:
+                    if self.ai_interface.setObjectDownAction(key):
+                        material[client.getPid()]["inventory"][key] -= 1
+                        client.getInventory()[key] -= 1
+        except ValueError:
+            return
+
+    def BHV_Ritual_lvl(self, client, material):
+        while 1:
+            res = self.broadcast_.readMail()
+            if res > 1:
+                return
+
+    def BHV_Ritual_eject(self, client, material):
+        while 1:
+            visible = self.ai_interface.lookAroundAction()
+            if self.TST_SeeObject(visible, "player") == 0:
+                self.ai_interface.moveForwardAction()
+                while 1:
+                    res = self.broadcast_.readMail()
+                    if res > 1:
+                        return
+            else:
+                self.ai_interface.turnLeftAction()
 
     def TST_RitualCondi(self, client):
         res = False
@@ -147,6 +171,9 @@ class AI:
             list_client = self.team_.getListClient()
 
             print("****************")
+            read = self.broadcast_.readMail()
+            if read == 2:
+                return False
             same_lvl.append(client)
             for x in list_client:
                 if x.getPid() == client.getPid():
@@ -191,7 +218,7 @@ class AI:
                     lis[cli.getPid()]['conso'] = 1
 
                 if lis[cli.getPid()]['conso'] == 1 or lis[cli.getPid()]['lvl'] == 1 or lis[cli.getPid()]['eject'] == 1:
-                    material.append(lis)
+                    material[cli.getPid()] = lis[cli.getPid()]
 
             print("[debug] - requirements = {}".format(lvl_requirement))
             print("[DEBUG] - ok - {}".format(material))
@@ -199,6 +226,8 @@ class AI:
                 if value > 0:
                     return False
 
+            self.BHV_Ritual_conso(client, material)
+            self.broadcast_.brd_snd_grp_ritual(material)
             #doit faire la pose de pierre du client actuel
             #ensuite lancer le material en broadcast
             #puis faire la reception

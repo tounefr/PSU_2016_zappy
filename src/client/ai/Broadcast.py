@@ -11,16 +11,16 @@ class Broadcast:
         self.interface = ai_interface
         self.ai_ = ai
         self.broad_ = {
-            "PID": [self.brd_rcv_pid, False],
-            "WELCOME": [self.brd_rcv_welcome, False],
-            "INVENTORY": [self.brd_rcv_inventory, False],
-            "EAT_ON": [self.brd_rcv_eat_on, False],
-            "EAT_OFF": [self.brd_rcv_eat_off, False],
-            "GRP_RITUAL": [self.brd_rcv_grp_ritual, True],
-            "AB_RITUAL": [self.brd_rcv_ab_ritual, True],
-            "STR_RITUAL": [self.brd_rcv_str_ritual, True],
-            "END_RITUAL": [self.brd_rcv_end_ritual, True],
-            "FORK": [self.brd_rcv_fork, False]
+            "PID": [self.brd_rcv_pid, 0],
+            "WELCOME": [self.brd_rcv_welcome, 0],
+            "INVENTORY": [self.brd_rcv_inventory, 0],
+            "EAT_ON": [self.brd_rcv_eat_on, 0],
+            "EAT_OFF": [self.brd_rcv_eat_off, 0],
+            "GRP_RITUAL": [self.brd_rcv_grp_ritual, 1],
+            "AB_RITUAL": [self.brd_rcv_ab_ritual, 2],
+            "STR_RITUAL": [self.brd_rcv_str_ritual, 2],
+            "END_RITUAL": [self.brd_rcv_end_ritual, 2],
+            "FORK": [self.brd_rcv_fork, 0]
         }
         self.number_ = 0
         self.lastpid_ = 0
@@ -42,7 +42,7 @@ class Broadcast:
 
     # Methods
     def funct_in_dict_doesnt_work(self, key, mail):
-        res = False
+        res = 0
         if key in "PID":
             res = self.brd_rcv_pid(mail[0], mail[1])
         elif key in "WELCOME":
@@ -66,7 +66,7 @@ class Broadcast:
         return res
 
     def check_mail(self, key, mail):
-        res = False
+        res = 0
 
         print(" ------------ ")
         if key in "PID" or key in "WELCOME":
@@ -96,16 +96,23 @@ class Broadcast:
 
     def readMail(self, act=True):
         rm = list()
+        tst = True
 
-        res = False
+        res = 0
         incre = 0
         for mail in self.mailBox_:
+            if not tst:
+                break
             print("[DEBUG] [readMail] - av content = {}".format(mail[0]))
             for key, value in self.broad_.items():
+                if not tst:
+                    break
                 if key in mail[0]['cmd']:
                     if act is True or value[1] is False:
-                        if self.check_mail(key, mail):
-                            res = True
+                        result = self.check_mail(key, mail)
+                        if res > 0:
+                            res = result
+                            tst = False
                         rm.append(incre)
             incre += 1
         incre = 0
@@ -220,10 +227,22 @@ class Broadcast:
         self.interface.broadcastAction(text)
         print("[DEBUG] [brd_send_eat_off] - sort")
 
-    def brd_snd_grp_ritual(self):
+    def brd_snd_grp_ritual(self, material):
         print("[DEBUG] [brd_snd_grp_ritual] - rentre")
+        client = self.team_.list_cli_[0]
+        content = {
+            "number": self.number_,
+            "cmd": "GRP_RITUAL",
+            "pid": client.getPid(),
+
+            "player": material
+        }
 
         self.setNumber(self.getNumber() + 1)
+
+        text = json.dumps(content)
+        text = self.stream_cipher(text)
+        self.interface.broadcastAction(text)
         print("[DEBUG] [brd_send_grp_ritual] - sort")
         return
 
@@ -374,8 +393,10 @@ class Broadcast:
     def brd_rcv_grp_ritual(self, json, dist):
         print("[debug] [brd_rcv_grp_ritual] - rentre")
         try:
-            if dist != 0:
-                return True
+            client = self.team_.list_cli_[0]
+            if self.ai_.BHV_Broad_Move_To(dist):
+                return
+            self.ai_.BHV_SetRoleRitual(client, json)
         except TypeError:
             return True
         except ValueError:
